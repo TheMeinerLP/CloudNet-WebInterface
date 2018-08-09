@@ -1,0 +1,46 @@
+package cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter;
+
+import com.google.gson.*;
+import de.dytanic.cloudnet.lib.server.template.Template;
+import de.dytanic.cloudnet.lib.server.template.TemplateResource;
+import de.dytanic.cloudnet.lib.service.plugin.ServerInstallablePlugin;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
+public class TemplateJsonAdapter implements JsonSerializer<Template>,JsonDeserializer<Template> {
+    @Override
+    public Template deserialize(JsonElement templateelement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+        JsonObject templatejson = templateelement.getAsJsonObject();
+        String name = templatejson.get("name").getAsString();
+        TemplateResource backend = TemplateResource.valueOf(templatejson.get("backend").getAsString());
+        String url = templatejson.get("url").getAsString();
+        String str = templatejson.get("processPreParameters").toString();
+        String[] processPreParameters = str.replace("[", "").replace("]", "").split(", ");
+        Collection<ServerInstallablePlugin> serverInstallablePlugins = new ArrayList<>();
+        if (templatejson.has("installablePlugins")) {
+            templatejson.get("installablePlugins").getAsJsonArray().forEach(t->serverInstallablePlugins.add(jsonDeserializationContext.deserialize(t,ServerInstallablePlugin.class)));
+        }
+        return new Template(name,backend,url,processPreParameters,serverInstallablePlugins);
+    }
+
+    @Override
+    public JsonElement serialize(Template templateclass, Type type, JsonSerializationContext jsonSerializationContext) {
+        JsonObject templatejson = new JsonObject();
+        templatejson.addProperty("name",templateclass.getName());
+        templatejson.addProperty("backend",templateclass.getBackend().toString());
+        if (templateclass.getUrl() == null) {
+            templatejson.addProperty("url","NULL");
+        }else{
+            templatejson.addProperty("url",templateclass.getUrl());
+        }
+
+        templatejson.addProperty("processPreParameters",Arrays.toString(templateclass.getProcessPreParameters()));
+        JsonArray plugins = new JsonArray();
+        templateclass.getInstallablePlugins().forEach(t->plugins.add(jsonSerializationContext.serialize(t)));
+        templatejson.add("installablePlugins",plugins);
+        return templatejson;
+    }
+}
