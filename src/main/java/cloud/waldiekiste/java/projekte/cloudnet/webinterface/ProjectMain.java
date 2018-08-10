@@ -1,7 +1,7 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.usermangment.UserAuthentication;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.proxygroups.HttpProxyGroupAPI;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.ProxyAPI;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.permission.ConfigPermissions;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.sign.ConfigSignLayout;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.sign.SignDatabase;
@@ -16,7 +16,7 @@ public class ProjectMain extends CoreModule {
     @Override
     public void onBootstrap() {
         new UserAuthentication(getCloud(),this);
-        new HttpProxyGroupAPI(getCloud(),this);
+        new ProxyAPI(getCloud(),this);
 
         this.configSignLayout = new ConfigSignLayout();
         this.configSignLayout.loadLayout();

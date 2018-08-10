@@ -1,4 +1,4 @@
-package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.proxygroups;
+package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter.*;
@@ -26,10 +26,10 @@ import io.netty.handler.codec.http.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class HttpProxyGroupAPI extends MethodWebHandlerAdapter {
+public class ProxyAPI extends MethodWebHandlerAdapter {
     private final ProjectMain projectMain;
 
-    public HttpProxyGroupAPI(CloudNet cloudNet, ProjectMain projectMain) {
+    public ProxyAPI(CloudNet cloudNet, ProjectMain projectMain) {
         super("/cloudnet/api/v2/proxygroup");
         cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
         this.projectMain = projectMain;
@@ -64,13 +64,47 @@ public class HttpProxyGroupAPI extends MethodWebHandlerAdapter {
                 resp.append("response", infos);
                 return ResponseUtil.success(fullHttpResponse,true,resp);
             }
-            case "group":{
-                if(!UserUtil.hasPermission(user,"cloudnet.web.group.proxy.info","*")){
-                    return ResponseUtil.permissionDenied(fullHttpResponse);
-                }
+            case "status":{
                 if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&
                         getProjectMain().getCloud().getProxyGroups().containsKey(RequestUtil.getHeaderValue(httpRequest,"-Xvalue"))){
                     final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
+                    if(!UserUtil.hasPermission(user,"cloudnet.web.group.proxy.status.*","*","cloudnet.web.proxy.proxy.status."+group)){
+                        return ResponseUtil.permissionDenied(fullHttpResponse);
+                    }
+                    Document data = new Document();
+                    data.append("status",getProjectMain().getCloud().getProxyGroup(group).getProxyConfig().isEnabled());
+                    Document resp = new Document();
+                    resp.append("response",data);
+                    return ResponseUtil.success(fullHttpResponse,true,resp);
+                }else{
+                    return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+                }
+            }
+            case "version":{
+
+                if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&
+                        getProjectMain().getCloud().getProxyGroups().containsKey(RequestUtil.getHeaderValue(httpRequest,"-Xvalue"))){
+                    final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
+                    if(!UserUtil.hasPermission(user,"cloudnet.web.group.proxy.version.*","*","cloudnet.web.proxy.proxy.version."+group)){
+                        return ResponseUtil.permissionDenied(fullHttpResponse);
+                    }
+                    Document data = new Document();
+                    data.append("version",getProjectMain().getCloud().getProxyGroup(group).getProxyVersion().name());
+                    Document resp = new Document();
+                    resp.append("response",data);
+                    return ResponseUtil.success(fullHttpResponse,true,resp);
+                }else{
+                    return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+                }
+            }
+            case "group":{
+
+                if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&
+                        getProjectMain().getCloud().getProxyGroups().containsKey(RequestUtil.getHeaderValue(httpRequest,"-Xvalue"))){
+                    final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
+                    if(!UserUtil.hasPermission(user,"cloudnet.web.group.proxy.info.*","*","cloudnet.web.group.proxy.info."+group)){
+                        return ResponseUtil.permissionDenied(fullHttpResponse);
+                    }
                     Document data = new Document();
                     data.append(group,JsonUtil.getGson().toJson(getProjectMain().getCloud().getProxyGroup(group)));
                     Document resp = new Document();
