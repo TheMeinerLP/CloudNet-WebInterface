@@ -1,11 +1,6 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface;
 
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.GetWebsiteUtils;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.PutWebsiteUtils;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.Auth;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.Naviagtion;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.Notification;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.User;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.usermangment.UserAuthentication;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.proxygroups.HttpProxyGroupAPI;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.permission.ConfigPermissions;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.sign.ConfigSignLayout;
@@ -20,13 +15,8 @@ public class ProjectMain extends CoreModule {
 
     @Override
     public void onBootstrap() {
-        new Auth(getCloud(),this);
-        new User(getCloud(),this);
-        new Notification(getCloud(),this);
-        new Naviagtion(getCloud(),this);
+        new UserAuthentication(getCloud(),this);
         new HttpProxyGroupAPI(getCloud(),this);
-        new GetWebsiteUtils(getCloud(),this);
-        new PutWebsiteUtils(getCloud(),this);
 
         this.configSignLayout = new ConfigSignLayout();
         this.configSignLayout.loadLayout();
