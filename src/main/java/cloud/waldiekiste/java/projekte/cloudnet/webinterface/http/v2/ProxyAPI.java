@@ -49,17 +49,40 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
         }
         User user = CloudNet.getInstance().getUser(username);
         switch (RequestUtil.getHeaderValue(httpRequest,"-Xmessage").toLowerCase()){
-            case "groups":{
-                if(!UserUtil.hasPermission(user,"*","cloudnet.web.group.proxy")){
-                    return ResponseUtil.permissionDenied(fullHttpResponse);
-                }
+            case "groupitems":{
+                List<String> proxys = new ArrayList<>();
                 List<String> infos = new ArrayList<>();
                 getProjectMain().getCloud().getProxyGroups().keySet().forEach(t->{
-                    Document info = new Document();
-                    info.append("version",getProjectMain().getCloud().getProxyGroups().get(t).getProxyVersion().name());
-                    info.append("name",t);
-                    infos.add(info.convertToJson());
+
+                    infos.add(t);
                 });
+                for (String prx : infos) {
+                    if(!UserUtil.hasPermission(user,"*","cloudnet.web.group.item.*","cloudnet.web.group.item."+prx)){
+                        continue;
+                    }else{
+                        ProxyGroup group = getProjectMain().getCloud().getProxyGroups().get(prx);
+                        Document document = new Document();
+                        document.append("name",group.getName());
+                        document.append("version",group.getProxyVersion().name());
+                        document.append("status",group.getProxyConfig().isEnabled());
+                        proxys.add(document.convertToJson());
+                    }
+                }
+                Document resp = new Document();
+                resp.append("response", proxys);
+                return ResponseUtil.success(fullHttpResponse,true,resp);
+            }
+            case "groups":{
+
+                List<String> infos = new ArrayList<>();
+                getProjectMain().getCloud().getProxyGroups().keySet().forEach(t->{
+                    infos.add(t);
+                });
+                for (String proxy : infos) {
+                    if(!UserUtil.hasPermission(user,"*","cloudnet.web.group.proxy.*","cloudnet.web."+proxy)){
+                        return ResponseUtil.permissionDenied(fullHttpResponse);
+                    }
+                }
                 Document resp = new Document();
                 resp.append("response", infos);
                 return ResponseUtil.success(fullHttpResponse,true,resp);
@@ -97,7 +120,6 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
                 }
             }
             case "group":{
-
                 if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&
                         getProjectMain().getCloud().getProxyGroups().containsKey(RequestUtil.getHeaderValue(httpRequest,"-Xvalue"))){
                     final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
@@ -175,6 +197,8 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
                 CloudNet.getInstance().setupProxy(proxygn);
                 if(!CloudNet.getInstance().getProxyGroups().containsKey(proxygn.getName())){
                     CloudNet.getInstance().getProxyGroups().put(proxygn.getName(), proxygn);
+                }else{
+                    CloudNet.getInstance().getProxyGroups().replace(proxygn.getName(),proxygn);
                 }
                 CloudNet.getInstance().toWrapperInstances(proxygn.getWrapper()).forEach(Wrapper::updateWrapper);
                 Document document = new Document();

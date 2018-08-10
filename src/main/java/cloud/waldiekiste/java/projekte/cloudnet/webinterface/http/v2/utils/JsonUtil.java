@@ -9,7 +9,7 @@ import de.dytanic.cloudnet.lib.server.template.Template;
 import de.dytanic.cloudnet.lib.service.plugin.ServerInstallablePlugin;
 
 public class JsonUtil {
-    static {
+    public static Gson getGson() {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(AutoSlot.class,new AutoSlotJsonAdapter());
         builder.registerTypeAdapter(DynamicFallback.class,new DynamicFallbackJsonAdapter());
@@ -20,16 +20,6 @@ public class JsonUtil {
         builder.registerTypeAdapter(TabList.class,new TabListJsonAdapter());
         builder.registerTypeAdapter(Template.class,new TemplateJsonAdapter());
         builder.registerTypeAdapter(ProxyGroup.class,new ProxyGroupJsonAdapter());
-        JsonUtil.setGson(builder.create());
-    }
-
-    private static Gson gson = null;
-
-    public static void setGson(Gson gson) {
-        JsonUtil.gson = gson;
-    }
-
-    public static Gson getGson() {
-        return gson;
+        return builder.create();
     }
 }
