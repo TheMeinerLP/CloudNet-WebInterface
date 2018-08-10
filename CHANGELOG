@@ -1,0 +1,11 @@
+0.1-PRE-SNAPSHOT:
+- Add Simple WebSocket API Paths for Get and Put
+0.2-PRE-SNAPSHOT:
+- Add Authentication methode
+0.3-PRE-SNAPSHOT:
+- Simple Bug Fixes
+0.4-PRE-SNAPSHOT:
+- Finish Proxy Group Manegment
+0.5-PRE-SNAPSHOT:
+- Add to Proxy GroupManegment Remove and Add Button
+- Better Permissions System
