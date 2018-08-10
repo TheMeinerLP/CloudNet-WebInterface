@@ -81,7 +81,6 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
                 }
             }
             case "version":{
-
                 if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&
                         getProjectMain().getCloud().getProxyGroups().containsKey(RequestUtil.getHeaderValue(httpRequest,"-Xvalue"))){
                     final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
