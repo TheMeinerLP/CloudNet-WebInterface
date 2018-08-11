@@ -7,6 +7,7 @@ import de.dytanic.cloudnet.lib.proxylayout.*;
 import de.dytanic.cloudnet.lib.server.ProxyGroup;
 import de.dytanic.cloudnet.lib.server.template.Template;
 import de.dytanic.cloudnet.lib.service.plugin.ServerInstallablePlugin;
+import de.dytanic.cloudnet.lib.user.User;
 
 public class JsonUtil {
     public static Gson getGson() {
@@ -20,6 +21,7 @@ public class JsonUtil {
         builder.registerTypeAdapter(TabList.class,new TabListJsonAdapter());
         builder.registerTypeAdapter(Template.class,new TemplateJsonAdapter());
         builder.registerTypeAdapter(ProxyGroup.class,new ProxyGroupJsonAdapter());
+        builder.registerTypeAdapter(User.class,new UserJsonAdapter());
         return builder.create();
     }
 }

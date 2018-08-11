@@ -57,7 +57,7 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
                     infos.add(t);
                 });
                 for (String prx : infos) {
-                    if(!UserUtil.hasPermission(user,"*","cloudnet.web.group.item.*","cloudnet.web.group.item."+prx)){
+                    if(!UserUtil.hasPermission(user,"*","cloudnet.web.group.proxy.item.*","cloudnet.web.proxy.group.proxy.item."+prx)){
                         continue;
                     }else{
                         ProxyGroup group = getProjectMain().getCloud().getProxyGroups().get(prx);
@@ -91,7 +91,7 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
                 if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&
                         getProjectMain().getCloud().getProxyGroups().containsKey(RequestUtil.getHeaderValue(httpRequest,"-Xvalue"))){
                     final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
-                    if(!UserUtil.hasPermission(user,"cloudnet.web.group.proxy.status.*","*","cloudnet.web.proxy.proxy.status."+group)){
+                    if(!UserUtil.hasPermission(user,"cloudnet.web.group.proxy.status.*","*","cloudnet.web.group.proxy.status."+group)){
                         return ResponseUtil.permissionDenied(fullHttpResponse);
                     }
                     Document data = new Document();
@@ -107,7 +107,7 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
                 if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&
                         getProjectMain().getCloud().getProxyGroups().containsKey(RequestUtil.getHeaderValue(httpRequest,"-Xvalue"))){
                     final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
-                    if(!UserUtil.hasPermission(user,"cloudnet.web.group.proxy.version.*","*","cloudnet.web.proxy.proxy.version."+group)){
+                    if(!UserUtil.hasPermission(user,"cloudnet.web.group.proxy.version.*","*","cloudnet.web.group.proxy.version."+group)){
                         return ResponseUtil.permissionDenied(fullHttpResponse);
                     }
                     Document data = new Document();
