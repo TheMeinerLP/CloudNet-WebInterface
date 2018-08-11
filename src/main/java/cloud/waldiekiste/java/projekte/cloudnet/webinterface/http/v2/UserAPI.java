@@ -6,6 +6,7 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Reque
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
 import com.google.gson.reflect.TypeToken;
+import de.dytanic.cloudnet.lib.hash.DyHash;
 import de.dytanic.cloudnet.lib.server.ProxyGroup;
 import de.dytanic.cloudnet.lib.user.BasicUser;
 import de.dytanic.cloudnet.lib.user.User;
@@ -109,9 +110,33 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     return ResponseUtil.success(fullHttpResponse, true, resp);
                 }
             }
+            case "resetpassword":{
+                final String jsonuser = RequestUtil.getContent(httpRequest);
+                System.out.println(jsonuser);
+                Document usern = Document.load(jsonuser);
+                User basUser = getProjectMain().getCloud().getUser(usern.get("username").getAsString());
+                if(!UserUtil.hasPermission(user,"*","cloudnet.web.user.restepassword.*","cloudnet.web.user.restepassword."+basUser.getName())){
+                    return ResponseUtil.permissionDenied(fullHttpResponse);
+                }else {
+                    User basicUser = new User(basUser.getName(),basUser.getUniqueId(),basUser.getApiToken(),DyHash.hashString(usern.get("password").getAsString()),basUser.getPermissions(),basUser.getMetaData());
+                    ArrayList<User> users = new ArrayList<>(getProjectMain().getCloud().getUsers());
+                    AtomicReference<User> olduser = new AtomicReference<>();
+                    users.forEach(t->{
+                        if (t.getName().equals(basicUser.getName())) {
+                            olduser.set(t);
+                        }
+                    });
+                    users.remove(olduser.get());
+                    users.add(basicUser);
+                    getProjectMain().getCloud().getUsers().clear();
+                    getProjectMain().getCloud().getUsers().addAll(users);
+                    getProjectMain().getCloud().getConfig().getUsersPath().toFile().delete();
+                    getProjectMain().getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
+                    Document resp = new Document();
+                    return ResponseUtil.success(fullHttpResponse, true, resp);
+                }
+            }
             case "add":{
-
-
                 if(!UserUtil.hasPermission(user,"*","cloudnet.web.user.add.*")){
                     return ResponseUtil.permissionDenied(fullHttpResponse);
                 }else {
