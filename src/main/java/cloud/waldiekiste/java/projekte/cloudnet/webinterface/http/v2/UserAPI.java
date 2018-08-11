@@ -47,7 +47,6 @@ public class UserAPI extends MethodWebHandlerAdapter {
             case "users":{
                 if(!UserUtil.hasPermission(user,"*","cloudnet.web.user.item.*")){
                     return ResponseUtil.permissionDenied(fullHttpResponse);
-
                 }else {
                     List<String> users = new ArrayList<>();
                     getProjectMain().getCloud().getUsers().forEach(t -> {
@@ -59,10 +58,9 @@ public class UserAPI extends MethodWebHandlerAdapter {
                 }
             }
             default:{
-
+                return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
             }
         }
-        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
     }
 
     @SuppressWarnings( "deprecation" )
