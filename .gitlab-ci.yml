@@ -22,7 +22,6 @@ test:
 deploy:
   stage: deploy
   script:
-    - mkdir target
     - mvn $MAVEN_CLI_OPTS package
   artifacts:
     paths:
