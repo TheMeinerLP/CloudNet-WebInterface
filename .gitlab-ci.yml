@@ -21,8 +21,11 @@ test:
 
 deploy:
   stage: deploy
-    artifacts:
-      paths:
-        - "target/*.jar"
+  script:
+    - mkdir target
+    - mvn $MAVEN_CLI_OPTS package
+  artifacts:
+    paths:
+      - "target/*.jar"
   only:
     - master
