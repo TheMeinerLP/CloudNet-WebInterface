@@ -55,7 +55,7 @@
                 <configuration>
                     <proguardVersion>4.10</proguardVersion>
                     <options>
-                        <option>-keepnamesclass * extends de.dytanic.cloudnetcore.api.CoreModule</option>
+                        <option>-keep public class cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain</option>
                     </options>
                     <libs>
                         <lib>${java.home}/lib/rt.jar</lib>
