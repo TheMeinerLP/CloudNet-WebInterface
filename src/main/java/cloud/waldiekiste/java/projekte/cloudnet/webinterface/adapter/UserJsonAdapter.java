@@ -2,8 +2,6 @@ package cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter;
 
 import com.google.gson.*;
 import de.dytanic.cloudnet.lib.hash.DyHash;
-import de.dytanic.cloudnet.lib.proxylayout.AutoSlot;
-import de.dytanic.cloudnet.lib.service.plugin.ServerInstallablePlugin;
 import de.dytanic.cloudnet.lib.user.User;
 
 import java.lang.reflect.Type;
@@ -33,7 +31,7 @@ public class UserJsonAdapter implements JsonSerializer<User>,JsonDeserializer<Us
         object.addProperty("token",user.getApiToken());
         object.addProperty("password",user.getHashedPassword());
         JsonArray array = new JsonArray();
-        user.getPermissions().forEach(t->array.add(t));
+        user.getPermissions().forEach(array::add);
         object.add("permissions",array);
         return object;
     }

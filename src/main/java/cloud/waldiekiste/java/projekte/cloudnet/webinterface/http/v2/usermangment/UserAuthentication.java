@@ -16,17 +16,13 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class UserAuthentication extends MethodWebHandlerAdapter {
-    private final ProjectMain projectMain;
 
-    public UserAuthentication(CloudNet cloudNet, ProjectMain projectMain) {
+    public UserAuthentication(CloudNet cloudNet) {
         super("/cloudnet/api/v2/auth");
         cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
-        this.projectMain = projectMain;
     }
 
     @SuppressWarnings( "deprecation" )
@@ -64,9 +60,5 @@ public class UserAuthentication extends MethodWebHandlerAdapter {
         fullHttpResponse.headers().set("Access-Control-Allow-Origin", "*");
         fullHttpResponse.headers().set("Access-Control-Max-Age", "3600");
         return fullHttpResponse;
-    }
-
-    public ProjectMain getProjectMain() {
-        return projectMain;
     }
 }

@@ -4,6 +4,8 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
+import de.dytanic.cloudnet.lib.server.ServerGroup;
+import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
 import de.dytanic.cloudnet.web.server.util.PathProvider;
@@ -15,13 +17,14 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DashboardAPI extends MethodWebHandlerAdapter {
+public class ServerGroupAPI extends MethodWebHandlerAdapter {
     private final ProjectMain projectMain;
 
-    public DashboardAPI(CloudNet cloudNet, ProjectMain projectMain) {
-        super("/cloudnet/api/v2/dashboard");
+    public ServerGroupAPI(CloudNet cloudNet, ProjectMain projectMain) {
+        super("/cloudnet/api/v2/servergroup");
         cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
         this.projectMain = projectMain;
     }
@@ -38,30 +41,28 @@ public class DashboardAPI extends MethodWebHandlerAdapter {
         if (!CloudNet.getInstance().authorizationPassword(username, userpassword)) {
             return UserUtil.failedAuthorization(fullHttpResponse);
         }
-        //User user = CloudNet.getInstance().getUser(username);
+        User user = CloudNet.getInstance().getUser(username);
         switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
-            case "players":{
-                Document document = new Document();
-                AtomicInteger integer = new AtomicInteger();
-                getProjectMain().getCloud().getServerGroups().keySet().forEach(t-> integer.getAndAdd(getProjectMain().getCloud().getOnlineCount(t)));
-                document.append("response",integer.get());
-                return ResponseUtil.success(fullHttpResponse,true,document);
+            case "groupitems":{
+                List<String> proxys = new ArrayList<>();
+                List<String> infos = new ArrayList<>(getProjectMain().getCloud().getServerGroups().keySet());
+                for (String prx : infos) {
+                    if(!UserUtil.hasPermission(user,"*","cloudnet.web.group.server.item.*","cloudnet.web.proxy.group.server.item."+prx)){
+                        continue;
+                    }else{
+                        ServerGroup group = getProjectMain().getCloud().getServerGroup(prx);
+                        Document document = new Document();
+                        document.append("name",group.getName());
+                        document.append("type",group.getServerType().name());
+                        document.append("status",group.isMaintenance());
+                        proxys.add(document.convertToJson());
+                    }
+                }
+                Document resp = new Document();
+                resp.append("response", proxys);
+                return ResponseUtil.success(fullHttpResponse,true,resp);
             }
-            case "servers":{
-                Document document = new Document();
-                document.append("response",getProjectMain().getCloud().getServers().size());
-                return ResponseUtil.success(fullHttpResponse,true,document);
-            }
-            case "proxys":{
-                Document document = new Document();
-                document.append("response",getProjectMain().getCloud().getProxys().size());
-                return ResponseUtil.success(fullHttpResponse,true,document);
-            }
-            case "groups":{
-                Document document = new Document();
-                document.append("response",getProjectMain().getCloud().getServerGroups().size());
-                return ResponseUtil.success(fullHttpResponse,true,document);
-            }
+
             default:{
                 return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
             }

@@ -11,21 +11,21 @@ import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
-
+@SuppressWarnings("deprecation")
 public class SignDatabase extends DatabaseUseable {
     public SignDatabase(final Database database) {
         super(database);
         final Document document = database.getDocument("signs");
         if (document == null) {
-            database.insert(new Document[] { new DatabaseDocument("signs").append("signs", new Document()) });
+            database.insert(new DatabaseDocument("signs").append("signs", new Document()));
         }
     }
 
     public SignDatabase appendSign(final Sign sign) {
         final Document x = this.database.getDocument("signs");
         final Document document = x.getDocument("signs");
-        document.append(sign.getUniqueId().toString(), (Object)sign);
-        this.database.insert(new Document[] { document });
+        document.append(sign.getUniqueId().toString(), sign);
+        this.database.insert(document);
         return this;
     }
 
@@ -43,7 +43,7 @@ public class SignDatabase extends DatabaseUseable {
         final Type typeToken = new TypeToken<Sign>() {}.getType();
         final Map<UUID, Sign> signs = new LinkedHashMap<UUID, Sign>();
         for (final String key : document.keys()) {
-            signs.put(UUID.fromString(key), (Sign)document.getObject(key, typeToken));
+            signs.put(UUID.fromString(key), document.getObject(key, typeToken));
         }
         return signs;
     }

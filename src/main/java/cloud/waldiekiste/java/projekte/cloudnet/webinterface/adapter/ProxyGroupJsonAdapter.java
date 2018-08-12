@@ -1,9 +1,6 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter;
 
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import de.dytanic.cloudnet.lib.map.WrappedMap;
 import de.dytanic.cloudnet.lib.proxylayout.ProxyConfig;
 import de.dytanic.cloudnet.lib.server.ProxyGroup;
@@ -11,12 +8,9 @@ import de.dytanic.cloudnet.lib.server.ProxyGroupMode;
 import de.dytanic.cloudnet.lib.server.template.Template;
 import de.dytanic.cloudnet.lib.server.version.ProxyVersion;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 
 public class ProxyGroupJsonAdapter implements JsonSerializer<ProxyGroup>,JsonDeserializer<ProxyGroup> {
 
@@ -42,7 +36,7 @@ public class ProxyGroupJsonAdapter implements JsonSerializer<ProxyGroup>,JsonDes
         JsonObject jsongroup = new JsonObject();
         jsongroup.addProperty("name",classgroup.getName());
         JsonArray wrapper = new JsonArray();
-        classgroup.getWrapper().forEach(w->wrapper.add(w));
+        classgroup.getWrapper().forEach(wrapper::add);
         jsongroup.add("wrapper",wrapper);
         jsongroup.add("template",jsonSerializationContext.serialize(classgroup.getTemplate()));
         jsongroup.addProperty("proxyVersion",classgroup.getProxyVersion().name());

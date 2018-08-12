@@ -2,7 +2,6 @@ package cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter;
 
 import com.google.gson.*;
 import de.dytanic.cloudnet.lib.proxylayout.AutoSlot;
-import de.dytanic.cloudnet.lib.proxylayout.DynamicFallback;
 
 import java.lang.reflect.Type;
 
