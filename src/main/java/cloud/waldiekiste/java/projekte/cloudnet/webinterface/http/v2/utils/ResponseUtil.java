@@ -6,7 +6,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class ResponseUtil {
     public static FullHttpResponse permissionDenied(FullHttpResponse response){

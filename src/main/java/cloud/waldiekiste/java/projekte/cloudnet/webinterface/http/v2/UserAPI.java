@@ -5,9 +5,7 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.JsonU
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
-import com.google.gson.reflect.TypeToken;
 import de.dytanic.cloudnet.lib.hash.DyHash;
-import de.dytanic.cloudnet.lib.server.ProxyGroup;
 import de.dytanic.cloudnet.lib.user.BasicUser;
 import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
@@ -15,7 +13,6 @@ import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
 import de.dytanic.cloudnet.web.server.util.PathProvider;
 import de.dytanic.cloudnet.web.server.util.QueryDecoder;
 import de.dytanic.cloudnetcore.CloudNet;
-import de.dytanic.cloudnetcore.network.components.Wrapper;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -23,7 +20,6 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -211,7 +207,7 @@ public class UserAPI extends MethodWebHandlerAdapter {
         return fullHttpResponse;
     }
 
-    public ProjectMain getProjectMain() {
+    private ProjectMain getProjectMain() {
         return projectMain;
     }
 }

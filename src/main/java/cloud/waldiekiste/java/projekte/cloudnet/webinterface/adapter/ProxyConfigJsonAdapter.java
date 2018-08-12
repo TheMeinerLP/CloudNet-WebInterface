@@ -2,7 +2,6 @@ package cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter;
 
 import com.google.gson.*;
 import de.dytanic.cloudnet.lib.proxylayout.*;
-import de.dytanic.cloudnet.lib.server.ProxyGroup;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -50,7 +49,7 @@ public class ProxyConfigJsonAdapter implements JsonSerializer<ProxyConfig>,JsonD
         object.add("tabList",jsonSerializationContext.serialize(proxyConfig.getTabList()));
         object.addProperty("playerInfo", Arrays.toString(proxyConfig.getPlayerInfo()));
         JsonArray whitelist = new JsonArray();
-        proxyConfig.getWhitelist().forEach(t->whitelist.add(t));
+        proxyConfig.getWhitelist().forEach(whitelist::add);
         object.add("whitelist",whitelist);
         object.add("dynamicFallback",jsonSerializationContext.serialize(proxyConfig.getDynamicFallback()));
         return object;

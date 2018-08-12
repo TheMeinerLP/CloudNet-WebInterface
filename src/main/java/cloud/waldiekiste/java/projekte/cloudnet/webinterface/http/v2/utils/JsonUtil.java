@@ -1,6 +1,5 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils;
 
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter.UserJsonAdapter;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

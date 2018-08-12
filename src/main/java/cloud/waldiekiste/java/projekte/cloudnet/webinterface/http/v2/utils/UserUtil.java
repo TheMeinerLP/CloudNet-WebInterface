@@ -6,7 +6,6 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class UserUtil {
 

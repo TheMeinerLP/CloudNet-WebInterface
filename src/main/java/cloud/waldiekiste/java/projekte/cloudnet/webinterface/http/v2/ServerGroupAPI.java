@@ -4,7 +4,6 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
-import de.dytanic.cloudnet.lib.server.ProxyGroup;
 import de.dytanic.cloudnet.lib.server.ServerGroup;
 import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
@@ -20,7 +19,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ServerGroupAPI extends MethodWebHandlerAdapter {
     private final ProjectMain projectMain;

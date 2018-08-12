@@ -1,17 +1,11 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter.*;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.JsonUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import de.dytanic.cloudnet.lib.proxylayout.*;
 import de.dytanic.cloudnet.lib.server.ProxyGroup;
-import de.dytanic.cloudnet.lib.server.template.Template;
-import de.dytanic.cloudnet.lib.service.plugin.ServerInstallablePlugin;
 import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
@@ -19,12 +13,15 @@ import de.dytanic.cloudnet.web.server.util.PathProvider;
 import de.dytanic.cloudnet.web.server.util.QueryDecoder;
 import de.dytanic.cloudnetcore.CloudNet;
 import de.dytanic.cloudnetcore.network.components.Wrapper;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponseStatus;
 
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class ProxyAPI extends MethodWebHandlerAdapter {
     private final ProjectMain projectMain;
@@ -52,10 +49,7 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
             case "groupitems":{
                 List<String> proxys = new ArrayList<>();
                 List<String> infos = new ArrayList<>();
-                getProjectMain().getCloud().getProxyGroups().keySet().forEach(t->{
-
-                    infos.add(t);
-                });
+                getProjectMain().getCloud().getProxyGroups().keySet().forEach(infos::add);
                 for (String prx : infos) {
                     if(!UserUtil.hasPermission(user,"*","cloudnet.web.group.proxy.item.*","cloudnet.web.proxy.group.proxy.item."+prx)){
                         continue;
@@ -75,9 +69,7 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
             case "groups":{
 
                 List<String> infos = new ArrayList<>();
-                getProjectMain().getCloud().getProxyGroups().keySet().forEach(t->{
-                    infos.add(t);
-                });
+                getProjectMain().getCloud().getProxyGroups().keySet().forEach(t-> infos.add(t));
                 for (String proxy : infos) {
                     if(!UserUtil.hasPermission(user,"*","cloudnet.web.group.proxy.*","cloudnet.web."+proxy)){
                         return ResponseUtil.permissionDenied(fullHttpResponse);

@@ -4,7 +4,6 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
-import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
 import de.dytanic.cloudnet.web.server.util.PathProvider;
@@ -44,9 +43,7 @@ public class DashboardAPI extends MethodWebHandlerAdapter {
             case "players":{
                 Document document = new Document();
                 AtomicInteger integer = new AtomicInteger();
-                getProjectMain().getCloud().getServerGroups().keySet().forEach(t->{
-                    integer.getAndAdd(getProjectMain().getCloud().getOnlineCount(t));
-                });
+                getProjectMain().getCloud().getServerGroups().keySet().forEach(t-> integer.getAndAdd(getProjectMain().getCloud().getOnlineCount(t)));
                 document.append("response",integer.get());
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
@@ -83,7 +80,7 @@ public class DashboardAPI extends MethodWebHandlerAdapter {
         return fullHttpResponse;
     }
 
-    public ProjectMain getProjectMain() {
+    private ProjectMain getProjectMain() {
         return projectMain;
     }
 }

@@ -6,42 +6,29 @@ import de.dytanic.cloudnet.lib.utility.Catcher;
 import de.dytanic.cloudnet.lib.utility.MapWrapper;
 import de.dytanic.cloudnet.lib.utility.Return;
 import de.dytanic.cloudnet.lib.utility.document.Document;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.OpenOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.FileAttribute;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.nio.file.attribute.FileAttribute;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ConfigPermissions {private final Path path;
     private Configuration cache;
 
     public ConfigPermissions() throws Exception {
-        this.path = Paths.get("local/perms.yml", new String[0]);
-        if (!Files.exists(this.path, new LinkOption[0])) {
+        this.path = Paths.get("local/perms.yml");
+        if (!Files.exists(this.path)) {
             Files.createFile(this.path, (FileAttribute<?>[])new FileAttribute[0]);
             final Configuration configuration = new Configuration();
-            configuration.set("enabled", (Object)true);
-            configuration.set("groups", (Object)new Configuration());
+            configuration.set("enabled", true);
+            configuration.set("groups", new Configuration());
             if (!Files.exists(Paths.get("local/permissions.yml", new String[0]), new LinkOption[0])) {
-                final PermissionGroup member = new PermissionGroup("default", "§eMember §7\u258e ", "§f", "§e", 9999, 0, true, new HashMap(), MapWrapper.valueableHashMap(new Return[] { new Return((Object)"Lobby", (Object)Arrays.asList("test.permission.for.group.Lobby")) }), (Map)new HashMap(), (List)new ArrayList());
+                final PermissionGroup member = new PermissionGroup("default", "§eMember §7\u258e ", "§f", "§e", 9999, 0, true, new HashMap(), MapWrapper.valueableHashMap(new Return[] { new Return((Object)"Lobby", (Object) Collections.singletonList("test.permission.for.group.Lobby")) }), (Map)new HashMap(), (List)new ArrayList());
                 this.write(member, configuration);
                 final PermissionGroup admin = new PermissionGroup("Admin", "§cAdmin §7\u258e ", "§f", "§c", 0, 100, false, (HashMap)MapWrapper.valueableHashMap(new Return[] { new Return((Object)"*", (Object)true) }), MapWrapper.valueableHashMap(new Return[] { new Return((Object)"Lobby", (Object)Arrays.asList("test.permission.for.group.Lobby")) }), (Map)new HashMap(), (List)new ArrayList());
                 this.write(admin, configuration);
@@ -49,11 +36,7 @@ public class ConfigPermissions {private final Path path;
             else {
                 final Document document = Document.loadDocument(Paths.get("local/permissions.yml", new String[0]));
                 final Collection<PermissionGroup> groups = (Collection<PermissionGroup>)document.getObject("groups", new TypeToken<Collection<PermissionGroup>>() {}.getType());
-                final Map<String, PermissionGroup> maps = (Map<String, PermissionGroup>)MapWrapper.collectionCatcherHashMap((Collection)groups, (Catcher)new Catcher<String, PermissionGroup>() {
-                    public String doCatch(final PermissionGroup key) {
-                        return key.getName();
-                    }
-                });
+                final Map<String, PermissionGroup> maps = (Map<String, PermissionGroup>)MapWrapper.collectionCatcherHashMap((Collection)groups, (Catcher) (Catcher<String, PermissionGroup>) PermissionGroup::getName);
                 configuration.set("enabled", (Object)document.getBoolean("enabled"));
                 for (final PermissionGroup value : maps.values()) {
                     this.write(value, configuration);
@@ -103,7 +86,7 @@ public class ConfigPermissions {private final Path path;
         }
     }
 
-    public void write(final PermissionGroup permissionGroup, final Configuration configuration) {
+    private void write(final PermissionGroup permissionGroup, final Configuration configuration) {
         final Configuration section = configuration.getSection("groups");
         final Configuration group = new Configuration();
         group.set("prefix", (Object)permissionGroup.getPrefix());
@@ -131,7 +114,7 @@ public class ConfigPermissions {private final Path path;
         section.set(permissionGroup.getName(), (Object)group);
     }
 
-    public Map<String, PermissionGroup> read(final Configuration configuration) {
+    private Map<String, PermissionGroup> read(final Configuration configuration) {
         final Map<String, PermissionGroup> maps = new LinkedHashMap<String, PermissionGroup>();
         final Configuration section = configuration.getSection("groups");
         for (final String key : section.getKeys()) {
