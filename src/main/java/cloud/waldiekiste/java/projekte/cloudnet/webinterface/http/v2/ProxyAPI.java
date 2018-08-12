@@ -35,7 +35,7 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
     @Override
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest){
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
-        ResponseUtil.setHeader(fullHttpResponse,"Content-Type", "application/json");
+        ResponseUtil.setHeader(fullHttpResponse,"Content-Type", "application/json; charset=utf-8");
         if (!RequestUtil.hasHeader(httpRequest,"-xcloudnet-user","-xcloudnet-passwort","-xcloudnet-message")) {
             return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
         }
@@ -65,51 +65,6 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
                 Document resp = new Document();
                 resp.append("response", proxys);
                 return ResponseUtil.success(fullHttpResponse,true,resp);
-            }
-            case "groups":{
-
-                List<String> infos = new ArrayList<>();
-                getProjectMain().getCloud().getProxyGroups().keySet().forEach(t-> infos.add(t));
-                for (String proxy : infos) {
-                    if(!UserUtil.hasPermission(user,"*","cloudnet.web.group.proxy.*","cloudnet.web."+proxy)){
-                        return ResponseUtil.permissionDenied(fullHttpResponse);
-                    }
-                }
-                Document resp = new Document();
-                resp.append("response", infos);
-                return ResponseUtil.success(fullHttpResponse,true,resp);
-            }
-            case "status":{
-                if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&
-                        getProjectMain().getCloud().getProxyGroups().containsKey(RequestUtil.getHeaderValue(httpRequest,"-Xvalue"))){
-                    final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
-                    if(!UserUtil.hasPermission(user,"cloudnet.web.group.proxy.status.*","*","cloudnet.web.group.proxy.status."+group)){
-                        return ResponseUtil.permissionDenied(fullHttpResponse);
-                    }
-                    Document data = new Document();
-                    data.append("status",getProjectMain().getCloud().getProxyGroup(group).getProxyConfig().isEnabled());
-                    Document resp = new Document();
-                    resp.append("response",data);
-                    return ResponseUtil.success(fullHttpResponse,true,resp);
-                }else{
-                    return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
-                }
-            }
-            case "version":{
-                if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&
-                        getProjectMain().getCloud().getProxyGroups().containsKey(RequestUtil.getHeaderValue(httpRequest,"-Xvalue"))){
-                    final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
-                    if(!UserUtil.hasPermission(user,"cloudnet.web.group.proxy.version.*","*","cloudnet.web.group.proxy.version."+group)){
-                        return ResponseUtil.permissionDenied(fullHttpResponse);
-                    }
-                    Document data = new Document();
-                    data.append("version",getProjectMain().getCloud().getProxyGroup(group).getProxyVersion().name());
-                    Document resp = new Document();
-                    resp.append("response",data);
-                    return ResponseUtil.success(fullHttpResponse,true,resp);
-                }else{
-                    return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
-                }
             }
             case "group":{
                 if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&

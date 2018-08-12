@@ -18,7 +18,7 @@ public class ServerGroupJsonAdapter implements JsonSerializer<ServerGroup>,JsonD
         JsonObject object = jsonElement.getAsJsonObject();
         final String name = object.get("name").getAsString();
         final Collection wrappers = new ArrayList();
-        object.get("wrapper").getAsJsonArray().forEach(wrappers::add);
+        object.get("wrapper").getAsJsonArray().forEach(t->wrappers.add(t.getAsString()));
         final boolean kickedForceFallback = object.get("kickedForceFallback").getAsBoolean();
         final ServerGroupType serverType = ServerGroupType.valueOf(object.get("serverType").getAsString());
         final ServerGroupMode groupMode = ServerGroupMode.valueOf(object.get("groupMode").getAsString());
@@ -37,6 +37,7 @@ public class ServerGroupJsonAdapter implements JsonSerializer<ServerGroup>,JsonD
         ServerGroup group = new ServerGroup(name,wrappers,kickedForceFallback,memory,dynamicMemory,joinPower,maintenance,minOnlineServers,priorityService.getGlobal().getOnlineServers(),priorityService.getGroup().getOnlineServers(),priorityService.getStopTimeInSeconds(),priorityService.getGlobal().getOnlineCount(),priorityService.getGroup().getOnlineCount(),percentForNewServerAutomatically,serverType,groupMode,templates,advancedServerConfig);
         group.setMaxOnlineServers(maxOnlineServers);
         group.setGlobalTemplate(globalTemplate);
+        group.setTemplates(templates);
         return group;
     }
 

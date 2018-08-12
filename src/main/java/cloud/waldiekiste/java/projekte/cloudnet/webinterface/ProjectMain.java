@@ -10,11 +10,16 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.sign.ConfigSignLayo
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.sign.SignDatabase;
 import de.dytanic.cloudnetcore.api.CoreModule;
 
+
 public class ProjectMain extends CoreModule {
 
     private ConfigSignLayout configSignLayout;
     private SignDatabase signDatabase;
     private ConfigPermissions configPermission;
+
+    @Override
+    public void onLoad() {
+    }
 
     @Override
     public void onBootstrap() {
