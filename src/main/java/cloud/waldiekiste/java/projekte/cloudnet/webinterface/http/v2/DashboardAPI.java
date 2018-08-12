@@ -29,7 +29,7 @@ public class DashboardAPI extends MethodWebHandlerAdapter {
     @Override
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
-        ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json");
+        ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json; charset=utf-8");
         if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-xcloudnet-passwort", "-xcloudnet-message")) {
             return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
         }

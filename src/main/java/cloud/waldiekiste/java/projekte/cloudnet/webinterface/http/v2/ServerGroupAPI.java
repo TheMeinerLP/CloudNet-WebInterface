@@ -1,6 +1,7 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.JsonUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
@@ -32,7 +33,7 @@ public class ServerGroupAPI extends MethodWebHandlerAdapter {
     @Override
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
-        ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json");
+        ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json;charset=utf-8");
         if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-xcloudnet-passwort", "-xcloudnet-message")) {
             return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
         }
@@ -62,7 +63,22 @@ public class ServerGroupAPI extends MethodWebHandlerAdapter {
                 resp.append("response", proxys);
                 return ResponseUtil.success(fullHttpResponse,true,resp);
             }
-
+            case "group":{
+                if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&
+                        getProjectMain().getCloud().getProxyGroups().containsKey(RequestUtil.getHeaderValue(httpRequest,"-Xvalue"))){
+                    final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
+                    if(!UserUtil.hasPermission(user,"cloudnet.web.group.server.info.*","*","cloudnet.web.group.server.info."+group)){
+                        return ResponseUtil.permissionDenied(fullHttpResponse);
+                    }
+                    Document data = new Document();
+                    data.append(group,JsonUtil.getGson().toJson(getProjectMain().getCloud().getServerGroup(group)));
+                    Document resp = new Document();
+                    resp.append("response",data);
+                    return ResponseUtil.success(fullHttpResponse,true,resp);
+                }else{
+                    return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+                }
+            }
             default:{
                 return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
             }

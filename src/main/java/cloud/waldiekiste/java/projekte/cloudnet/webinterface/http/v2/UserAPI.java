@@ -37,7 +37,7 @@ public class UserAPI extends MethodWebHandlerAdapter {
     @Override
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
-        ResponseUtil.setHeader(fullHttpResponse,"Content-Type", "application/json");
+        ResponseUtil.setHeader(fullHttpResponse,"Content-Type", "application/json; charset=utf-8");
         if (!RequestUtil.hasHeader(httpRequest,"-xcloudnet-user","-xcloudnet-passwort","-xcloudnet-message")) {
             return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
         }
@@ -83,13 +83,12 @@ public class UserAPI extends MethodWebHandlerAdapter {
         switch (RequestUtil.getHeaderValue(httpRequest,"-Xmessage").toLowerCase()){
             case "save":{
                 final String jsonuser = RequestUtil.getContent(httpRequest);
+                System.out.println(jsonuser);
                 User saveduser = JsonUtil.getGson().fromJson(jsonuser,User.class);
                 if(!UserUtil.hasPermission(user,"*","cloudnet.web.user.save.*","cloudnet.web.user.save."+saveduser.getName())){
                     return ResponseUtil.permissionDenied(fullHttpResponse);
                 }else {
-
                     ArrayList<User> users = new ArrayList<>(getProjectMain().getCloud().getUsers());
-
                     AtomicReference<User> olduser = new AtomicReference<>();
                     users.forEach(t->{
                         if (t.getName().equals(saveduser.getName())) {
@@ -108,7 +107,7 @@ public class UserAPI extends MethodWebHandlerAdapter {
             }
             case "resetpassword":{
                 final String jsonuser = RequestUtil.getContent(httpRequest);
-                System.out.println(jsonuser);
+
                 Document usern = Document.load(jsonuser);
                 User basUser = getProjectMain().getCloud().getUser(usern.get("username").getAsString());
                 if(!UserUtil.hasPermission(user,"*","cloudnet.web.user.restepassword.*","cloudnet.web.user.restepassword."+basUser.getName())){
