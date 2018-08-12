@@ -5,7 +5,7 @@
     <artifactId>CloudNet-Service-Websocket-Extension</artifactId>
     <groupId>com.waldiekiste.java.projekte.cloudnet</groupId>
 
-    <version>0.7.3-PRE-SNAPSHOT</version>
+    <version>0.8.0-PRE-SNAPSHOT</version>
     <modelVersion>4.0.0</modelVersion>
 
     <build>
@@ -35,7 +35,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
-            <plugin>
+            <!--<plugin>
                 <groupId>com.github.wvengen</groupId>
                 <artifactId>proguard-maven-plugin</artifactId>
                 <version>2.0.6</version>
@@ -62,7 +62,7 @@
                         <lib>${java.home}/lib/jce.jar</lib>
                     </libs>
                 </configuration>
-            </plugin>
+            </plugin>-->
         </plugins>
         <resources>
             <resource>
