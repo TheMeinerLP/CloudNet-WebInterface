@@ -151,7 +151,6 @@ public class ServerGroupAPI extends MethodWebHandlerAdapter {
                 }else{
                     CloudNet.getInstance().getServerGroups().replace(serverGroup.getName(),serverGroup);
                 }
-                serverGroup.getWrapper().forEach(System.out::println);
                 CloudNet.getInstance().toWrapperInstances(serverGroup.getWrapper()).forEach(Wrapper::updateWrapper);
                 Document document = new Document();
                 return ResponseUtil.success(fullHttpResponse,true,document);

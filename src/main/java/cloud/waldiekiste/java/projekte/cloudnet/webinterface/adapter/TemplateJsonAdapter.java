@@ -18,7 +18,10 @@ public class TemplateJsonAdapter implements JsonSerializer<Template>,JsonDeseria
         TemplateResource backend = TemplateResource.valueOf(templatejson.get("backend").getAsString());
         String url = templatejson.get("url").getAsString();
         String str = templatejson.get("processPreParameters").toString();
-        String[] processPreParameters = str.replace("[", "").replace("]", "").split(", ");
+        String[] processPreParameters = new String[0];
+        if(!str.isEmpty() || str.length() != 0){
+            str.replace("[", "").replace("]", "").split(", ");
+        }
         Collection<ServerInstallablePlugin> serverInstallablePlugins = new ArrayList<>();
         if (templatejson.has("installablePlugins")) {
             templatejson.get("installablePlugins").getAsJsonArray().forEach(t->serverInstallablePlugins.add(jsonDeserializationContext.deserialize(t,ServerInstallablePlugin.class)));
