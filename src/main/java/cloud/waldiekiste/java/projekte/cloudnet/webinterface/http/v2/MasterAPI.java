@@ -79,6 +79,7 @@ public class MasterAPI extends MethodWebHandlerAdapter {
         }
         User user = CloudNet.getInstance().getUser(username);
         switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+
             case "command":{
                 if(RequestUtil.hasHeader(httpRequest,"-Xvalue")){
                     final String command = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
