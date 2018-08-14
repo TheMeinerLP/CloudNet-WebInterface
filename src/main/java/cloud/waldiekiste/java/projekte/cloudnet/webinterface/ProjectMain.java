@@ -33,6 +33,7 @@ public class ProjectMain extends CoreModule {
         new UserAPI(getCloud(),this);
         new DashboardAPI(getCloud(),this);
         new ServerGroupAPI(getCloud(),this);
+        new WrapperAPI(getCloud(),this);
         this.configSignLayout = new ConfigSignLayout();
         this.configSignLayout.loadLayout();
         this.signDatabase = new SignDatabase(getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
