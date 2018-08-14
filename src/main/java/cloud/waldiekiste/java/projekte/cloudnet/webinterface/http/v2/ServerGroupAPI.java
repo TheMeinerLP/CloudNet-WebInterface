@@ -139,7 +139,6 @@ public class ServerGroupAPI extends MethodWebHandlerAdapter {
             }
             case "save":{
                 final String servergroup = RequestUtil.getContent(httpRequest);
-                System.out.println(servergroup);
                 ServerGroup serverGroup = JsonUtil.getGson().fromJson(servergroup,ServerGroup.class);
                 if(!UserUtil.hasPermission(user,"cloudnet.web.group.server.save.*","*","cloudnet.web.group.server.save."+serverGroup.getName())) {
                     return ResponseUtil.permissionDenied(fullHttpResponse);

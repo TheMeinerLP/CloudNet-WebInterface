@@ -84,7 +84,6 @@ public class UserAPI extends MethodWebHandlerAdapter {
         switch (RequestUtil.getHeaderValue(httpRequest,"-Xmessage").toLowerCase()){
             case "save":{
                 final String jsonuser = RequestUtil.getContent(httpRequest);
-                System.out.println(jsonuser);
                 User saveduser = JsonUtil.getGson().fromJson(jsonuser,User.class);
                 if(!UserUtil.hasPermission(user,"*","cloudnet.web.user.save.*","cloudnet.web.user.save."+saveduser.getName())){
                     return ResponseUtil.permissionDenied(fullHttpResponse);
@@ -137,7 +136,6 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     return ResponseUtil.permissionDenied(fullHttpResponse);
                 }else {
                     final String jsonuser = RequestUtil.getContent(httpRequest);
-                    System.out.println(jsonuser);
                     Document usern = Document.load(jsonuser);
                     BasicUser basicUser = new BasicUser(usern.get("username").getAsString(),usern.get("password").getAsString(),new ArrayList<>());
                     ArrayList<User> users = new ArrayList<>(getProjectMain().getCloud().getUsers());

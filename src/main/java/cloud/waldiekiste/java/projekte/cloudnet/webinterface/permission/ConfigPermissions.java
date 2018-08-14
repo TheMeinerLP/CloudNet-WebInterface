@@ -17,7 +17,8 @@ import java.nio.file.attribute.FileAttribute;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ConfigPermissions {private final Path path;
+public class ConfigPermissions {
+    private final Path path;
     private Configuration cache;
 
     public ConfigPermissions() throws Exception {
@@ -27,23 +28,23 @@ public class ConfigPermissions {private final Path path;
             final Configuration configuration = new Configuration();
             configuration.set("enabled", true);
             configuration.set("groups", new Configuration());
-            if (!Files.exists(Paths.get("local/permissions.yml", new String[0]), new LinkOption[0])) {
-                final PermissionGroup member = new PermissionGroup("default", "§eMember §7\u258e ", "§f", "§e", 9999, 0, true, new HashMap(), MapWrapper.valueableHashMap(new Return[] { new Return((Object)"Lobby", (Object) Collections.singletonList("test.permission.for.group.Lobby")) }), (Map)new HashMap(), (List)new ArrayList());
+            if (!Files.exists(Paths.get("local/permissions.yml"))) {
+                final PermissionGroup member = new PermissionGroup("default", "§eMember §7\u258e ", "§f", "§e", 9999, 0, true, new HashMap(), MapWrapper.valueableHashMap(new Return("Lobby", (Object) Collections.singletonList("test.permission.for.group.Lobby"))), new HashMap(), (List)new ArrayList());
                 this.write(member, configuration);
-                final PermissionGroup admin = new PermissionGroup("Admin", "§cAdmin §7\u258e ", "§f", "§c", 0, 100, false, (HashMap)MapWrapper.valueableHashMap(new Return[] { new Return((Object)"*", (Object)true) }), MapWrapper.valueableHashMap(new Return[] { new Return((Object)"Lobby", (Object)Arrays.asList("test.permission.for.group.Lobby")) }), (Map)new HashMap(), (List)new ArrayList());
+                final PermissionGroup admin = new PermissionGroup("Admin", "§cAdmin §7\u258e ", "§f", "§c", 0, 100, false, (HashMap)MapWrapper.valueableHashMap(new Return[] { new Return((Object)"*", (Object)true) }), MapWrapper.valueableHashMap(new Return((Object)"Lobby", (Object) Collections.singletonList("test.permission.for.group.Lobby"))), (Map)new HashMap(), (List)new ArrayList());
                 this.write(admin, configuration);
             }
             else {
-                final Document document = Document.loadDocument(Paths.get("local/permissions.yml", new String[0]));
+                final Document document = Document.loadDocument(Paths.get("local/permissions.yml"));
                 final Collection<PermissionGroup> groups = (Collection<PermissionGroup>)document.getObject("groups", new TypeToken<Collection<PermissionGroup>>() {}.getType());
                 final Map<String, PermissionGroup> maps = (Map<String, PermissionGroup>)MapWrapper.collectionCatcherHashMap((Collection)groups, (Catcher) (Catcher<String, PermissionGroup>) PermissionGroup::getName);
-                configuration.set("enabled", (Object)document.getBoolean("enabled"));
+                configuration.set("enabled", document.getBoolean("enabled"));
                 for (final PermissionGroup value : maps.values()) {
                     this.write(value, configuration);
                 }
-                Files.deleteIfExists(Paths.get("local/permissions.yml", new String[0]));
+                Files.deleteIfExists(Paths.get("local/permissions.yml"));
             }
-            try (final OutputStream outputStream = Files.newOutputStream(this.path, new OpenOption[0]);
+            try (final OutputStream outputStream = Files.newOutputStream(this.path);
                  final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
                 ConfigurationProvider.getProvider((Class)YamlConfiguration.class).save(configuration, (Writer)outputStreamWriter);
             }
@@ -56,7 +57,7 @@ public class ConfigPermissions {private final Path path;
             this.loadCache();
         }
         this.write(permissionGroup, this.cache);
-        try (final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(Files.newOutputStream(this.path, new OpenOption[0]), StandardCharsets.UTF_8)) {
+        try (final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(Files.newOutputStream(this.path), StandardCharsets.UTF_8)) {
             ConfigurationProvider.getProvider((Class)YamlConfiguration.class).save(this.cache, (Writer)outputStreamWriter);
         }
         catch (IOException e) {
@@ -77,7 +78,7 @@ public class ConfigPermissions {private final Path path;
     }
 
     private void loadCache() {
-        try (final InputStream inputStream = Files.newInputStream(this.path, new OpenOption[0]);
+        try (final InputStream inputStream = Files.newInputStream(this.path);
              final InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
             this.cache = ConfigurationProvider.getProvider((Class)YamlConfiguration.class).load((Reader)inputStreamReader);
         }
@@ -89,29 +90,29 @@ public class ConfigPermissions {private final Path path;
     private void write(final PermissionGroup permissionGroup, final Configuration configuration) {
         final Configuration section = configuration.getSection("groups");
         final Configuration group = new Configuration();
-        group.set("prefix", (Object)permissionGroup.getPrefix());
-        group.set("suffix", (Object)permissionGroup.getSuffix());
-        group.set("display", (Object)permissionGroup.getDisplay());
-        group.set("tagId", (Object)permissionGroup.getTagId());
-        group.set("joinPower", (Object)permissionGroup.getJoinPower());
-        group.set("defaultGroup", (Object)permissionGroup.isDefaultGroup());
-        final Collection<String> perms = new CopyOnWriteArrayList<String>();
+        group.set("prefix", permissionGroup.getPrefix());
+        group.set("suffix", permissionGroup.getSuffix());
+        group.set("display",permissionGroup.getDisplay());
+        group.set("tagId", permissionGroup.getTagId());
+        group.set("joinPower",permissionGroup.getJoinPower());
+        group.set("defaultGroup",permissionGroup.isDefaultGroup());
+        final Collection<String> perms = new CopyOnWriteArrayList<>();
         for (final Map.Entry<String, Boolean> entry : permissionGroup.getPermissions().entrySet()) {
             perms.add((entry.getValue() ? "" : "-") + entry.getKey());
         }
-        group.set("permissions", (Object)perms);
+        group.set("permissions", perms);
         final Configuration permsCfg = new Configuration();
         for (final Map.Entry<String, List<String>> keys : permissionGroup.getServerGroupPermissions().entrySet()) {
-            permsCfg.set((String)keys.getKey(), (Object)keys.getValue());
+            permsCfg.set(keys.getKey(), keys.getValue());
         }
-        group.set("serverGroupPermissions", (Object)permsCfg);
+        group.set("serverGroupPermissions", permsCfg);
         if (permissionGroup.getOptions().size() == 0) {
             permissionGroup.getOptions().put("test_option", true);
         }
-        group.set("options", (Object)permissionGroup.getOptions());
-        group.set("implements", (Object)permissionGroup.getImplementGroups());
-        section.set(permissionGroup.getName(), (Object)null);
-        section.set(permissionGroup.getName(), (Object)group);
+        group.set("options", permissionGroup.getOptions());
+        group.set("implements", permissionGroup.getImplementGroups());
+        section.set(permissionGroup.getName(), null);
+        section.set(permissionGroup.getName(), group);
     }
 
     private Map<String, PermissionGroup> read(final Configuration configuration) {
