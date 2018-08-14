@@ -20,6 +20,7 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -42,7 +43,7 @@ public class UserAPI extends MethodWebHandlerAdapter {
             return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
         }
         String username = RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-user");
-        String userpassword = RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-password");
+        String userpassword = new String(Base64.getDecoder().decode(RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-password")));
         if (!CloudNet.getInstance().authorizationPassword(username, userpassword)) {
             return UserUtil.failedAuthorization(fullHttpResponse);
         }
@@ -75,7 +76,7 @@ public class UserAPI extends MethodWebHandlerAdapter {
             return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
         }
         String username = RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-user");
-        String userpassword = RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-password");
+        String userpassword = new String(Base64.getDecoder().decode(RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-password")));
         if (!CloudNet.getInstance().authorizationPassword(username, userpassword)) {
             return UserUtil.failedAuthorization(fullHttpResponse);
         }

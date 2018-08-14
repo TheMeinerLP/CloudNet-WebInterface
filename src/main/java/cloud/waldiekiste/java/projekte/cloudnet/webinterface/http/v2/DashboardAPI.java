@@ -15,6 +15,7 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
+import java.util.Base64;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DashboardAPI extends MethodWebHandlerAdapter {
@@ -34,7 +35,7 @@ public class DashboardAPI extends MethodWebHandlerAdapter {
             return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
         }
         String username = RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-user");
-        String userpassword = RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-password");
+        String userpassword = new String(Base64.getDecoder().decode(RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-password")));
         if (!CloudNet.getInstance().authorizationPassword(username, userpassword)) {
             return UserUtil.failedAuthorization(fullHttpResponse);
         }

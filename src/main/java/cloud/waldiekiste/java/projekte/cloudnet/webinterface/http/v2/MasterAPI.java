@@ -4,20 +4,27 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
+import de.dytanic.cloudnet.lib.NetworkUtils;
+import de.dytanic.cloudnet.lib.server.ProxyGroup;
+import de.dytanic.cloudnet.lib.server.ServerGroup;
 import de.dytanic.cloudnet.lib.user.User;
+import de.dytanic.cloudnet.lib.utility.Acceptable;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
 import de.dytanic.cloudnet.web.server.util.PathProvider;
 import de.dytanic.cloudnet.web.server.util.QueryDecoder;
 import de.dytanic.cloudnetcore.CloudNet;
+import de.dytanic.cloudnetcore.network.components.Wrapper;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 public class MasterAPI extends MethodWebHandlerAdapter {
     private final ProjectMain projectMain;
@@ -36,7 +43,7 @@ public class MasterAPI extends MethodWebHandlerAdapter {
             return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
         }
         String username = RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-user");
-        String userpassword = RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-password");
+        String userpassword = new String(Base64.getDecoder().decode(RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-password")));
         if (!CloudNet.getInstance().authorizationPassword(username, userpassword)) {
             return UserUtil.failedAuthorization(fullHttpResponse);
         }
@@ -44,14 +51,7 @@ public class MasterAPI extends MethodWebHandlerAdapter {
         switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
             case "corelog":{
                 Document document = new Document();
-                List<String> lines = null;
-                if(getProjectMain().getConsoleLines().size() > 100){
-                    lines = getProjectMain().getConsoleLines().subList(getProjectMain().getConsoleLines().size()-100,getProjectMain().getConsoleLines().size());
-                }else{
-                    lines = getProjectMain().getConsoleLines();
-                }
-
-                document.append("response",lines);
+                document.append("response",getProjectMain().getConsoleLines());
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
             case "commands":{
@@ -79,7 +79,92 @@ public class MasterAPI extends MethodWebHandlerAdapter {
         }
         User user = CloudNet.getInstance().getUser(username);
         switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+            case "reloadall":{
+                if(!UserUtil.hasPermission(user,"cloudnet.web.master.reload.all","*","cloudnet.web.master.reload.*")) {
+                    return ResponseUtil.permissionDenied(fullHttpResponse);
+                }
+                CloudNet.getInstance().reload();
+                Document document = new Document();
+                return ResponseUtil.success(fullHttpResponse,true,document);
+            }
+            case "reloadconfig":{
+                if(!UserUtil.hasPermission(user,"cloudnet.web.master.reload.config","*","cloudnet.web.master.reload.*")) {
+                    return ResponseUtil.permissionDenied(fullHttpResponse);
+                }
+                try {
+                    CloudNet.getInstance().getConfig().load();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                CloudNet.getInstance().getServerGroups().clear();
+                CloudNet.getInstance().getProxyGroups().clear();
+                CloudNet.getInstance().getUsers().clear();
+                CloudNet.getInstance().getUsers().addAll(CloudNet.getInstance().getConfig().getUsers());
 
+                NetworkUtils.addAll(CloudNet.getInstance().getServerGroups(), CloudNet.getInstance().getConfig().getServerGroups(), new Acceptable<ServerGroup>() {
+                    @Override
+                    public boolean isAccepted(ServerGroup value) {
+                        System.out.println("Loading ServerGroup: " + value.getName());
+                        CloudNet.getInstance().setupGroup(value);
+                        return true;
+                    }
+                });
+
+                NetworkUtils.addAll(CloudNet.getInstance().getProxyGroups(), CloudNet.getInstance().getConfig().getProxyGroups(), new Acceptable<ProxyGroup>() {
+
+                    public boolean isAccepted(ProxyGroup value) {
+                        System.out.println("Loading ProxyGroup: " + value.getName());
+                        CloudNet.getInstance().setupProxy(value);
+                        return true;
+                    }
+                });
+
+                CloudNet.getInstance().getNetworkManager().reload();
+                CloudNet.getInstance().getNetworkManager().updateAll();
+                CloudNet.getInstance().getWrappers().values().forEach(new Consumer<Wrapper>() {
+                    @Override
+                    public void accept(Wrapper wrapper) {
+                        wrapper.updateWrapper();
+                    }
+                });
+                Document document = new Document();
+                return ResponseUtil.success(fullHttpResponse,true,document);
+            }
+            case "reloadwrapper":{
+                if(!UserUtil.hasPermission(user,"cloudnet.web.master.reload.wrapper","*","cloudnet.web.master.reload.*")) {
+                    return ResponseUtil.permissionDenied(fullHttpResponse);
+                }
+                for (Wrapper wrapper : CloudNet.getInstance().getWrappers().values()) {
+                    if (wrapper.getChannel() != null) wrapper.writeCommand("reload");
+                }
+                Document document = new Document();
+                return ResponseUtil.success(fullHttpResponse,true,document);
+            }
+            case "clearcache":{
+                if(!UserUtil.hasPermission(user,"cloudnet.web.master.clearcache","*")) {
+                    return ResponseUtil.permissionDenied(fullHttpResponse);
+                }
+                CloudNet.getInstance().getWrappers().values().forEach(new Consumer<Wrapper>() {
+                    @Override
+                    public void accept(Wrapper wrapper)
+                    {
+                        if (wrapper.getChannel() != null)
+                        {
+                            wrapper.sendCommand("clearcache");
+                        }
+                    }
+                });
+                Document document = new Document();
+                return ResponseUtil.success(fullHttpResponse,true,document);
+            }
+            case "stop":{
+                if(!UserUtil.hasPermission(user,"cloudnet.web.master.stop","*")) {
+                    return ResponseUtil.permissionDenied(fullHttpResponse);
+                }
+                CloudNet.getInstance().shutdown();
+                Document document = new Document();
+                return ResponseUtil.success(fullHttpResponse,true,document);
+            }
             case "command":{
                 if(RequestUtil.hasHeader(httpRequest,"-Xvalue")){
                     final String command = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
