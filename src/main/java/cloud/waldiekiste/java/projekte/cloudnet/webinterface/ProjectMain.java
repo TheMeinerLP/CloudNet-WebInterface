@@ -8,8 +8,7 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.sign.SignDatabase;
 import de.dytanic.cloudnetcore.CloudNet;
 import de.dytanic.cloudnetcore.api.CoreModule;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public class ProjectMain extends CoreModule {
@@ -18,6 +17,7 @@ public class ProjectMain extends CoreModule {
     private SignDatabase signDatabase;
     private ConfigPermissions configPermission;
     private List<String> consoleLines;
+    private Map<String,List<String>> screenInfos = new HashMap<>();
 
     @Override
     public void onLoad() {
@@ -27,12 +27,13 @@ public class ProjectMain extends CoreModule {
 
     @Override
     public void onBootstrap() {
+        getCloud().getEventManager().registerListener(this,new ScreenSessionEvent(this));
         new MasterAPI(getCloud(),this);
         new UserAuthentication(getCloud());
         new ProxyAPI(getCloud(),this);
         new UserAPI(getCloud(),this);
         new DashboardAPI(getCloud(),this);
-        new ServerGroupAPI(getCloud(),this);
+        new ServerAPI(getCloud(),this);
         new WrapperAPI(getCloud(),this);
         new UtilsAPI(getCloud(),this);
         this.configSignLayout = new ConfigSignLayout();
@@ -49,6 +50,7 @@ public class ProjectMain extends CoreModule {
     @Override
     public void onShutdown() {
         consoleLines = null;
+        screenInfos = null;
     }
 
     public ConfigSignLayout getConfigSignLayout() {
@@ -66,4 +68,9 @@ public class ProjectMain extends CoreModule {
     public List<String> getConsoleLines() {
         return consoleLines;
     }
+
+    public Map<String, List<String>> getScreenInfos() {
+        return screenInfos;
+    }
+
 }

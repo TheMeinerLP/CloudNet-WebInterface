@@ -7,9 +7,12 @@ import de.dytanic.cloudnet.lib.proxylayout.*;
 import de.dytanic.cloudnet.lib.server.ProxyGroup;
 import de.dytanic.cloudnet.lib.server.ServerGroup;
 import de.dytanic.cloudnet.lib.server.advanced.AdvancedServerConfig;
+import de.dytanic.cloudnet.lib.server.info.SimpleProxyInfo;
+import de.dytanic.cloudnet.lib.server.info.SimpleServerInfo;
 import de.dytanic.cloudnet.lib.server.priority.PriorityConfig;
 import de.dytanic.cloudnet.lib.server.priority.PriorityService;
 import de.dytanic.cloudnet.lib.server.template.Template;
+import de.dytanic.cloudnet.lib.service.ServiceId;
 import de.dytanic.cloudnet.lib.service.plugin.ServerInstallablePlugin;
 import de.dytanic.cloudnet.lib.user.User;
 
@@ -30,6 +33,9 @@ public class JsonUtil {
         builder.registerTypeAdapter(PriorityService.class,new PriorityServiceJsonAdapter());
         builder.registerTypeAdapter(AdvancedServerConfig.class,new AdvanceServerConfigJsonAdapter());
         builder.registerTypeAdapter(ServerGroup.class,new ServerGroupJsonAdapter());
+        builder.registerTypeAdapter(SimpleProxyInfo.class,new ProxyInfoJsonAdapter());
+        builder.registerTypeAdapter(ServiceId.class,new ServiceIdJsonAdapter());
+        builder.registerTypeAdapter(SimpleServerInfo.class,new ServerInfoJsonAdapter());
         return builder.create();
     }
 }

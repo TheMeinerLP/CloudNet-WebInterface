@@ -13,6 +13,8 @@ import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
 import de.dytanic.cloudnet.web.server.util.PathProvider;
 import de.dytanic.cloudnet.web.server.util.QueryDecoder;
 import de.dytanic.cloudnetcore.CloudNet;
+import de.dytanic.cloudnetcore.network.components.MinecraftServer;
+import de.dytanic.cloudnetcore.network.components.ProxyServer;
 import de.dytanic.cloudnetcore.network.components.Wrapper;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
@@ -26,10 +28,10 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 
-public class ServerGroupAPI extends MethodWebHandlerAdapter {
+public class ServerAPI extends MethodWebHandlerAdapter {
     private final ProjectMain projectMain;
 
-    public ServerGroupAPI(CloudNet cloudNet, ProjectMain projectMain) {
+    public ServerAPI(CloudNet cloudNet, ProjectMain projectMain) {
         super("/cloudnet/api/v2/servergroup");
         cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
         this.projectMain = projectMain;
@@ -49,6 +51,15 @@ public class ServerGroupAPI extends MethodWebHandlerAdapter {
         }
         User user = CloudNet.getInstance().getUser(username);
         switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+            case "groups":{
+                if(!UserUtil.hasPermission(user,"cloudnet.web.group.servers","*")){
+                    return ResponseUtil.permissionDenied(fullHttpResponse);
+                }
+                List<String> groups = new ArrayList<>(getProjectMain().getCloud().getServerGroups().keySet());
+                Document resp = new Document();
+                resp.append("response", groups);
+                return ResponseUtil.success(fullHttpResponse,true,resp);
+            }
             case "groupitems":{
                 List<String> proxys = new ArrayList<>();
                 List<String> infos = new ArrayList<>(getProjectMain().getCloud().getServerGroups().keySet());
@@ -67,6 +78,42 @@ public class ServerGroupAPI extends MethodWebHandlerAdapter {
                 Document resp = new Document();
                 resp.append("response", proxys);
                 return ResponseUtil.success(fullHttpResponse,true,resp);
+            }
+            case "screen":{
+                if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&
+                        getProjectMain().getCloud().getServers().containsKey(RequestUtil.getHeaderValue(httpRequest,"-Xvalue"))){
+                    final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
+                    MinecraftServer server = getProjectMain().getCloud().getServer(group);
+                    if(!UserUtil.hasPermission(user,"cloudnet.web.screen.servers.info.*","*","cloudnet.web.screen.servers.info."+group,"cloudnet.web.screen.servers.info.group."+server.getServiceId().getGroup())){
+                        return ResponseUtil.permissionDenied(fullHttpResponse);
+                    }
+                    if (!getProjectMain().getCloud().getScreenProvider().getScreens().containsKey(server.getServiceId().getServerId())) {
+                        server.getWrapper().enableScreen(server.getServerInfo());
+                    }
+                    Document resp = new Document();
+                    if(getProjectMain().getScreenInfos().containsKey(server.getServiceId().getServerId())){
+                        resp.append("response",getProjectMain().getScreenInfos().get(server.getServiceId().getServerId()));
+                    }
+                    return ResponseUtil.success(fullHttpResponse,true,resp);
+                }else{
+                    return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+                }
+            }
+            case "servers":{
+                if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&
+                        getProjectMain().getCloud().getServerGroups().containsKey(RequestUtil.getHeaderValue(httpRequest,"-Xvalue"))){
+                    final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
+                    if(!UserUtil.hasPermission(user,"cloudnet.web.group.servers.info.*","*","cloudnet.web.group.servers.info."+group)){
+                        return ResponseUtil.permissionDenied(fullHttpResponse);
+                    }
+                    List<String> servers = new ArrayList<>();
+                    getProjectMain().getCloud().getServers(group).forEach(t->servers.add(JsonUtil.getGson().toJson(t.getLastServerInfo().toSimple())));
+                    Document resp = new Document();
+                    resp.append("response",servers);
+                    return ResponseUtil.success(fullHttpResponse,true,resp);
+                }else{
+                    return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+                }
             }
             case "group":{
                 if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&
@@ -112,6 +159,36 @@ public class ServerGroupAPI extends MethodWebHandlerAdapter {
                         return ResponseUtil.permissionDenied(fullHttpResponse);
                     }
                     getProjectMain().getCloud().getServers(group).forEach(t->getProjectMain().getCloud().stopServer(t.getName()));
+                    Document document = new Document();
+                    return ResponseUtil.success(fullHttpResponse,true,document);
+                }else{
+                    return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+                }
+            }
+            case "command":{
+                if(RequestUtil.hasHeader(httpRequest,"-Xvalue") && RequestUtil.hasHeader(httpRequest,"-Xcount")){
+                    final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
+                    final String command = RequestUtil.getHeaderValue(httpRequest,"-Xcount");
+                    if(!UserUtil.hasPermission(user,"cloudnet.web.screen.server.command.*","*","cloudnet.web.screen.server.command."+command.split(" ")[0])) {
+                        return ResponseUtil.permissionDenied(fullHttpResponse);
+                    }
+                    MinecraftServer server = getProjectMain().getCloud().getServer(group);
+                    server.getWrapper().writeServerCommand(command,server.getServerInfo());
+                    Document document = new Document();
+                    return ResponseUtil.success(fullHttpResponse,true,document);
+                }else{
+                    return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+                }
+            }
+            case "stopscreen":{
+                if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&
+                        getProjectMain().getCloud().getScreenProvider().getScreens().containsKey(RequestUtil.getHeaderValue(httpRequest,"-Xvalue"))){
+                    final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
+                    if(!UserUtil.hasPermission(user,"cloudnet.web.screen.server.stop.*","*","cloudnet.web.screen.server.stop."+group)) {
+                        return ResponseUtil.permissionDenied(fullHttpResponse);
+                    }
+                    MinecraftServer server = getProjectMain().getCloud().getServer(group);
+                    server.getWrapper().disableScreen(server.getServerInfo());
                     Document document = new Document();
                     return ResponseUtil.success(fullHttpResponse,true,document);
                 }else{
