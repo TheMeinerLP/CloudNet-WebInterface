@@ -39,8 +39,8 @@ public class ConfigSetup extends Setup {
            f.mkdirs();
            File config = new File(f,"config.json");
             try {
-                JsonWriter writer = new JsonWriter(new FileWriter(config));
-                writer.value(jsonObject.toString());
+                FileWriter writer = new FileWriter(config);
+                writer.write(jsonObject.toString());
                 writer.flush();
                 writer.close();
             } catch (IOException e) {
