@@ -11,13 +11,14 @@ import de.dytanic.cloudnet.lib.server.template.Template;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class ServerGroupJsonAdapter implements JsonSerializer<ServerGroup>,JsonDeserializer<ServerGroup> {
     @Override
     public ServerGroup deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject object = jsonElement.getAsJsonObject();
         final String name = object.get("name").getAsString();
-        final Collection wrappers = new ArrayList();
+        final List<String> wrappers = new ArrayList<>();
         object.get("wrapper").getAsJsonArray().forEach(t->wrappers.add(t.getAsString()));
         final boolean kickedForceFallback = object.get("kickedForceFallback").getAsBoolean();
         final ServerGroupType serverType = ServerGroupType.valueOf(object.get("serverType").getAsString());

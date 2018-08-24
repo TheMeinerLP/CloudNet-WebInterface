@@ -5,10 +5,7 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Reque
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
 import de.dytanic.cloudnet.lib.NetworkUtils;
-import de.dytanic.cloudnet.lib.server.ProxyGroup;
-import de.dytanic.cloudnet.lib.server.ServerGroup;
 import de.dytanic.cloudnet.lib.user.User;
-import de.dytanic.cloudnet.lib.utility.Acceptable;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
 import de.dytanic.cloudnet.web.server.util.PathProvider;
@@ -22,9 +19,6 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.Base64;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 public class MasterAPI extends MethodWebHandlerAdapter {
     private final ProjectMain projectMain;
@@ -64,7 +58,7 @@ public class MasterAPI extends MethodWebHandlerAdapter {
             }
         }
     }
-
+    @SuppressWarnings("deprecation")
     @Override
     public FullHttpResponse post(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) throws Exception {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
@@ -101,32 +95,21 @@ public class MasterAPI extends MethodWebHandlerAdapter {
                 CloudNet.getInstance().getUsers().clear();
                 CloudNet.getInstance().getUsers().addAll(CloudNet.getInstance().getConfig().getUsers());
 
-                NetworkUtils.addAll(CloudNet.getInstance().getServerGroups(), CloudNet.getInstance().getConfig().getServerGroups(), new Acceptable<ServerGroup>() {
-                    @Override
-                    public boolean isAccepted(ServerGroup value) {
-                        System.out.println("Loading ServerGroup: " + value.getName());
-                        CloudNet.getInstance().setupGroup(value);
-                        return true;
-                    }
+                NetworkUtils.addAll(CloudNet.getInstance().getServerGroups(), CloudNet.getInstance().getConfig().getServerGroups(), value -> {
+                    System.out.println("Loading ServerGroup: " + value.getName());
+                    CloudNet.getInstance().setupGroup(value);
+                    return true;
                 });
 
-                NetworkUtils.addAll(CloudNet.getInstance().getProxyGroups(), CloudNet.getInstance().getConfig().getProxyGroups(), new Acceptable<ProxyGroup>() {
-
-                    public boolean isAccepted(ProxyGroup value) {
-                        System.out.println("Loading ProxyGroup: " + value.getName());
-                        CloudNet.getInstance().setupProxy(value);
-                        return true;
-                    }
+                NetworkUtils.addAll(CloudNet.getInstance().getProxyGroups(), CloudNet.getInstance().getConfig().getProxyGroups(), value -> {
+                    System.out.println("Loading ProxyGroup: " + value.getName());
+                    CloudNet.getInstance().setupProxy(value);
+                    return true;
                 });
 
                 CloudNet.getInstance().getNetworkManager().reload();
                 CloudNet.getInstance().getNetworkManager().updateAll();
-                CloudNet.getInstance().getWrappers().values().forEach(new Consumer<Wrapper>() {
-                    @Override
-                    public void accept(Wrapper wrapper) {
-                        wrapper.updateWrapper();
-                    }
-                });
+                CloudNet.getInstance().getWrappers().values().forEach(Wrapper::updateWrapper);
                 Document document = new Document();
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
@@ -144,19 +127,16 @@ public class MasterAPI extends MethodWebHandlerAdapter {
                 if(!UserUtil.hasPermission(user,"cloudnet.web.master.clearcache","*")) {
                     return ResponseUtil.permissionDenied(fullHttpResponse);
                 }
-                CloudNet.getInstance().getWrappers().values().forEach(new Consumer<Wrapper>() {
-                    @Override
-                    public void accept(Wrapper wrapper)
+                CloudNet.getInstance().getWrappers().values().forEach(wrapper -> {
+                    if (wrapper.getChannel() != null)
                     {
-                        if (wrapper.getChannel() != null)
-                        {
-                            wrapper.sendCommand("clearcache");
-                        }
+                        wrapper.sendCommand("clearcache");
                     }
                 });
                 Document document = new Document();
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
+
             case "stop":{
                 if(!UserUtil.hasPermission(user,"cloudnet.web.master.stop","*")) {
                     return ResponseUtil.permissionDenied(fullHttpResponse);
@@ -187,14 +167,7 @@ public class MasterAPI extends MethodWebHandlerAdapter {
     @SuppressWarnings( "deprecation" )
     @Override
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
-        fullHttpResponse.headers().set("Content-Type", "application/json");
-        fullHttpResponse.headers().set("Access-Control-Allow-Credentials", "true");
-        fullHttpResponse.headers().set("Access-Control-Allow-Headers", "content-type, if-none-match, -Xcloudnet-token, -Xmessage, -Xvalue, -Xcloudnet-user, -Xcloudnet-password,-Xcount");
-        fullHttpResponse.headers().set("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        fullHttpResponse.headers().set("Access-Control-Allow-Origin", "*");
-        fullHttpResponse.headers().set("Access-Control-Max-Age", "3600");
-        return fullHttpResponse;
+        return ResponseUtil.cross(httpRequest);
     }
 
     private ProjectMain getProjectMain() {

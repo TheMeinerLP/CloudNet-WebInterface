@@ -99,7 +99,7 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     getProjectMain().getCloud().getUsers().clear();
                     users.add(saveduser);
                     getProjectMain().getCloud().getUsers().addAll(users);
-                    getProjectMain().getCloud().getConfig().getUsersPath().toFile().delete();
+                    getProjectMain().getCloud().getConfig().getUsersPath().toFile().deleteOnExit();
                     getProjectMain().getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
                     Document resp = new Document();
                     return ResponseUtil.success(fullHttpResponse, true, resp);
@@ -125,7 +125,7 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     users.add(basicUser);
                     getProjectMain().getCloud().getUsers().clear();
                     getProjectMain().getCloud().getUsers().addAll(users);
-                    getProjectMain().getCloud().getConfig().getUsersPath().toFile().delete();
+                    getProjectMain().getCloud().getConfig().getUsersPath().toFile().deleteOnExit();
                     getProjectMain().getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
                     Document resp = new Document();
                     return ResponseUtil.success(fullHttpResponse, true, resp);
@@ -143,7 +143,6 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     users.forEach(t->{
                         if (t.getName().equals(usern.get("username").getAsString())) {
                             exsist.set(true);
-                            return;
                         }
                     });
                     if(exsist.get()){
@@ -153,7 +152,7 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     users.add(basicUser);
                     getProjectMain().getCloud().getUsers().clear();
                     getProjectMain().getCloud().getUsers().addAll(users);
-                    getProjectMain().getCloud().getConfig().getUsersPath().toFile().delete();
+                    getProjectMain().getCloud().getConfig().getUsersPath().toFile().deleteOnExit();
                     getProjectMain().getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
                     Document resp = new Document();
                     return ResponseUtil.success(fullHttpResponse, true, resp);
@@ -172,13 +171,12 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     users.forEach(t->{
                         if (t.getName().equals(username1)) {
                             olduser.set(t);
-                            return;
                         }
                     });
                     users.remove(olduser.get());
                     getProjectMain().getCloud().getUsers().clear();
                     getProjectMain().getCloud().getUsers().addAll(users);
-                    getProjectMain().getCloud().getConfig().getUsersPath().toFile().delete();
+                    getProjectMain().getCloud().getConfig().getUsersPath().toFile().deleteOnExit();
                     getProjectMain().getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
                     Document document = new Document();
                     return ResponseUtil.success(fullHttpResponse,true,document);
@@ -195,14 +193,7 @@ public class UserAPI extends MethodWebHandlerAdapter {
     @SuppressWarnings( "deprecation" )
     @Override
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
-        fullHttpResponse.headers().set("Content-Type", "application/json");
-        fullHttpResponse.headers().set("Access-Control-Allow-Credentials", "true");
-        fullHttpResponse.headers().set("Access-Control-Allow-Headers", "content-type, if-none-match, -Xcloudnet-token, -Xmessage, -Xvalue, -Xcloudnet-user, -Xcloudnet-password,-Xcount");
-        fullHttpResponse.headers().set("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        fullHttpResponse.headers().set("Access-Control-Allow-Origin", "*");
-        fullHttpResponse.headers().set("Access-Control-Max-Age", "3600");
-        return fullHttpResponse;
+        return ResponseUtil.cross(httpRequest);
     }
 
     private ProjectMain getProjectMain() {

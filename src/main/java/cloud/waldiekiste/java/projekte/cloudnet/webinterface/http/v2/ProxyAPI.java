@@ -59,12 +59,9 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
             }
             case "groupitems":{
                 List<String> proxys = new ArrayList<>();
-                List<String> infos = new ArrayList<>();
-                getProjectMain().getCloud().getProxyGroups().keySet().forEach(infos::add);
+                List<String> infos = new ArrayList<>(getProjectMain().getCloud().getProxyGroups().keySet());
                 for (String prx : infos) {
-                    if(!UserUtil.hasPermission(user,"*","cloudnet.web.group.proxy.item.*","cloudnet.web.proxy.group.proxy.item."+prx)){
-                        continue;
-                    }else{
+                    if(UserUtil.hasPermission(user,"*","cloudnet.web.group.proxy.item.*","cloudnet.web.proxy.group.proxy.item."+prx)){
                         ProxyGroup group = getProjectMain().getCloud().getProxyGroups().get(prx);
                         Document document = new Document();
                         document.append("name",group.getName());
@@ -266,14 +263,7 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
     @SuppressWarnings( "deprecation" )
     @Override
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
-        fullHttpResponse.headers().set("Content-Type", "application/json");
-        fullHttpResponse.headers().set("Access-Control-Allow-Credentials", "true");
-        fullHttpResponse.headers().set("Access-Control-Allow-Headers", "content-type, if-none-match, -Xcloudnet-token, -Xmessage, -Xvalue, -Xcloudnet-user, -Xcloudnet-password,-Xcount");
-        fullHttpResponse.headers().set("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        fullHttpResponse.headers().set("Access-Control-Allow-Origin", "*");
-        fullHttpResponse.headers().set("Access-Control-Max-Age", "3600");
-        return fullHttpResponse;
+        return ResponseUtil.cross(httpRequest);
     }
 
     private ProjectMain getProjectMain() {
