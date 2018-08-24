@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class ScreenSessionEvent implements IEventListener<ScreenInfoEvent> {
     private final ProjectMain projectMain;
-    private ScreenSessionEvent(ProjectMain projectMain) {
+    ScreenSessionEvent(ProjectMain projectMain) {
         this.projectMain = projectMain;
     }
 
