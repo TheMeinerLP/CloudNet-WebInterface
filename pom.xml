@@ -5,7 +5,7 @@
     <artifactId>CloudNet-Service-Websocket-Extension</artifactId>
     <groupId>com.waldiekiste.java.projekte.cloudnet</groupId>
 
-    <version>0.10.0-RELEASE</version>
+    <version>0.10.1-RELEASE</version>
     <modelVersion>4.0.0</modelVersion>
 
     <build>
