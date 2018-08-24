@@ -1,7 +1,6 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter;
 
 import com.google.gson.*;
-import de.dytanic.cloudnet.lib.server.info.ProxyInfo;
 import de.dytanic.cloudnet.lib.server.info.SimpleProxyInfo;
 import de.dytanic.cloudnet.lib.service.ServiceId;
 

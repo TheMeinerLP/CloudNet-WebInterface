@@ -5,7 +5,6 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.JsonU
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
-import de.dytanic.cloudnet.lib.server.ProxyGroup;
 import de.dytanic.cloudnet.lib.server.ServerGroup;
 import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
@@ -14,7 +13,6 @@ import de.dytanic.cloudnet.web.server.util.PathProvider;
 import de.dytanic.cloudnet.web.server.util.QueryDecoder;
 import de.dytanic.cloudnetcore.CloudNet;
 import de.dytanic.cloudnetcore.network.components.MinecraftServer;
-import de.dytanic.cloudnetcore.network.components.ProxyServer;
 import de.dytanic.cloudnetcore.network.components.Wrapper;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
@@ -64,9 +62,7 @@ public class ServerAPI extends MethodWebHandlerAdapter {
                 List<String> proxys = new ArrayList<>();
                 List<String> infos = new ArrayList<>(getProjectMain().getCloud().getServerGroups().keySet());
                 for (String prx : infos) {
-                    if(!UserUtil.hasPermission(user,"*","cloudnet.web.group.server.item.*","cloudnet.web.proxy.group.server.item."+prx)){
-                        continue;
-                    }else{
+                    if(UserUtil.hasPermission(user,"*","cloudnet.web.group.server.item.*","cloudnet.web.proxy.group.server.item."+prx)){
                         ServerGroup group = getProjectMain().getCloud().getServerGroup(prx);
                         Document document = new Document();
                         document.append("name",group.getName());
@@ -136,9 +132,9 @@ public class ServerAPI extends MethodWebHandlerAdapter {
             }
         }
     }
-
+    @SuppressWarnings("deprecation")
     @Override
-    public FullHttpResponse post(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) throws Exception {
+    public FullHttpResponse post(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
         ResponseUtil.setHeader(fullHttpResponse,"Content-Type", "application/json");
         if (!RequestUtil.hasHeader(httpRequest,"-xcloudnet-user","-xcloudnet-passwort","-xcloudnet-message")) {
@@ -220,7 +216,8 @@ public class ServerAPI extends MethodWebHandlerAdapter {
                 if(!UserUtil.hasPermission(user,"cloudnet.web.group.server.save.*","*","cloudnet.web.group.server.save."+serverGroup.getName())) {
                     return ResponseUtil.permissionDenied(fullHttpResponse);
                 }
-                Paths.get("groups/" + serverGroup.getName() + ".json").toFile().delete();
+                Paths.get("groups/" + serverGroup.getName() + ".json").toFile().deleteOnExit();
+
                 getProjectMain().getCloud().getConfig().createGroup(serverGroup);
                 CloudNet.getInstance().setupGroup(serverGroup);
                 if(!CloudNet.getInstance().getServerGroups().containsKey(serverGroup.getName())){
@@ -258,14 +255,7 @@ public class ServerAPI extends MethodWebHandlerAdapter {
     @SuppressWarnings( "deprecation" )
     @Override
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
-        fullHttpResponse.headers().set("Content-Type", "application/json");
-        fullHttpResponse.headers().set("Access-Control-Allow-Credentials", "true");
-        fullHttpResponse.headers().set("Access-Control-Allow-Headers", "content-type, if-none-match, -Xcloudnet-token, -Xmessage, -Xvalue, -Xcloudnet-user, -Xcloudnet-password,-Xcount");
-        fullHttpResponse.headers().set("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        fullHttpResponse.headers().set("Access-Control-Allow-Origin", "*");
-        fullHttpResponse.headers().set("Access-Control-Max-Age", "3600");
-        return fullHttpResponse;
+        return ResponseUtil.cross(httpRequest);
     }
 
     private ProjectMain getProjectMain() {

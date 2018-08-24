@@ -18,7 +18,7 @@ public class ProxyGroupJsonAdapter implements JsonSerializer<ProxyGroup>,JsonDes
     public ProxyGroup deserialize(JsonElement jsongroupelemnt, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject jsongroup = jsongroupelemnt.getAsJsonObject();
         String name = jsongroup.get("name").getAsString();
-        Collection<String> wrapper = new ArrayList<String>();
+        Collection<String> wrapper = new ArrayList<>();
         jsongroup.get("wrapper").getAsJsonArray().forEach(t->wrapper.add(t.getAsString()));
         Template template = jsonDeserializationContext.deserialize(jsongroup.get("template"),Template.class);
         ProxyVersion proxyVersion = ProxyVersion.valueOf(jsongroup.get("proxyVersion").getAsString());

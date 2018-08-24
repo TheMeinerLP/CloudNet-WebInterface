@@ -21,7 +21,7 @@ public class JsonUtil {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(AutoSlot.class,new AutoSlotJsonAdapter());
         builder.registerTypeAdapter(DynamicFallback.class,new DynamicFallbackJsonAdapter());
-        builder.registerTypeAdapter(Motd.class,new MotdJsonAdapter());
+        builder.registerTypeAdapter(Motd.class,new motdJsonAdapter());
         builder.registerTypeAdapter(ProxyConfig.class,new ProxyConfigJsonAdapter());
         builder.registerTypeAdapter(ServerFallback.class,new ServerFallbackJsonAdapter());
         builder.registerTypeAdapter(ServerInstallablePlugin.class,new ServerInstallablePluginJsonAdapter());

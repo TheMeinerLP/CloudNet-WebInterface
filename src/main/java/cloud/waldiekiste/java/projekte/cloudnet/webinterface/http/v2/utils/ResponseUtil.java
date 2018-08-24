@@ -1,7 +1,9 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils;
 
 import de.dytanic.cloudnet.lib.utility.document.Document;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.nio.charset.StandardCharsets;
@@ -58,5 +60,16 @@ public class ResponseUtil {
         response.content().writeBytes(dataDocument.convertToJsonString().getBytes(StandardCharsets.UTF_8));
         response.setStatus(HttpResponseStatus.BAD_REQUEST);
         return response;
+    }
+    @SuppressWarnings("deprecation")
+    public static FullHttpResponse cross(HttpRequest request){
+        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(request.getProtocolVersion(), HttpResponseStatus.OK);
+        fullHttpResponse.headers().set("Content-Type", "application/json");
+        fullHttpResponse.headers().set("Access-Control-Allow-Credentials", "true");
+        fullHttpResponse.headers().set("Access-Control-Allow-Headers", "content-type, if-none-match, -Xcloudnet-token, -Xmessage, -Xvalue, -Xcloudnet-user, -Xcloudnet-password,-Xcount");
+        fullHttpResponse.headers().set("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
+        fullHttpResponse.headers().set("Access-Control-Allow-Origin", "*");
+        fullHttpResponse.headers().set("Access-Control-Max-Age", "3600");
+        return fullHttpResponse;
     }
 }
