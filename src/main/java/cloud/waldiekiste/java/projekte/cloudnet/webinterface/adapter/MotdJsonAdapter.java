@@ -5,7 +5,7 @@ import de.dytanic.cloudnet.lib.proxylayout.Motd;
 
 import java.lang.reflect.Type;
 
-public class motdJsonAdapter implements JsonSerializer<Motd>,JsonDeserializer<Motd> {
+public class MotdJsonAdapter implements JsonSerializer<Motd>,JsonDeserializer<Motd> {
     @Override
     public Motd deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject object = jsonElement.getAsJsonObject();
