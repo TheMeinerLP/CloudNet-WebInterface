@@ -1,0 +1,18 @@
+package cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter;
+
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.UpdateData;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.VersionType;
+import com.google.gson.*;
+
+import java.lang.reflect.Type;
+
+public class UpdateDataJsonAdapter implements JsonDeserializer<UpdateData> {
+    @Override
+    public UpdateData deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+        JsonObject object = jsonElement.getAsJsonObject();
+        final String version = object.get("version").getAsString();
+        final String path = object.get("path").getAsString();
+        final VersionType type1 = VersionType.valueOf(object.get("type").getAsString());
+        return new UpdateData(version,path,type1);
+    }
+}

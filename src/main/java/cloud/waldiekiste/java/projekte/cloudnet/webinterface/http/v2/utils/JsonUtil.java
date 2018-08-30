@@ -1,5 +1,6 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils;
 
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.UpdateData;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -36,6 +37,7 @@ public class JsonUtil {
         builder.registerTypeAdapter(SimpleProxyInfo.class,new ProxyInfoJsonAdapter());
         builder.registerTypeAdapter(ServiceId.class,new ServiceIdJsonAdapter());
         builder.registerTypeAdapter(SimpleServerInfo.class,new ServerInfoJsonAdapter());
+        builder.registerTypeAdapter(UpdateData.class,new UpdateDataJsonAdapter());
         return builder.create();
     }
 }
