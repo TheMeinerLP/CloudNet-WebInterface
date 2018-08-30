@@ -28,7 +28,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class ProjectMain extends CoreModule implements Runnable{
@@ -52,9 +55,9 @@ public class ProjectMain extends CoreModule implements Runnable{
 
     @Override
     public void onBootstrap() {
-        /*if (!getCloud().getDbHandlers().getUpdateConfigurationDatabase().get().contains("mdwi.updateChannel")) {
+        if (!getCloud().getDbHandlers().getUpdateConfigurationDatabase().get().contains("mdwi.updateChannel")) {
             this.updateChannelSetup.start(CloudNet.getLogger().getReader());
-        }*/
+        }
         getCloud().getCommandManager().registerCommand(new CommandSetupConfig(this));
         getCloud().getCommandManager().registerCommand(new CommandVersion(this));
         getCloud().getEventManager().registerListener(this,new ScreenSessionEvent(this));

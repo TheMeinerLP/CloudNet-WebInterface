@@ -27,7 +27,6 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -46,15 +45,9 @@ public class UserAPI extends MethodWebHandlerAdapter {
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
         ResponseUtil.setHeader(fullHttpResponse,"Content-Type", "application/json; charset=utf-8");
-        if (!RequestUtil.hasHeader(httpRequest,"-xcloudnet-user","-xcloudnet-passwort","-xcloudnet-message")) {
-            return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
-        }
-        String username = RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-user");
-        String userpassword = new String(Base64.getDecoder().decode(RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-password").getBytes()));
-        if (!CloudNet.getInstance().authorizationPassword(username, userpassword)) {
-            return UserUtil.failedAuthorization(fullHttpResponse);
-        }
-        User user = CloudNet.getInstance().getUser(username);
+        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message")) return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
+        if (!RequestUtil.checkAuth(httpRequest)) return UserUtil.failedAuthorization(fullHttpResponse);
+        User user = CloudNet.getInstance().getUser(RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-user"));
         switch (RequestUtil.getHeaderValue(httpRequest,"-Xmessage").toLowerCase()){
             case "users":{
                 if(!UserUtil.hasPermission(user,"*","cloudnet.web.user.item.*")){
@@ -79,15 +72,9 @@ public class UserAPI extends MethodWebHandlerAdapter {
     public FullHttpResponse post(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
         ResponseUtil.setHeader(fullHttpResponse,"Content-Type", "application/json");
-        if (!RequestUtil.hasHeader(httpRequest,"-xcloudnet-user","-xcloudnet-passwort","-xcloudnet-message")) {
-            return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
-        }
-        String username = RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-user");
-        String userpassword = new String(Base64.getDecoder().decode(RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-password")));
-        if (!CloudNet.getInstance().authorizationPassword(username, userpassword)) {
-            return UserUtil.failedAuthorization(fullHttpResponse);
-        }
-        User user = CloudNet.getInstance().getUser(username);
+        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message")) return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
+        if (!RequestUtil.checkAuth(httpRequest)) return UserUtil.failedAuthorization(fullHttpResponse);
+        User user = CloudNet.getInstance().getUser(RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-user"));
         switch (RequestUtil.getHeaderValue(httpRequest,"-Xmessage").toLowerCase()){
             case "save":{
                 final String jsonuser = RequestUtil.getContent(httpRequest);
