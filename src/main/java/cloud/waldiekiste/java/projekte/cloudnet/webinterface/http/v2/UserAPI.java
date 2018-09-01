@@ -27,6 +27,7 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -45,7 +46,7 @@ public class UserAPI extends MethodWebHandlerAdapter {
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
         ResponseUtil.setHeader(fullHttpResponse,"Content-Type", "application/json; charset=utf-8");
-        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message")) return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
+        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-Xmessage")) return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
         if (!RequestUtil.checkAuth(httpRequest)) return UserUtil.failedAuthorization(fullHttpResponse);
         User user = CloudNet.getInstance().getUser(RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-user"));
         switch (RequestUtil.getHeaderValue(httpRequest,"-Xmessage").toLowerCase()){
@@ -93,21 +94,19 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     getProjectMain().getCloud().getUsers().clear();
                     users.add(saveduser);
                     getProjectMain().getCloud().getUsers().addAll(users);
-                    getProjectMain().getCloud().getConfig().getUsersPath().toFile().deleteOnExit();
-                    getProjectMain().getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
+                    this.projectMain.getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
                     Document resp = new Document();
                     return ResponseUtil.success(fullHttpResponse, true, resp);
                 }
             }
             case "resetpassword":{
                 final String jsonuser = RequestUtil.getContent(httpRequest);
-
                 Document usern = Document.load(jsonuser);
                 User basUser = getProjectMain().getCloud().getUser(usern.get("username").getAsString());
                 if(!UserUtil.hasPermission(user,"*","cloudnet.web.user.restepassword.*","cloudnet.web.user.restepassword."+basUser.getName())){
                     return ResponseUtil.permissionDenied(fullHttpResponse);
                 }else {
-                    User basicUser = new User(basUser.getName(),basUser.getUniqueId(),basUser.getApiToken(),DyHash.hashString(usern.get("password").getAsString()),basUser.getPermissions(),basUser.getMetaData());
+                    User basicUser = new User(basUser.getName(),basUser.getUniqueId(),basUser.getApiToken(),DyHash.hashString(new String(Base64.getDecoder().decode(usern.get("password").getAsString()))),basUser.getPermissions(),basUser.getMetaData());
                     ArrayList<User> users = new ArrayList<>(getProjectMain().getCloud().getUsers());
                     AtomicReference<User> olduser = new AtomicReference<>();
                     users.forEach(t->{
@@ -116,11 +115,10 @@ public class UserAPI extends MethodWebHandlerAdapter {
                         }
                     });
                     users.remove(olduser.get());
-                    users.add(basicUser);
                     getProjectMain().getCloud().getUsers().clear();
+                    users.add(basicUser);
                     getProjectMain().getCloud().getUsers().addAll(users);
-                    getProjectMain().getCloud().getConfig().getUsersPath().toFile().deleteOnExit();
-                    getProjectMain().getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
+                    this.projectMain.getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
                     Document resp = new Document();
                     return ResponseUtil.success(fullHttpResponse, true, resp);
                 }
@@ -146,8 +144,7 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     users.add(basicUser);
                     getProjectMain().getCloud().getUsers().clear();
                     getProjectMain().getCloud().getUsers().addAll(users);
-                    getProjectMain().getCloud().getConfig().getUsersPath().toFile().deleteOnExit();
-                    getProjectMain().getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
+                    this.projectMain.getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
                     Document resp = new Document();
                     return ResponseUtil.success(fullHttpResponse, true, resp);
                 }
@@ -170,8 +167,7 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     users.remove(olduser.get());
                     getProjectMain().getCloud().getUsers().clear();
                     getProjectMain().getCloud().getUsers().addAll(users);
-                    getProjectMain().getCloud().getConfig().getUsersPath().toFile().deleteOnExit();
-                    getProjectMain().getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
+                    this.projectMain.getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
                     Document document = new Document();
                     return ResponseUtil.success(fullHttpResponse,true,document);
                 }else{

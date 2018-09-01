@@ -36,7 +36,7 @@ public class AuthenticationAPI extends MethodWebHandlerAdapter {
     public FullHttpResponse post(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
         ResponseUtil.setHeader(fullHttpResponse,"Content-Type", "application/json");
-        if (!RequestUtil.hasHeader(httpRequest,"-xcloudnet-user","-xcloudnet-passwort")) {
+        if (!RequestUtil.hasHeader(httpRequest,"-xcloudnet-user","-xcloudnet-password")) {
             return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
         }
         String username = RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-user");
