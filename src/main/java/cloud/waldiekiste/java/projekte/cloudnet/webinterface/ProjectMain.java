@@ -10,7 +10,6 @@ package cloud.waldiekiste.java.projekte.cloudnet.webinterface;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandSetupConfig;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandVersion;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.*;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.usermangment.UserAuthentication;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.JsonUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.listener.ScreenSessionEvent;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.permission.ConfigPermissions;
@@ -61,7 +60,7 @@ public class ProjectMain extends CoreModule implements Runnable{
         getCloud().getCommandManager().registerCommand(new CommandVersion(this));
         getCloud().getEventManager().registerListener(this,new ScreenSessionEvent(this));
         new MasterAPI(getCloud(),this);
-        new UserAuthentication(getCloud());
+        new AuthenticationAPI(getCloud());
         new ProxyAPI(getCloud(),this);
         new UserAPI(getCloud(),this);
         new DashboardAPI(getCloud(),this);
