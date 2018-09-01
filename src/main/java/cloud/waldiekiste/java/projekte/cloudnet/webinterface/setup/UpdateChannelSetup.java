@@ -7,7 +7,7 @@
 
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.setup;
 
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.VersionType;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils.VersionType;
 import de.dytanic.cloudnet.lib.utility.Catcher;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.setup.Setup;

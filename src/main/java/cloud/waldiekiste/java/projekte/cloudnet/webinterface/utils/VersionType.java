@@ -5,7 +5,7 @@
  *  Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz.
  */
 
-package cloud.waldiekiste.java.projekte.cloudnet.webinterface;
+package cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils;
 
 public enum VersionType {
     DEVELOPMENT_SECURITY("DEVELOPMENT_SECURITY"),

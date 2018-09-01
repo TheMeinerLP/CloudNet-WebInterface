@@ -7,8 +7,8 @@
 
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils;
 
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.UpdateData;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter.*;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils.UpdateData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.dytanic.cloudnet.lib.proxylayout.*;
