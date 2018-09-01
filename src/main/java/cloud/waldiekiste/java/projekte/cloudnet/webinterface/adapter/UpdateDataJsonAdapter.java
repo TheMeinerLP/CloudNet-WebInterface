@@ -7,8 +7,8 @@
 
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter;
 
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.UpdateData;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.VersionType;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils.UpdateData;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils.VersionType;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;

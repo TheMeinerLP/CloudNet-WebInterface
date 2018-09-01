@@ -10,13 +10,13 @@ package cloud.waldiekiste.java.projekte.cloudnet.webinterface;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandSetupConfig;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandVersion;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.*;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.usermangment.UserAuthentication;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.JsonUtil;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.listener.ScreenSessionEvent;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.permission.ConfigPermissions;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.setup.ConfigSetup;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.setup.UpdateChannelSetup;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.sign.ConfigSignLayout;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.sign.SignDatabase;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils.UpdateData;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils.VersionType;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.dytanic.cloudnet.lib.utility.document.Document;
@@ -28,13 +28,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class ProjectMain extends CoreModule implements Runnable{
 
-    private ConfigSignLayout configSignLayout;
-    private SignDatabase signDatabase;
     private ConfigPermissions configPermission;
     private List<String> consoleLines;
     private Map<String,List<String>> screenInfos = new HashMap<>();
@@ -59,16 +60,13 @@ public class ProjectMain extends CoreModule implements Runnable{
         getCloud().getCommandManager().registerCommand(new CommandVersion(this));
         getCloud().getEventManager().registerListener(this,new ScreenSessionEvent(this));
         new MasterAPI(getCloud(),this);
-        new UserAuthentication(getCloud());
+        new AuthenticationAPI(getCloud());
         new ProxyAPI(getCloud(),this);
         new UserAPI(getCloud(),this);
         new DashboardAPI(getCloud(),this);
         new ServerAPI(getCloud(),this);
         new WrapperAPI(getCloud(),this);
         new UtilsAPI(getCloud(),this);
-        this.configSignLayout = new ConfigSignLayout();
-        this.configSignLayout.loadLayout();
-        this.signDatabase = new SignDatabase(getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
         try {
             this.configPermission = new ConfigPermissions();
         }
@@ -76,7 +74,7 @@ public class ProjectMain extends CoreModule implements Runnable{
             e.printStackTrace();
         }
     }
-    private UpdateData getSecurityUpdateData(VersionType branch,boolean dev) throws Exception {
+    private UpdateData getSecurityUpdateData(VersionType branch, boolean dev) throws Exception {
         String url;
         if(dev){
             url = "https://update.mc-lifetime.de/CLOUDNET/WebInterface/.testing/version.php?dev=http://localhost:4200&branch="+branch.getType()+"&type=modul";
@@ -116,13 +114,6 @@ public class ProjectMain extends CoreModule implements Runnable{
         return configSetup;
     }
 
-    public ConfigSignLayout getConfigSignLayout() {
-        return configSignLayout;
-    }
-
-    public SignDatabase getSignDatabase() {
-        return signDatabase;
-    }
 
     public ConfigPermissions getConfigPermission() {
         return configPermission;

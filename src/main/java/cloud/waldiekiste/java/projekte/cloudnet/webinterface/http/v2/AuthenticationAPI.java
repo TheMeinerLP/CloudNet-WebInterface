@@ -5,7 +5,7 @@
  *  Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz.
  */
 
-package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.usermangment;
+package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
@@ -23,11 +23,10 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.ArrayList;
-import java.util.Base64;
 
-public class UserAuthentication extends MethodWebHandlerAdapter {
+public class AuthenticationAPI extends MethodWebHandlerAdapter {
 
-    public UserAuthentication(CloudNet cloudNet) {
+    public AuthenticationAPI(CloudNet cloudNet) {
         super("/cloudnet/api/v2/auth");
         cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
     }
@@ -37,11 +36,11 @@ public class UserAuthentication extends MethodWebHandlerAdapter {
     public FullHttpResponse post(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
         ResponseUtil.setHeader(fullHttpResponse,"Content-Type", "application/json");
-        if (!RequestUtil.hasHeader(httpRequest,"-xcloudnet-user","-xcloudnet-passwort","-xcloudnet-message")) {
+        if (!RequestUtil.hasHeader(httpRequest,"-xcloudnet-user","-xcloudnet-password")) {
             return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
         }
         String username = RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-user");
-        String userpassword = new String(Base64.getDecoder().decode(RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-password").getBytes()));
+        String userpassword = RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-password");
         if (!CloudNet.getInstance().authorizationPassword(username, userpassword)) {
             return UserUtil.failedAuthorization(fullHttpResponse);
         }
@@ -50,7 +49,7 @@ public class UserAuthentication extends MethodWebHandlerAdapter {
         userinfos.append("UUID",user.getUniqueId().toString());
         userinfos.append("token",user.getApiToken());
         userinfos.append("name",user.getName());
-        userinfos.append("password",Base64.getEncoder().encodeToString(userpassword.getBytes()));
+        userinfos.append("password",user.getHashedPassword());
         userinfos.append("permissions",new ArrayList<>(user.getPermissions()));
         Document document = new Document();
         document.append("response", userinfos);

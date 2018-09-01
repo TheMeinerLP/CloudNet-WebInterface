@@ -7,6 +7,7 @@
 
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils;
 
+import de.dytanic.cloudnetcore.CloudNet;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpRequest;
@@ -38,5 +39,13 @@ public class RequestUtil {
         }else {
             throw new NullPointerException("No Content found found!");
         }
+    }
+    public static boolean checkAuth(HttpRequest httpRequest){
+        String username = RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-user");
+        String token = RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-token");
+        if (!CloudNet.getInstance().authorization(username, token)) {
+            return false;
+        }
+        return true;
     }
 }
