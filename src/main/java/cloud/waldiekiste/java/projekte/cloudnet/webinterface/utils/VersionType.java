@@ -8,9 +8,6 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils;
 
 public enum VersionType {
-    DEVELOPMENT_SECURITY("DEVELOPMENT_SECURITY"),
-    SNAPSHOT_SECURITY("SNAPSHOT_SECURITY"),
-    RELEASE_SECURITY("RELEASE_SECURITY"),
     DEVELOPMENT("DEVELOPMENT"),
     SNAPSHOT("SNAPSHOT"),
     RELEASE("RELEASE");

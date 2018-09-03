@@ -12,9 +12,18 @@
     <artifactId>CloudNet-Service-Websocket-Extension</artifactId>
     <groupId>com.waldiekiste.java.projekte.cloudnet</groupId>
 
-    <version>0.10.26-RELEASE</version>
+    <properties>
+        <UpdateChannel>DEVELOPMENT</UpdateChannel>
+        <VersionString>0.10.${buildNumber}-${UpdateChannel}</VersionString>
+    </properties>
+    <version>${VersionString}</version>
     <modelVersion>4.0.0</modelVersion>
-
+    <scm>
+        <connection>scm:svn:http://127.0.0.1/dummy</connection>
+        <developerConnection>scm:svn:https://127.0.0.1/dummy</developerConnection>
+        <tag>HEAD</tag>
+        <url>http://127.0.0.1/dummy</url>
+    </scm>
     <build>
         <plugins>
             <plugin>
@@ -41,6 +50,29 @@
                         <version>5.1.0</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>buildnumber</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <format>{0,number}</format>
+                    <items>
+                        <item>buildNumber</item>
+                    </items>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
+                    <revisionOnScmFailure>unknownbuild</revisionOnScmFailure>
+                </configuration>
             </plugin>
             <!--<plugin>
                 <groupId>com.github.wvengen</groupId>
@@ -77,6 +109,7 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+        <finalName>${project.artifactId}-${VersionString}</finalName>
     </build>
     <repositories>
         <repository>
