@@ -75,6 +75,26 @@
                 </configuration>
             </plugin>
             <!--<plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>wagon-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>upload-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>upload-single</goal>
+                        </goals>
+                        <configuration>
+                            <serverId>auto-upload</serverId> - references the server declaration
+                            <fromFile>${VersionString}.jar</fromFile>
+                            <url>ftp://teamspeak.mc-lifetime.de/</url>
+                            <toFile></toFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+            <!--<plugin>
                 <groupId>com.github.wvengen</groupId>
                 <artifactId>proguard-maven-plugin</artifactId>
                 <version>2.0.6</version>

@@ -72,6 +72,7 @@ public class ProjectMain extends CoreModule implements Runnable{
         new ServerAPI(getCloud(),this);
         new WrapperAPI(getCloud(),this);
         new UtilsAPI(getCloud(),this);
+        //new CPermsApi(this);
         try {
             this.configPermission = new ConfigPermissions();
         }
@@ -170,8 +171,7 @@ public class ProjectMain extends CoreModule implements Runnable{
                     String urlpath = data.getPath().substring(data.getPath().indexOf("/update"),data.getPath().length());
                     String downloadpath = "https:/"+urlpath;
                     update(downloadpath,data);
-                    CloudNet.getInstance().getModuleManager().disableModules();
-                    CloudNet.getInstance().getModuleManager().loadModules();
+                    CloudNet.getInstance().reload();
                 }else{
                     System.out.println("[Updater] No Update available!");
                 }
