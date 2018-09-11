@@ -13,7 +13,7 @@
     <groupId>com.waldiekiste.java.projekte.cloudnet</groupId>
 
     <properties>
-        <UpdateChannel>DEVELOPMENT</UpdateChannel>
+        <UpdateChannel>RELEASE</UpdateChannel>
         <VersionString>0.10.${buildNumber}-${UpdateChannel}</VersionString>
     </properties>
     <version>${VersionString}</version>
