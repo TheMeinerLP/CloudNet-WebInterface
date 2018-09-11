@@ -60,8 +60,7 @@ public class ServerAPI extends MethodWebHandlerAdapter {
             }
             case "groupitems":{
                 List<String> proxys = new ArrayList<>();
-                List<String> infos = new ArrayList<>(getProjectMain().getCloud().getServerGroups().keySet());
-                for (String prx : infos) {
+                for (String prx : getProjectMain().getCloud().getServerGroups().keySet()) {
                     if(UserUtil.hasPermission(user,"*","cloudnet.web.group.server.item.*","cloudnet.web.proxy.group.server.item."+prx)){
                         ServerGroup group = getProjectMain().getCloud().getServerGroup(prx);
                         Document document = new Document();
@@ -124,7 +123,15 @@ public class ServerAPI extends MethodWebHandlerAdapter {
                     resp.append("response",data);
                     return ResponseUtil.success(fullHttpResponse,true,resp);
                 }else{
-                    return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+                    List<String> servers = new ArrayList<>();
+                    for (ServerGroup prx : getProjectMain().getCloud().getServerGroups().values()) {
+                        if (UserUtil.hasPermission(user, "*", "cloudnet.web.group.server.item.*", "cloudnet.web.proxy.group.server.item." + prx.getName())) {
+                            servers.add(JsonUtil.getGson().toJson(prx));
+                        }
+                    }
+                    Document resp = new Document();
+                    resp.append("response",servers);
+                    return ResponseUtil.success(fullHttpResponse,true,resp);
                 }
             }
             default:{

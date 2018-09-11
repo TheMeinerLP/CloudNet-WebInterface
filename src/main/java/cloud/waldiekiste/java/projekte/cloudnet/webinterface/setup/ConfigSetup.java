@@ -7,11 +7,8 @@
 
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.setup;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
-import com.google.gson.stream.JsonWriter;
 import de.dytanic.cloudnet.setup.Setup;
 import de.dytanic.cloudnet.setup.SetupRequest;
 import de.dytanic.cloudnet.setup.SetupResponseType;
@@ -29,9 +26,9 @@ public class ConfigSetup extends Setup {
            int webport = CloudNet.getInstance().getWebServer().getPort();
            String url;
            if (CloudNet.getInstance().getWebServer().isSsl()) {
-               url = "https://"+webhost+":"+webport+"/";
+               url = "https://"+webhost+":"+webport;
            }else{
-               url = "http://"+webhost+":"+webport+"/";
+               url = "http://"+webhost+":"+webport;
            }
            JsonObject jsonObject = new JsonObject();
            JsonObject server = new JsonObject();
