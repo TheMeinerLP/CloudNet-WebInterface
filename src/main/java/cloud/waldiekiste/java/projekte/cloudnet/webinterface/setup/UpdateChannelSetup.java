@@ -23,18 +23,18 @@ public class UpdateChannelSetup extends Setup {
             document.append("mdwi.updateChannel",VersionType.valueOf(type).getType());
             CloudNet.getInstance().getDbHandlers().getUpdateConfigurationDatabase().set(document);
         });
-        request(new SetupRequest("type", "Which UpdateChannel how to use?", "This Channel not exsists", SetupResponseType.STRING, new Catcher<Boolean, String>() {
-            @Override
-            public Boolean doCatch(String s) {
-                if(s.equalsIgnoreCase(VersionType.DEVELOPMENT.getType())){
-                   return true;
-                }else if(s.equalsIgnoreCase(VersionType.RELEASE.getType())){
-                   return true;
-                }else if(s.equalsIgnoreCase(VersionType.SNAPSHOT.getType())){
-                   return true;
-                }
+        request(new SetupRequest("type", "Which UpdateChannel you want to use?(RELEASE,DEVELOPMENT,SNAPSHOT)", "This Channel not exsists", SetupResponseType.STRING, s -> {
+            if(s.length() == 0 || s == null || s.isEmpty()){
                 return false;
             }
+            if(s.equalsIgnoreCase(VersionType.DEVELOPMENT.getType())){
+               return true;
+            }else if(s.equalsIgnoreCase(VersionType.RELEASE.getType())){
+               return true;
+            }else if(s.equalsIgnoreCase(VersionType.SNAPSHOT.getType())){
+               return true;
+            }
+            return false;
         }));
     }
 }

@@ -31,16 +31,12 @@ public class ProxyConfigJsonAdapter implements JsonSerializer<ProxyConfig>,JsonD
         final boolean customPayloadFixer = object.get("customPayloadFixer").getAsBoolean();
         final AutoSlot autoSlot = jsonDeserializationContext.deserialize(object.get("autoSlot"),AutoSlot.class);
         final TabList tabList = jsonDeserializationContext.deserialize(object.get("tabList"),TabList.class);
-        final String str = object.get("playerInfo").toString();
-        String[] playerInfos = new String[0];
-        if(!str.isEmpty()){
-            playerInfos = str.replace("[", "").replace("]", "").split(", ");
-        }
+        final ArrayList<String> playerInfos = new ArrayList<>();
+        object.get("playerInfo").getAsJsonArray().forEach(t->playerInfos.add(t.getAsString()));
         final Collection<String> whitelist = new ArrayList<>();
         object.get("whitelist").getAsJsonArray().forEach(t->whitelist.add(t.getAsString()));
         final DynamicFallback dynamicFallback = jsonDeserializationContext.deserialize(object.get("dynamicFallback"),DynamicFallback.class);
-
-        return new ProxyConfig(enabled,maintenance,motdsLayouts,maintenanceMotdLayout,maintenaceProtocol,maxPlayers,fastConnect,customPayloadFixer,autoSlot,tabList,playerInfos,whitelist,dynamicFallback);
+        return new ProxyConfig(enabled,maintenance,motdsLayouts,maintenanceMotdLayout,maintenaceProtocol,maxPlayers,fastConnect,customPayloadFixer,autoSlot,tabList,playerInfos.toArray(new String[playerInfos.size()]),whitelist,dynamicFallback);
     }
 
     @Override

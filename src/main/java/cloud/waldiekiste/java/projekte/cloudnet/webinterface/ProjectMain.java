@@ -103,7 +103,7 @@ public class ProjectMain extends CoreModule implements Runnable{
         return datas;
     }
     private UpdateData getUpdateData(VersionType branch) throws Exception {
-        String url = "https://api.mc-lifetime.de/mdwebinterface/version.php?type=modul&branch="+branch.getType();
+        String url = "https://api.mc-lifetime.de/mdwebinterface/version.php?type=modul&new&branch="+branch.getType();
         URL adress = new URL( url);
         HttpURLConnection connection = (HttpURLConnection) adress.openConnection();
         connection.setConnectTimeout(2000);
@@ -168,9 +168,7 @@ public class ProjectMain extends CoreModule implements Runnable{
                     getCloud().getModuleManager().disableModule(this);
                     File f = config.getFile();
                     f.delete();
-                    String urlpath = data.getPath().substring(data.getPath().indexOf("/update"),data.getPath().length());
-                    String downloadpath = "https:/"+urlpath;
-                    update(downloadpath,data);
+                    update(data.getPath(),data);
                     CloudNet.getInstance().reload();
                 }else{
                     System.out.println("[Updater] No Update available!");
