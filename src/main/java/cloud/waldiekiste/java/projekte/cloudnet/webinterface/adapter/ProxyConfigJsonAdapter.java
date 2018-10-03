@@ -54,7 +54,11 @@ public class ProxyConfigJsonAdapter implements JsonSerializer<ProxyConfig>,JsonD
         object.addProperty("customPayloadFixer",proxyConfig.getCustomPayloadFixer());
         object.add("autoSlot",jsonSerializationContext.serialize(proxyConfig.getAutoSlot()));
         object.add("tabList",jsonSerializationContext.serialize(proxyConfig.getTabList()));
-        object.addProperty("playerInfo", Arrays.toString(proxyConfig.getPlayerInfo()));
+        JsonArray playerInfo = new JsonArray();
+        for (String info : proxyConfig.getPlayerInfo()) {
+            playerInfo.add(info);
+        }
+        object.add("playerInfo", playerInfo);
         JsonArray whitelist = new JsonArray();
         proxyConfig.getWhitelist().forEach(whitelist::add);
         object.add("whitelist",whitelist);

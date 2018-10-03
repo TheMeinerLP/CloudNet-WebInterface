@@ -15,15 +15,15 @@ import io.netty.handler.codec.http.HttpRequest;
 public class RequestUtil {
     public static boolean hasHeader(HttpRequest request,String... headers){
         for (String header : headers) {
-            if(request.headers().contains(header)){
+            if(request.headers().contains(header.toLowerCase())){
                 return true;
             }
         }
         return false;
     }
     public static String getHeaderValue(HttpRequest request,String header){
-        if(hasHeader(request,header)){
-            return request.headers().get(header);
+        if(hasHeader(request,header.toLowerCase())){
+            return request.headers().get(header.toLowerCase());
         }else{
             throw new NullPointerException("Header Field "+header+" not found!");
 

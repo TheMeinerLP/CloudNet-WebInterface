@@ -19,10 +19,10 @@
     <version>${VersionString}</version>
     <modelVersion>4.0.0</modelVersion>
     <scm>
-        <connection>scm:svn:http://127.0.0.1/dummy</connection>
-        <developerConnection>scm:svn:https://127.0.0.1/dummy</developerConnection>
+        <connection>scm:git:https://gitlab.com/themeinerlp/CloudNet-Service-WebSocket-Extension.git</connection>
+        <developerConnection>scm:git:https://gitlab.com/themeinerlp/CloudNet-Service-WebSocket-Extension.git</developerConnection>
         <tag>HEAD</tag>
-        <url>http://127.0.0.1/dummy</url>
+        <url>https://gitlab.com/themeinerlp/CloudNet-Service-WebSocket-Extension.git</url>
     </scm>
     <build>
         <plugins>
@@ -74,7 +74,7 @@
                     <revisionOnScmFailure>unknownbuild</revisionOnScmFailure>
                 </configuration>
             </plugin>
-            <!--<plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>wagon-maven-plugin</artifactId>
                 <version>1.0</version>
@@ -83,17 +83,17 @@
                         <id>upload-assembly</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>upload-single</goal>
+                            <goal>deploy</goal>
                         </goals>
                         <configuration>
-                            <serverId>auto-upload</serverId> - references the server declaration
+                            <serverId>auto-upload</serverId>
                             <fromFile>${VersionString}.jar</fromFile>
                             <url>ftp://teamspeak.mc-lifetime.de/</url>
                             <toFile></toFile>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
             <!--<plugin>
                 <groupId>com.github.wvengen</groupId>
                 <artifactId>proguard-maven-plugin</artifactId>
@@ -138,6 +138,11 @@
         </repository>
     </repositories>
     <dependencies>
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-analytics</artifactId>
+            <version>v3-rev159-1.25.0</version>
+        </dependency>
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet-core</artifactId>

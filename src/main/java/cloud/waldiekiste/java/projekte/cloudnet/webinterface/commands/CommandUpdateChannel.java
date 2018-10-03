@@ -11,10 +11,15 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils.VersionType;
 import de.dytanic.cloudnet.command.Command;
 import de.dytanic.cloudnet.command.CommandSender;
+import de.dytanic.cloudnet.command.TabCompletable;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnetcore.CloudNet;
 
-public class CommandUpdateChannel extends Command {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class CommandUpdateChannel extends Command implements TabCompletable {
     private ProjectMain projectMain;
     public CommandUpdateChannel(ProjectMain projectMain) {
         super("updateI", "cloudnet.webinterface.update",new String[0]);
@@ -62,5 +67,26 @@ public class CommandUpdateChannel extends Command {
         }else{
             this.projectMain.run();
         }
+    }
+
+    @Override
+    public List<String> onTab(long l, String s) {
+        switch ((int) l){
+            case 0:{
+                return Arrays.asList("manual","channel");
+            }
+            case 1:{
+                switch (s.toLowerCase()){
+                    case "manual":{
+                        return Arrays.asList("SILLINWORK");
+                    }
+                    case "channel":{
+                        return Arrays.asList("DEVELOPMENT","RELEASE","SNAPSHOT");
+                    }
+                }
+                break;
+            }
+        }
+        return Arrays.asList("manual","channel");
     }
 }

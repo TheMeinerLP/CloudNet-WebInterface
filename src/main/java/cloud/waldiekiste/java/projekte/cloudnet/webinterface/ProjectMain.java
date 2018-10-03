@@ -20,6 +20,7 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils.UpdateData;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils.VersionType;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import de.dytanic.cloudnet.lib.NetworkUtils;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.modules.ModuleConfig;
 import de.dytanic.cloudnetcore.CloudNet;
@@ -27,6 +28,7 @@ import de.dytanic.cloudnetcore.api.CoreModule;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
@@ -47,6 +49,7 @@ public class ProjectMain extends CoreModule implements Runnable{
 
     @Override
     public void onLoad() {
+
         consoleLines = new ArrayList<>();
         CloudNet.getLogger().getHandler().add(consoleLines::add);
         configSetup = new ConfigSetup();
@@ -55,6 +58,10 @@ public class ProjectMain extends CoreModule implements Runnable{
 
     @Override
     public void onBootstrap() {
+        if(new Integer( NetworkUtils.class.getPackage().getImplementationVersion().replace(".","")) < 218){
+            System.err.println("This Module is not compatible with this CloudNet Version");
+            return;
+        }
         if (!getCloud().getDbHandlers().getUpdateConfigurationDatabase().get().contains("mdwi.updateChannel")) {
             this.updateChannelSetup.start(CloudNet.getLogger().getReader());
         }else{
@@ -102,10 +109,22 @@ public class ProjectMain extends CoreModule implements Runnable{
         jsonObject.get("versions").getAsJsonArray().forEach(t->datas.add(JsonUtil.getGson().fromJson(t,UpdateData.class)));
         return datas;
     }
-    private UpdateData getUpdateData(VersionType branch) throws Exception {
+    private UpdateData getUpdateData(VersionType branch) throws IOException {
         String url = "https://api.mc-lifetime.de/mdwebinterface/version.php?type=modul&new&branch="+branch.getType();
-        URL adress = new URL( url);
-        HttpURLConnection connection = (HttpURLConnection) adress.openConnection();
+        URL adress = null;
+        try {
+            adress = new URL( url);
+        } catch (MalformedURLException e) {
+            System.err.println("Url format is Invalid");
+            return null;
+        }
+        HttpURLConnection connection = null;
+        try {
+            connection = (HttpURLConnection) adress.openConnection();
+        } catch (IOException e) {
+            System.err.println("Cannot connect to URL");
+            return null;
+        }
         connection.setConnectTimeout(2000);
         connection.setDoOutput(false);
         connection.setDoInput(true);
