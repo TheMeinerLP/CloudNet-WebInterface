@@ -16,6 +16,7 @@
         <UpdateChannel>RELEASE</UpdateChannel>
         <VersionString>0.10.${buildNumber}-${UpdateChannel}</VersionString>
     </properties>
+    <version>RELEASE</version>
     <modelVersion>4.0.0</modelVersion>
     <scm>
         <connection>scm:git:https://gitlab.com/themeinerlp/CloudNet-Service-WebSocket-Extension.git</connection>
