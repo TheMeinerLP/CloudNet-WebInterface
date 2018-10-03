@@ -19,9 +19,8 @@
     <version>RELEASE</version>
     <modelVersion>4.0.0</modelVersion>
     <scm>
-        <connection>scm:git:https://gitlab.com/themeinerlp/CloudNet-Service-WebSocket-Extension.git</connection>
-        <developerConnection>scm:git:https://gitlab.com/themeinerlp/CloudNet-Service-WebSocket-Extension.git</developerConnection>
-        <url>https://gitlab.com/themeinerlp/CloudNet-Service-WebSocket-Extension.git</url>
+        <connection>scm:git:git://gitlab.com/themeinerlp/CloudNet-Service-WebSocket-Extension.git</connection>
+        <developerConnection>scm:git:git://gitlab.com/themeinerlp/CloudNet-Service-WebSocket-Extension.git</developerConnection>
     </scm>
     <build>
         <plugins>
