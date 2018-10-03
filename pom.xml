@@ -21,7 +21,6 @@
     <scm>
         <connection>scm:git:https://gitlab.com/themeinerlp/CloudNet-Service-WebSocket-Extension.git</connection>
         <developerConnection>scm:git:https://gitlab.com/themeinerlp/CloudNet-Service-WebSocket-Extension.git</developerConnection>
-        <tag>HEAD</tag>
         <url>https://gitlab.com/themeinerlp/CloudNet-Service-WebSocket-Extension.git</url>
     </scm>
     <build>
@@ -32,6 +31,16 @@
                 <configuration>
                     <source>8</source>
                     <target>8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>1.8.1</version>
+                <configuration>
+                    <connectionType>developerConnection</connectionType>
+                    <scmVersion>dev</scmVersion>
+                    <scmVersionType>branch</scmVersionType>
                 </configuration>
             </plugin>
             <plugin>
