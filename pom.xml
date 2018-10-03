@@ -19,8 +19,10 @@
     <version>RELEASE</version>
     <modelVersion>4.0.0</modelVersion>
     <scm>
-        <connection>scm:git:git://gitlab.com/themeinerlp/CloudNet-Service-WebSocket-Extension.git</connection>
-        <developerConnection>scm:git:git://gitlab.com/themeinerlp/CloudNet-Service-WebSocket-Extension.git</developerConnection>
+        <connection>scm:svn:http://127.0.0.1/dummy</connection>
+        <developerConnection>scm:svn:https://127.0.0.1/dummy</developerConnection>
+        <tag>HEAD</tag>
+        <url>http://127.0.0.1/dummy</url>
     </scm>
     <build>
         <plugins>
@@ -31,16 +33,6 @@
                 <configuration>
                     <source>8</source>
                     <target>8</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-scm-plugin</artifactId>
-                <version>1.8.1</version>
-                <configuration>
-                    <connectionType>developerConnection</connectionType>
-                    <scmVersion>dev</scmVersion>
-                    <scmVersionType>branch</scmVersionType>
                 </configuration>
             </plugin>
             <plugin>
@@ -73,6 +65,15 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <format>{0,number}</format>
+                    <items>
+                        <item>buildNumber</item>
+                    </items>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
+                    <revisionOnScmFailure>unknownbuild</revisionOnScmFailure>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
