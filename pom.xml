@@ -17,6 +17,21 @@
     </properties>
     <version>RELEASE</version>
     <modelVersion>4.0.0</modelVersion>
+
+    <distributionManagement>
+        <repository>
+            <id>${project.artifactId}</id>
+            <url>ftp://madfix.me/</url>
+        </repository>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>CloudNet</id>
+            <url>https://cloudnetservice.eu/repositories/</url>
+        </repository>
+    </repositories>
+
     <scm>
         <connection>scm:svn:http://127.0.0.1/dummy</connection>
         <developerConnection>scm:svn:https://127.0.0.1/dummy</developerConnection>
@@ -24,6 +39,7 @@
         <url>http://127.0.0.1/dummy</url>
     </scm>
     <build>
+        <finalName>${project.artifactId}-${VersionString}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -81,17 +97,20 @@
                 <executions>
                     <execution>
                         <id>upload-assembly</id>
-                        <phase>package</phase>
+                        <phase>deploy</phase>
                         <goals>
-                            <goal>upload</goal>
+                            <goal>upload-single</goal>
                         </goals>
                         <configuration>
-                            <serverId>auto-upload</serverId>
-                            <url>ftp://teamspeak.mc-lifetime.de/</url>
+                            <serverId>${project.artifactId}</serverId> <!-- references the server declaration -->
+                            <fromFile>${project.build.directory}/${project.build.finalName}</fromFile>
+                            <url>ftp://madfix.me/</url>
+                            <toFile>${project.build.finalName}</toFile>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
         <resources>
             <resource>
@@ -99,14 +118,15 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-        <finalName>${project.artifactId}-${VersionString}</finalName>
+        <extensions>
+            <!-- Enabling the use of FTP -->
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ftp</artifactId>
+                <version>2.10</version>
+            </extension>
+        </extensions>
     </build>
-    <repositories>
-        <repository>
-            <id>cloudnet</id>
-            <url>https://cloudnetservice.eu/repositories/</url>
-        </repository>
-    </repositories>
     <dependencies>
         <dependency>
             <groupId>com.google.apis</groupId>
