@@ -13,7 +13,7 @@
     <groupId>com.waldiekiste.java.projekte.cloudnet</groupId>
 
     <properties>
-        <VersionString>0.10.${buildNumber}-${version}</VersionString>
+        <VersionString>0.10.${buildNumber}-${project.version}</VersionString>
     </properties>
     <version>RELEASE</version>
     <modelVersion>4.0.0</modelVersion>
@@ -87,9 +87,7 @@
                         </goals>
                         <configuration>
                             <serverId>auto-upload</serverId>
-                            <fromFile>${VersionString}.jar</fromFile>
                             <url>ftp://teamspeak.mc-lifetime.de/</url>
-                            <toFile></toFile>
                         </configuration>
                     </execution>
                 </executions>
