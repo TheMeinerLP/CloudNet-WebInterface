@@ -20,7 +20,7 @@
 
     <distributionManagement>
         <repository>
-            <id>${project.artifactId}</id>
+            <id>CloudNet</id>
             <url>ftp://madfix.me/</url>
         </repository>
     </distributionManagement>
@@ -102,7 +102,7 @@
                             <goal>upload-single</goal>
                         </goals>
                         <configuration>
-                            <serverId>${project.artifactId}</serverId> <!-- references the server declaration -->
+                            <serverId>CloudNet</serverId> <!-- references the server declaration -->
                             <fromFile>${project.build.directory}/${project.build.finalName}</fromFile>
                             <url>ftp://madfix.me/</url>
                             <toFile>${project.build.finalName}</toFile>
