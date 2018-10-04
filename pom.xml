@@ -83,7 +83,7 @@
                         <id>upload-assembly</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>deploy</goal>
+                            <goal>upload</goal>
                         </goals>
                         <configuration>
                             <serverId>auto-upload</serverId>
