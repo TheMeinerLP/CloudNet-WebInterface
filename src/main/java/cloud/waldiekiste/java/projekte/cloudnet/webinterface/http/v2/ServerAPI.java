@@ -218,13 +218,9 @@ public class ServerAPI extends MethodWebHandlerAdapter {
                 }
                 Paths.get("groups/" + serverGroup.getName() + ".json").toFile().deleteOnExit();
 
-                getProjectMain().getCloud().getConfig().createGroup(serverGroup);
+                CloudNet.getInstance().getConfig().createGroup(serverGroup);
                 CloudNet.getInstance().setupGroup(serverGroup);
-                if(!CloudNet.getInstance().getServerGroups().containsKey(serverGroup.getName())){
-                    CloudNet.getInstance().getServerGroups().put(serverGroup.getName(), serverGroup);
-                }else{
-                    CloudNet.getInstance().getServerGroups().replace(serverGroup.getName(),serverGroup);
-                }
+                CloudNet.getInstance().getServerGroups().replace(serverGroup.getName(), serverGroup);
                 CloudNet.getInstance().toWrapperInstances(serverGroup.getWrapper()).forEach(Wrapper::updateWrapper);
                 Document document = new Document();
                 return ResponseUtil.success(fullHttpResponse,true,document);
