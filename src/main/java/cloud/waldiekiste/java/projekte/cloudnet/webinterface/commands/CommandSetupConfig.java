@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2018.
+ * Creative Commons Lizenzvertrag
+ * CloudNet-Service-WebSocket-Extension von Phillipp Glanz ist lizenziert unter einer Creative Commons
+ *  Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz.
+ */
+
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
@@ -8,7 +15,7 @@ import de.dytanic.cloudnetcore.CloudNet;
 public class CommandSetupConfig extends Command {
     private final ProjectMain projectMain;
     public CommandSetupConfig(ProjectMain projectMain) {
-        super("setup_interface", "cloudnet.webinterface.setup", "mdwi");
+        super("setupI", "cloudnet.webinterface.setup", "mdwi");
         this.projectMain = projectMain;
     }
 

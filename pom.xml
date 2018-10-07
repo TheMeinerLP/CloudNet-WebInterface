@@ -1,18 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2018.
+  ~ Creative Commons Lizenzvertrag
+  ~ CloudNet-Service-WebSocket-Extension von Phillipp Glanz ist lizenziert unter einer Creative Commons
+  ~  Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz.
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <artifactId>CloudNet-Service-Websocket-Extension</artifactId>
     <groupId>com.waldiekiste.java.projekte.cloudnet</groupId>
 
-    <version>0.10.7-RELEASE</version>
+    <properties>
+        <VersionString>0.10.${buildNumber}-${project.version}</VersionString>
+    </properties>
+    <version>RELEASE</version>
     <modelVersion>4.0.0</modelVersion>
 
+    <distributionManagement>
+        <repository>
+            <id>CloudNet</id>
+            <url>ftp://madfix.me/</url>
+        </repository>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>CloudNet</id>
+            <url>https://cloudnetservice.eu/repositories/</url>
+        </repository>
+    </repositories>
+
+    <scm>
+        <connection>scm:svn:http://127.0.0.1/dummy</connection>
+        <developerConnection>scm:svn:https://127.0.0.1/dummy</developerConnection>
+        <tag>HEAD</tag>
+        <url>http://127.0.0.1/dummy</url>
+    </scm>
     <build>
+        <finalName>${project.artifactId}-${VersionString}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
                 <configuration>
                     <source>8</source>
                     <target>8</target>
@@ -35,34 +67,50 @@
                     </dependency>
                 </dependencies>
             </plugin>
-            <!--<plugin>
-                <groupId>com.github.wvengen</groupId>
-                <artifactId>proguard-maven-plugin</artifactId>
-                <version>2.0.6</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>net.sf.proguard</groupId>
-                        <artifactId>proguard-base</artifactId>
-                        <version>4.10</version>
-                    </dependency>
-                </dependencies>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
                 <executions>
                     <execution>
-                        <phase>package</phase>
-                        <goals><goal>proguard</goal></goals>
+                        <id>buildnumber</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <proguardVersion>4.10</proguardVersion>
-                    <options>
-                        <option>-keep public class cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain</option>
-                    </options>
-                    <libs>
-                        <lib>${java.home}/lib/rt.jar</lib>
-                        <lib>${java.home}/lib/jce.jar</lib>
-                    </libs>
+                    <format>{0,number}</format>
+                    <items>
+                        <item>buildNumber</item>
+                    </items>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
+                    <revisionOnScmFailure>unknownbuild</revisionOnScmFailure>
                 </configuration>
-            </plugin>-->
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>wagon-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>upload-assembly</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>upload-single</goal>
+                        </goals>
+                        <configuration>
+                            <serverId>CloudNet</serverId> <!-- references the server declaration -->
+                            <fromFile>${project.build.directory}/${project.build.finalName}</fromFile>
+                            <url>ftp://madfix.me/</url>
+                            <toFile>${project.build.finalName}</toFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
         <resources>
             <resource>
@@ -70,18 +118,25 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+        <extensions>
+            <!-- Enabling the use of FTP -->
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ftp</artifactId>
+                <version>2.10</version>
+            </extension>
+        </extensions>
     </build>
-    <repositories>
-        <repository>
-            <id>cloudnet</id>
-            <url>https://cloudnetservice.eu/repositories/</url>
-        </repository>
-    </repositories>
     <dependencies>
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-analytics</artifactId>
+            <version>v3-rev159-1.25.0</version>
+        </dependency>
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet-core</artifactId>
-            <version>2.1.9</version>
+            <version>2.1.11</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

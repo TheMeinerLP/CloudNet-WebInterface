@@ -1,8 +1,21 @@
+/*
+ * Copyright (c) 2018.
+ * Creative Commons Lizenzvertrag
+ * CloudNet-Service-WebSocket-Extension von Phillipp Glanz ist lizenziert unter einer Creative Commons
+ *  Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz.
+ */
+
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter.*;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils.UpdateData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import de.dytanic.cloudnet.lib.player.OfflinePlayer;
+import de.dytanic.cloudnet.lib.player.PlayerConnection;
+import de.dytanic.cloudnet.lib.player.permission.GroupEntityData;
+import de.dytanic.cloudnet.lib.player.permission.PermissionEntity;
+import de.dytanic.cloudnet.lib.player.permission.PermissionGroup;
 import de.dytanic.cloudnet.lib.proxylayout.*;
 import de.dytanic.cloudnet.lib.server.ProxyGroup;
 import de.dytanic.cloudnet.lib.server.ServerGroup;
@@ -36,6 +49,12 @@ public class JsonUtil {
         builder.registerTypeAdapter(SimpleProxyInfo.class,new ProxyInfoJsonAdapter());
         builder.registerTypeAdapter(ServiceId.class,new ServiceIdJsonAdapter());
         builder.registerTypeAdapter(SimpleServerInfo.class,new ServerInfoJsonAdapter());
+        builder.registerTypeAdapter(UpdateData.class,new UpdateDataJsonAdapter());
+        builder.registerTypeAdapter(PermissionGroup.class,new PermissionGroupJsonAdapter());
+        builder.registerTypeAdapter(GroupEntityData.class,new GroupEntitiyJsonAdapter());
+        builder.registerTypeAdapter(PermissionEntity.class,new PermissionEntitiyJsonAdapter());
+        builder.registerTypeAdapter(PlayerConnection.class,new PlayerConnectionJsonAdpater());
+        builder.registerTypeAdapter(OfflinePlayer.class,new OfflinePlayerJsonAdapter());
         return builder.create();
     }
 }

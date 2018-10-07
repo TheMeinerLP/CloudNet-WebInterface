@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2018.
+ * Creative Commons Lizenzvertrag
+ * CloudNet-Service-WebSocket-Extension von Phillipp Glanz ist lizenziert unter einer Creative Commons
+ *  Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz.
+ */
+
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
@@ -15,8 +22,6 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
-import java.util.Base64;
-
 public class WrapperAPI extends MethodWebHandlerAdapter {
     private final ProjectMain projectMain;
 
@@ -30,15 +35,8 @@ public class WrapperAPI extends MethodWebHandlerAdapter {
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
         ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json; charset=utf-8");
-        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-xcloudnet-passwort", "-xcloudnet-message")) {
-            return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
-        }
-        String username = RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-user");
-        String userpassword = new String(Base64.getDecoder().decode(RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-password").getBytes()));
-        if (!CloudNet.getInstance().authorizationPassword(username, userpassword)) {
-            return UserUtil.failedAuthorization(fullHttpResponse);
-        }
-        //User user = CloudNet.getInstance().getUser(username);
+        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message")) return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
+        if (!RequestUtil.checkAuth(httpRequest)) return UserUtil.failedAuthorization(fullHttpResponse);
         switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
             case "wrappers":{
                 Document document = new Document();

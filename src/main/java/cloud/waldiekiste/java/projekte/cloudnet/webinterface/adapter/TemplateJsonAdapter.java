@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2018.
+ * Creative Commons Lizenzvertrag
+ * CloudNet-Service-WebSocket-Extension von Phillipp Glanz ist lizenziert unter einer Creative Commons
+ *  Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz.
+ */
+
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter;
 
 import com.google.gson.*;
@@ -17,16 +24,13 @@ public class TemplateJsonAdapter implements JsonSerializer<Template>,JsonDeseria
         String name = templatejson.get("name").getAsString();
         TemplateResource backend = TemplateResource.valueOf(templatejson.get("backend").getAsString());
         String url = templatejson.get("url").getAsString();
-        String str = templatejson.get("processPreParameters").toString();
-        String[] processPreParameters = new String[0];
-        if(!str.isEmpty()){
-            processPreParameters = str.replace("[", "").replace("]", "").split(", ");
-        }
+        ArrayList<String> processPreParameters = new ArrayList<>();
+        templatejson.get("processPreParameters").getAsJsonArray().forEach(t->processPreParameters.add(t.getAsString()));
         Collection<ServerInstallablePlugin> serverInstallablePlugins = new ArrayList<>();
         if (templatejson.has("installablePlugins")) {
             templatejson.get("installablePlugins").getAsJsonArray().forEach(t->serverInstallablePlugins.add(jsonDeserializationContext.deserialize(t,ServerInstallablePlugin.class)));
         }
-        return new Template(name,backend,url,processPreParameters,serverInstallablePlugins);
+        return new Template(name,backend,url,processPreParameters.toArray(new String[processPreParameters.size()]),serverInstallablePlugins);
     }
 
     @Override
@@ -39,8 +43,9 @@ public class TemplateJsonAdapter implements JsonSerializer<Template>,JsonDeseria
         }else{
             templatejson.addProperty("url",templateclass.getUrl());
         }
-
-        templatejson.addProperty("processPreParameters",Arrays.toString(templateclass.getProcessPreParameters()));
+        JsonArray processPreParameters = new JsonArray();
+        Arrays.asList(templateclass.getProcessPreParameters()).forEach(processPreParameters::add);
+        templatejson.add("processPreParameters",processPreParameters);
         JsonArray plugins = new JsonArray();
         templateclass.getInstallablePlugins().forEach(t->plugins.add(jsonSerializationContext.serialize(t)));
         templatejson.add("installablePlugins",plugins);

@@ -26,5 +26,3 @@ deploy:
   artifacts:
     paths:
       - "target/*.jar"
-  only:
-    - master

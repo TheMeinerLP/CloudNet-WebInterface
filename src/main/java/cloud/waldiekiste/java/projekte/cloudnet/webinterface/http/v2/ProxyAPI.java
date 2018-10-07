@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2018.
+ * Creative Commons Lizenzvertrag
+ * CloudNet-Service-WebSocket-Extension von Phillipp Glanz ist lizenziert unter einer Creative Commons
+ *  Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz.
+ */
+
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
@@ -21,7 +28,6 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 
@@ -38,15 +44,9 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest){
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
         ResponseUtil.setHeader(fullHttpResponse,"Content-Type", "application/json; charset=utf-8");
-        if (!RequestUtil.hasHeader(httpRequest,"-xcloudnet-user","-xcloudnet-passwort","-xcloudnet-message")) {
-            return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
-        }
-        String username = RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-user");
-        String userpassword = new String(Base64.getDecoder().decode(RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-password").getBytes()));
-        if (!CloudNet.getInstance().authorizationPassword(username, userpassword)) {
-            return UserUtil.failedAuthorization(fullHttpResponse);
-        }
-        User user = CloudNet.getInstance().getUser(username);
+        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message")) return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
+        if (!RequestUtil.checkAuth(httpRequest)) return UserUtil.failedAuthorization(fullHttpResponse);
+        User user = CloudNet.getInstance().getUser(RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-user"));
         switch (RequestUtil.getHeaderValue(httpRequest,"-Xmessage").toLowerCase()){
             case "groups":{
                 if(!UserUtil.hasPermission(user,"cloudnet.web.group.proxys","*")){
@@ -87,7 +87,15 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
                     resp.append("response",data);
                     return ResponseUtil.success(fullHttpResponse,true,resp);
                 }else{
-                    return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+                    List<String> groups = new ArrayList<>();
+                    for (ProxyGroup prx : getProjectMain().getCloud().getProxyGroups().values()) {
+                        if(UserUtil.hasPermission(user,"*","cloudnet.web.group.proxy.item.*","cloudnet.web.proxy.group.proxy.item."+prx.getName())){
+                            groups.add(JsonUtil.getGson().toJson(prx));
+                        }
+                    }
+                    Document resp = new Document();
+                    resp.append("response", groups);;
+                    return ResponseUtil.success(fullHttpResponse,true,resp);
                 }
             }
             case "screen":{
@@ -136,15 +144,9 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
     public FullHttpResponse post(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
         ResponseUtil.setHeader(fullHttpResponse,"Content-Type", "application/json");
-        if (!RequestUtil.hasHeader(httpRequest,"-xcloudnet-user","-xcloudnet-passwort","-xcloudnet-message")) {
-            return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
-        }
-        String username = RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-user");
-        String userpassword = new String(Base64.getDecoder().decode(RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-password").getBytes()));
-        if (!CloudNet.getInstance().authorizationPassword(username, userpassword)) {
-            return UserUtil.failedAuthorization(fullHttpResponse);
-        }
-        User user = CloudNet.getInstance().getUser(username);
+        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message")) return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
+        if (!RequestUtil.checkAuth(httpRequest)) return UserUtil.failedAuthorization(fullHttpResponse);
+        User user = CloudNet.getInstance().getUser(RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-user"));
         switch (RequestUtil.getHeaderValue(httpRequest,"-Xmessage").toLowerCase()){
             case "command":{
                 if(RequestUtil.hasHeader(httpRequest,"-Xvalue") && RequestUtil.hasHeader(httpRequest,"-Xcount")){
