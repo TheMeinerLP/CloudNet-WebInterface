@@ -203,7 +203,7 @@ public class ServerAPI extends MethodWebHandlerAdapter {
                     ServerGroup grp = getProjectMain().getCloud().getServerGroup(group);
                     CloudNet.getInstance().getServerGroups().remove(grp.getName());
                     Collection<String> wrps = grp.getWrapper();
-                    getProjectMain().getCloud().getConfig().deleteGroup(grp);
+                    CloudNet.getInstance().getConfig().deleteGroup(grp);
                     CloudNet.getInstance().toWrapperInstances(wrps).forEach(Wrapper::updateWrapper);
                     Document document = new Document();
                     return ResponseUtil.success(fullHttpResponse,true,document);
@@ -217,11 +217,14 @@ public class ServerAPI extends MethodWebHandlerAdapter {
                 if(!UserUtil.hasPermission(user,"cloudnet.web.group.server.save.*","*","cloudnet.web.group.server.save."+serverGroup.getName())) {
                     return ResponseUtil.permissionDenied(fullHttpResponse);
                 }
-                Paths.get("groups/" + serverGroup.getName() + ".json").toFile().deleteOnExit();
-
+                CloudNet.getInstance().getConfig().deleteGroup(serverGroup);
                 CloudNet.getInstance().getConfig().createGroup(serverGroup);
+                if(!CloudNet.getInstance().getServerGroups().containsKey(serverGroup.getName())){
+                    CloudNet.getInstance().getServerGroups().put(serverGroup.getName(), serverGroup);
+                }else{
+                    CloudNet.getInstance().getServerGroups().replace(serverGroup.getName(),serverGroup);
+                }
                 CloudNet.getInstance().setupGroup(serverGroup);
-                CloudNet.getInstance().getServerGroups().replace(serverGroup.getName(), serverGroup);
                 CloudNet.getInstance().toWrapperInstances(serverGroup.getWrapper()).forEach(Wrapper::updateWrapper);
                 Document document = new Document();
                 return ResponseUtil.success(fullHttpResponse,true,document);

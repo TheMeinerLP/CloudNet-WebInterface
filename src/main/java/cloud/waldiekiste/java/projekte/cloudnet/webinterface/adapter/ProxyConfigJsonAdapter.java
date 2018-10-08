@@ -18,13 +18,16 @@ import java.util.List;
 
 public class ProxyConfigJsonAdapter implements JsonSerializer<ProxyConfig>,JsonDeserializer<ProxyConfig> {
     @Override
-    public ProxyConfig deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+    public ProxyConfig deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext
+            jsonDeserializationContext) throws JsonParseException {
         JsonObject object = jsonElement.getAsJsonObject();
         final boolean enabled = object.get("enabled").getAsBoolean();
         final boolean maintenance = object.get("maintenance").getAsBoolean();
         final List<Motd> motdsLayouts = new ArrayList<>();
-        object.get("motdsLayouts").getAsJsonArray().forEach(t->motdsLayouts.add(jsonDeserializationContext.deserialize(t,Motd.class)));
-        final Motd maintenanceMotdLayout = jsonDeserializationContext.deserialize(object.get("maintenanceMotdLayout"),Motd.class);
+        object.get("motdsLayouts").getAsJsonArray().forEach(t->motdsLayouts.add(jsonDeserializationContext.
+                deserialize(t,Motd.class)));
+        final Motd maintenanceMotdLayout = jsonDeserializationContext.deserialize(object.get("maintenanceMotdLayout"),
+                Motd.class);
         final String maintenaceProtocol = object.get("maintenaceProtocol").getAsString();
         final int maxPlayers = object.get("maxPlayers").getAsInt();
         final boolean fastConnect = object.get("fastConnect").getAsBoolean();
@@ -35,19 +38,24 @@ public class ProxyConfigJsonAdapter implements JsonSerializer<ProxyConfig>,JsonD
         object.get("playerInfo").getAsJsonArray().forEach(t->playerInfos.add(t.getAsString()));
         final Collection<String> whitelist = new ArrayList<>();
         object.get("whitelist").getAsJsonArray().forEach(t->whitelist.add(t.getAsString()));
-        final DynamicFallback dynamicFallback = jsonDeserializationContext.deserialize(object.get("dynamicFallback"),DynamicFallback.class);
-        return new ProxyConfig(enabled,maintenance,motdsLayouts,maintenanceMotdLayout,maintenaceProtocol,maxPlayers,fastConnect,customPayloadFixer,autoSlot,tabList,playerInfos.toArray(new String[playerInfos.size()]),whitelist,dynamicFallback);
+        final DynamicFallback dynamicFallback = jsonDeserializationContext.deserialize(object.get("dynamicFallback"),
+                DynamicFallback.class);
+        return new ProxyConfig(enabled,maintenance,motdsLayouts,maintenanceMotdLayout,maintenaceProtocol,maxPlayers,
+                fastConnect,customPayloadFixer,autoSlot,tabList,playerInfos.toArray(new String[0]),
+                whitelist,dynamicFallback);
     }
 
     @Override
-    public JsonElement serialize(ProxyConfig proxyConfig, Type type, JsonSerializationContext jsonSerializationContext) {
+    public JsonElement serialize(ProxyConfig proxyConfig, Type type, JsonSerializationContext
+            jsonSerializationContext) {
         JsonObject object = new JsonObject();
         object.addProperty("enabled", proxyConfig.isEnabled());
         object.addProperty("maintenance", proxyConfig.isMaintenance());
         JsonArray motdsLayouts = new JsonArray();
         proxyConfig.getMotdsLayouts().forEach(t->motdsLayouts.add(jsonSerializationContext.serialize(t)));
         object.add("motdsLayouts", motdsLayouts);
-        object.add("maintenanceMotdLayout",jsonSerializationContext.serialize(proxyConfig.getMaintenanceMotdLayout()));
+        object.add("maintenanceMotdLayout",jsonSerializationContext.
+                serialize(proxyConfig.getMaintenanceMotdLayout()));
         object.addProperty("maintenaceProtocol",proxyConfig.getMaintenaceProtocol());
         object.addProperty("maxPlayers",proxyConfig.getMaxPlayers());
         object.addProperty("fastConnect",proxyConfig.isFastConnect());
