@@ -12,13 +12,17 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.JsonU
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
+import de.dytanic.cloudnet.lib.NetworkUtils;
+import de.dytanic.cloudnet.lib.player.permission.PermissionGroup;
 import de.dytanic.cloudnet.lib.player.permission.PermissionPool;
+import de.dytanic.cloudnet.lib.server.ServerGroup;
 import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
 import de.dytanic.cloudnet.web.server.util.PathProvider;
 import de.dytanic.cloudnet.web.server.util.QueryDecoder;
 import de.dytanic.cloudnetcore.CloudNet;
+import de.dytanic.cloudnetcore.network.components.Wrapper;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -37,13 +41,14 @@ public class CPermsApi extends MethodWebHandlerAdapter {
         super("/cloudnet/api/v2/cperms");
         this.projectMain = projectMain;
         projectMain.getCloud().getWebServer().getWebServerProvider().registerHandler(this);
-
+        pool = projectMain.getCloud().getNetworkManager().getModuleProperties().getObject("permissionPool",PermissionPool.TYPE);
     }
     @SuppressWarnings( "deprecation" )
     @Override
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
-        pool = this.projectMain.getCloud().getNetworkManager().getModuleProperties().getObject("permissionPool",PermissionPool.TYPE);
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
+        pool = projectMain.getCloud().getNetworkManager().getModuleProperties().getObject("permissionPool",PermissionPool.TYPE);
+
         ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json; charset=utf-8");
         if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message"))
             return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
@@ -123,6 +128,36 @@ public class CPermsApi extends MethodWebHandlerAdapter {
             }
         }
     }
+
+    @Override
+    public FullHttpResponse post(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) throws Exception {
+        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
+        ResponseUtil.setHeader(fullHttpResponse,"Content-Type", "application/json");
+        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message")) return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
+        if (!RequestUtil.checkAuth(httpRequest)) return UserUtil.failedAuthorization(fullHttpResponse);
+        User user = CloudNet.getInstance().getUser(RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-user"));
+        switch (RequestUtil.getHeaderValue(httpRequest,"-Xmessage").toLowerCase()){
+            case "group":{
+                final String servergroup = RequestUtil.getContent(httpRequest);
+                PermissionGroup permissionGroup = JsonUtil.getGson().fromJson(servergroup,PermissionGroup.class);
+                if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.group.save.*","*","cloudnet.web.cperms.group.save."+permissionGroup.getName())) {
+                    return ResponseUtil.permissionDenied(fullHttpResponse);
+                }
+                this.projectMain.getConfigPermission().updatePermissionGroup(permissionGroup);
+                NetworkUtils.addAll(pool.getGroups(), this.projectMain.getConfigPermission().loadAll0());
+
+                CloudNet.getInstance().getNetworkManager().getModuleProperties().append("permissionPool", this.pool);
+                Document document = new Document();
+                return ResponseUtil.success(fullHttpResponse,true,document);
+            }
+            default:{
+                return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+            }
+        }
+
+
+    }
+
     @SuppressWarnings( "deprecation" )
     @Override
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {

@@ -13,17 +13,11 @@
     <groupId>com.waldiekiste.java.projekte.cloudnet</groupId>
 
     <properties>
-        <VersionString>0.10.${buildNumber}-${project.version}</VersionString>
+        <BRANCH>DEVELOPMENT</BRANCH>
+        <VersionString>${project.version}.${build.time}-${BRANCH}</VersionString>
     </properties>
-    <version>RELEASE</version>
+    <version>0.11</version>
     <modelVersion>4.0.0</modelVersion>
-
-    <distributionManagement>
-        <repository>
-            <id>CloudNet</id>
-            <url>ftp://madfix.me/</url>
-        </repository>
-    </distributionManagement>
 
     <repositories>
         <repository>
@@ -31,13 +25,13 @@
             <url>https://cloudnetservice.eu/repositories/</url>
         </repository>
     </repositories>
-
-    <scm>
-        <connection>scm:svn:http://127.0.0.1/dummy</connection>
-        <developerConnection>scm:svn:https://127.0.0.1/dummy</developerConnection>
-        <tag>HEAD</tag>
-        <url>http://127.0.0.1/dummy</url>
-    </scm>
+    <distributionManagement>
+        <repository>
+            <id>CloudNet</id>
+            <url>scpexe://madfix.me/</url>
+            <layout>default</layout>
+        </repository>
+    </distributionManagement>
     <build>
         <finalName>${project.artifactId}-${VersionString}</finalName>
         <plugins>
@@ -49,6 +43,25 @@
                     <source>8</source>
                     <target>8</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.10</version>
+                <executions>
+                    <execution>
+                        <id>timestamp-property</id>
+                        <goals>
+                            <goal>timestamp-property</goal>
+                        </goals>
+                        <configuration>
+                            <name>build.time</name>
+                            <pattern>dd.MM.yyyy.HH.mm</pattern>
+                            <locale>de_DE</locale>
+                            <timeZone>Europe/Berlin</timeZone>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -68,49 +81,39 @@
                 </dependencies>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <id>buildnumber</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>create</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <format>{0,number}</format>
-                    <items>
-                        <item>buildNumber</item>
-                    </items>
-                    <doCheck>false</doCheck>
-                    <doUpdate>false</doUpdate>
-                    <revisionOnScmFailure>unknownbuild</revisionOnScmFailure>
-                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.wagon</groupId>
+                        <artifactId>wagon-ssh</artifactId>
+                        <version>2.0</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>wagon-maven-plugin</artifactId>
-                <version>1.0</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <finalName>${project.artifactId}-${VersionString}</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+
+                </configuration>
                 <executions>
                     <execution>
-                        <id>upload-assembly</id>
-                        <phase>deploy</phase>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!--  bind to the packaging phase -->
                         <goals>
-                            <goal>upload-single</goal>
+                            <goal>single</goal>
                         </goals>
-                        <configuration>
-                            <serverId>CloudNet</serverId> <!-- references the server declaration -->
-                            <fromFile>${project.build.directory}/${project.build.finalName}</fromFile>
-                            <url>ftp://madfix.me/</url>
-                            <toFile>${project.build.finalName}</toFile>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
         <resources>
             <resource>
@@ -119,19 +122,19 @@
             </resource>
         </resources>
         <extensions>
-            <!-- Enabling the use of FTP -->
+            <!-- Enabling the use of SSH -->
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ftp</artifactId>
-                <version>2.10</version>
+                <artifactId>wagon-ssh-external</artifactId>
+                <version>1.0-beta-6</version>
             </extension>
         </extensions>
     </build>
     <dependencies>
         <dependency>
-            <groupId>com.google.apis</groupId>
-            <artifactId>google-api-services-analytics</artifactId>
-            <version>v3-rev159-1.25.0</version>
+            <groupId>org.piwik.java.tracking</groupId>
+            <artifactId>piwik-java-tracker</artifactId>
+            <version>1.2</version>
         </dependency>
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
