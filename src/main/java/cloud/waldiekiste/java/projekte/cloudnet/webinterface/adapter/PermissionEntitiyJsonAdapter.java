@@ -36,8 +36,14 @@ public class PermissionEntitiyJsonAdapter implements JsonSerializer<PermissionEn
     public JsonElement serialize(PermissionEntity permissionEntity, Type type, JsonSerializationContext jsonSerializationContext) {
         JsonObject object = new JsonObject();
         object.addProperty("uniqueId",permissionEntity.getUniqueId().toString());
-        Type permissionsType = new TypeToken<HashMap<String, Boolean>>(){}.getType();
-        object.add("permissions",jsonSerializationContext.serialize(permissionEntity.getPermissions(),permissionsType));
+        JsonArray permissions = new JsonArray();
+        permissionEntity.getPermissions().forEach((k,v)->{
+            JsonObject permission = new JsonObject();
+            permission.addProperty("key",k);
+            permission.addProperty("value",v);
+            permissions.add(permission);
+        });
+        object.add("permissions",permissions);
         object.addProperty("prefix",permissionEntity.getPrefix());
         object.addProperty("suffix",permissionEntity.getSuffix());
         Type groups = new TypeToken<Collection<GroupEntityData>>(){}.getType();

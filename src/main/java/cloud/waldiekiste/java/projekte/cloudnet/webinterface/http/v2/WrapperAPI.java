@@ -32,15 +32,19 @@ public class WrapperAPI extends MethodWebHandlerAdapter {
     }
     @SuppressWarnings( "deprecation" )
     @Override
-    public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
+    public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
+                                PathProvider pathProvider, HttpRequest httpRequest) {
+        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(),
+                HttpResponseStatus.OK);
         ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json; charset=utf-8");
-        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message")) return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
+        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message"))
+            return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
         if (!RequestUtil.checkAuth(httpRequest)) return UserUtil.failedAuthorization(fullHttpResponse);
         switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
             case "wrappers":{
                 Document document = new Document();
-                document.append("response",getProjectMain().getCloud().getWrappers().keySet());
+                this.projectMain.getTracking().getWrappers(CloudNet.getInstance().getWrappers().size());
+                document.append("response",CloudNet.getInstance().getWrappers().keySet());
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
             default:{
@@ -50,11 +54,8 @@ public class WrapperAPI extends MethodWebHandlerAdapter {
     }
     @SuppressWarnings( "deprecation" )
     @Override
-    public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
+    public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
+                                    PathProvider pathProvider, HttpRequest httpRequest) {
         return ResponseUtil.cross(httpRequest);
-    }
-
-    private ProjectMain getProjectMain() {
-        return projectMain;
     }
 }

@@ -13,6 +13,7 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandVer
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.*;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.listener.ScreenSessionEvent;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.permission.ConfigPermissions;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.services.ErrorService;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.services.TrackerService;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.services.UpdateService;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.setup.ConfigSetup;
@@ -36,6 +37,7 @@ public class ProjectMain extends CoreModule {
     private UpdateChannelSetup updateChannelSetup;
     private UpdateService updateService;
     private TrackerService tracking;
+    private String Prefix = getModuleConfig().getName();
 
     @Override
     public void onLoad() {
@@ -55,7 +57,7 @@ public class ProjectMain extends CoreModule {
         try {
             this.configPermission = new ConfigPermissions();
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorService.error(101);
         }
         getCloud().getCommandManager().registerCommand(new CommandSetupConfig(this));
         getCloud().getCommandManager().registerCommand(new CommandVersion(this));
@@ -113,6 +115,9 @@ public class ProjectMain extends CoreModule {
         return configSetup;
     }
 
+    public TrackerService getTracking() {
+        return tracking;
+    }
 
     public ConfigPermissions getConfigPermission() {
         return configPermission;
