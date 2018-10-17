@@ -166,7 +166,7 @@ public class TrackerService {
             this.request = null;
         }
     }
-    public void onBootstrap(Module module){
+    public void onBootstrap(Module module, long diffrent){
         String webhost = CloudNet.getInstance().getWebServer().getAddress();
         int webport = CloudNet.getInstance().getWebServer().getPort();
         if (CloudNet.getInstance().getWebServer().isSsl()) {
@@ -179,9 +179,10 @@ public class TrackerService {
             this.request.setUserId(this.userID);
             this.request.setActionName("onBootstrap");
             this.request.setPageCustomVariable(new CustomVariable(module.getModuleConfig().getVersion(),""),1);
-            this.request.setPageCustomVariable(new CustomVariable(System.getProperty("java.version"),""),2);
-            this.request.setPageCustomVariable(new CustomVariable(System.getProperty("os.name"),""),3);
-            this.request.setPageCustomVariable(new CustomVariable(System.getProperty("os.arch"),""),4);
+            this.request.setPageCustomVariable(new CustomVariable("Java Version ", System.getProperty("java.version")),2);
+            this.request.setPageCustomVariable(new CustomVariable("System Type ",System.getProperty("os.name")),3);
+            this.request.setPageCustomVariable(new CustomVariable("System Bit ",System.getProperty("os.arch")),4);
+            this.request.setPageCustomVariable(new CustomVariable("Start Time ",String.valueOf(diffrent)),5);
             this.request.setPluginJava(true);
             getTracker().sendRequest(this.request);
         } catch (MalformedURLException e) {
