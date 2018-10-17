@@ -35,8 +35,8 @@ public class ProjectMain extends CoreModule {
 
 
 
-    /*
-    * At this part, the basic Strings,Lists,Services, Setups and Maps  are listed.
+    /**
+     * At this part, the basic Strings,Lists,Services, Setups and Maps  are listed.
      */
     private ConfigPermissions configPermission;
     private List<String> consoleLines;
