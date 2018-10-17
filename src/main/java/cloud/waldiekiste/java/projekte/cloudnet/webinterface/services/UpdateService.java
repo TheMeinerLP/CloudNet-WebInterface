@@ -58,8 +58,8 @@ public class UpdateService {
             InputStream inputStream = httpURLConnection.getInputStream();
             Throwable throwable1 = null;
             try {
-                File f = new File("modules",data.getPath().substring(data.getPath().lastIndexOf("/")+1,data.getPath().length()));
-                Files.copy(inputStream, f.toPath(),new CopyOption[]{StandardCopyOption.REPLACE_EXISTING});
+                File f = new File("modules",data.getPath().substring(data.getPath().lastIndexOf("/")+1));
+                Files.copy(inputStream, f.toPath(), StandardCopyOption.REPLACE_EXISTING);
             } catch (Throwable throwable) {
                 throwable1 = throwable;
                 throw throwable;

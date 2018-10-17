@@ -51,6 +51,10 @@ public class ProjectMain extends CoreModule {
         this.updateChannelSetup = new UpdateChannelSetup();
     }
 
+    /**
+     *
+     * @since 0.0.0
+     */
     @Override
     public void onBootstrap() {
         versionCheck();
