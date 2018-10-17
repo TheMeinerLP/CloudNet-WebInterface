@@ -141,7 +141,8 @@ public class ProjectMain extends CoreModule {
         /*
         * Checking CloudNet Version and sending Error-Message if its lower than the version 2.1.8
          */
-        if(new Integer( NetworkUtils.class.getPackage().getImplementationVersion().replace(".","")) < 218){
+        if(new Integer( NetworkUtils.class.getPackage().getImplementationVersion().replace(".",""))
+                < 218){
             System.err.println("This Module is not compatible with this CloudNet Version");
             return;
         }
