@@ -172,7 +172,7 @@ public class ProjectMain extends CoreModule {
     }
 
     /**
-     * Here its getting the Trackerservice and its returning that service
+     * Here its getting the Tracker service and its returning that service
      * @see TrackerService
       */
     public TrackerService getTracking() {
