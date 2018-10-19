@@ -8,24 +8,26 @@ cache:
   paths:
     - .m2/repository/
     - target/
-
-build:
-  stage: build
-  script:
-    - mvn $MAVEN_CLI_OPTS compile
+before_script:
+- apt-get update -qq && apt-get install -y -qq sshpass
+- mvn $MAVEN_CLI_OPTS clean
 
 test:
   stage: test
   script:
     - mvn $MAVEN_CLI_OPTS test
-
+build:
+  stage: build
+  script:
+  - mvn $MAVEN_CLI_OPTS package
 deploy:
-  before_script:
-    - export COMMIT_TIME=$(git show -s --format=%ct $CI_COMMIT_SHA)
   stage: deploy
   script:
-    - mvn $MAVEN_CLI_OPTS package
+    - cd target/
+    - ls
+    - sshpass -V
+    - export SSHPASS=$USER_PASS
+    - sshpass -e scp -o stricthostkeychecking=no -r target/*.jar cloudnet@madfix.me:/srv/www/update.madfix.me/public_html/projects/MaterialDesignWebInterface/module/
   artifacts:
-    name: "Artifact_${COMMIT_TIME}"
     paths:
       - "target/*.jar"

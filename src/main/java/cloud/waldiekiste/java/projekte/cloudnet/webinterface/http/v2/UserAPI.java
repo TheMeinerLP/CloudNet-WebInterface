@@ -43,13 +43,10 @@ public class UserAPI extends MethodWebHandlerAdapter {
 
     @SuppressWarnings("deprecation")
     @Override
-    public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
-                                PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(),
-                HttpResponseStatus.OK);
+    public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
+        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
         ResponseUtil.setHeader(fullHttpResponse,"Content-Type", "application/json; charset=utf-8");
-        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-Xmessage"))
-            return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
+        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-Xmessage")) return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
         if (!RequestUtil.checkAuth(httpRequest)) return UserUtil.failedAuthorization(fullHttpResponse);
         User user = CloudNet.getInstance().getUser(RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-user"));
         switch (RequestUtil.getHeaderValue(httpRequest,"-Xmessage").toLowerCase()){
@@ -58,13 +55,13 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     return ResponseUtil.permissionDenied(fullHttpResponse);
                 }else {
                     List<String> users = new ArrayList<>();
-                    CloudNet.getInstance().getUsers().forEach(t -> users.add(JsonUtil.getGson().toJson(t)));
+                    getProjectMain().getCloud().getUsers().forEach(t -> users.add(JsonUtil.getGson().toJson(t)));
                     Document resp = new Document();
-                    this.projectMain.getTracking().getUsers(users.size());
                     resp.append("response", users);
                     return ResponseUtil.success(fullHttpResponse, true, resp);
                 }
             }
+
             default:{
                 return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
             }
@@ -73,21 +70,17 @@ public class UserAPI extends MethodWebHandlerAdapter {
 
     @SuppressWarnings("deprecation")
     @Override
-    public FullHttpResponse post(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
-                                 PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(),
-                HttpResponseStatus.OK);
+    public FullHttpResponse post(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
+        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
         ResponseUtil.setHeader(fullHttpResponse,"Content-Type", "application/json");
-        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token",
-                "-xcloudnet-message")) return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
+        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message")) return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
         if (!RequestUtil.checkAuth(httpRequest)) return UserUtil.failedAuthorization(fullHttpResponse);
         User user = CloudNet.getInstance().getUser(RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-user"));
         switch (RequestUtil.getHeaderValue(httpRequest,"-Xmessage").toLowerCase()){
             case "save":{
                 final String jsonuser = RequestUtil.getContent(httpRequest);
                 User saveduser = JsonUtil.getGson().fromJson(jsonuser,User.class);
-                if(!UserUtil.hasPermission(user,"*","cloudnet.web.user.save.*","cloudnet.web.user.save."
-                        +saveduser.getName())){
+                if(!UserUtil.hasPermission(user,"*","cloudnet.web.user.save.*","cloudnet.web.user.save."+saveduser.getName())){
                     return ResponseUtil.permissionDenied(fullHttpResponse);
                 }else {
                     ArrayList<User> users = new ArrayList<>(getProjectMain().getCloud().getUsers());
@@ -102,7 +95,6 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     users.add(saveduser);
                     getProjectMain().getCloud().getUsers().addAll(users);
                     this.projectMain.getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
-                    this.projectMain.getTracking().updateUser();
                     Document resp = new Document();
                     return ResponseUtil.success(fullHttpResponse, true, resp);
                 }
@@ -111,13 +103,10 @@ public class UserAPI extends MethodWebHandlerAdapter {
                 final String jsonuser = RequestUtil.getContent(httpRequest);
                 Document usern = Document.load(jsonuser);
                 User basUser = getProjectMain().getCloud().getUser(usern.get("username").getAsString());
-                if(!UserUtil.hasPermission(user,"*","cloudnet.web.user.restepassword.*",
-                        "cloudnet.web.user.restepassword."+basUser.getName())){
+                if(!UserUtil.hasPermission(user,"*","cloudnet.web.user.restepassword.*","cloudnet.web.user.restepassword."+basUser.getName())){
                     return ResponseUtil.permissionDenied(fullHttpResponse);
                 }else {
-                    User basicUser = new User(basUser.getName(),basUser.getUniqueId(),basUser.getApiToken(),
-                            DyHash.hashString(new String(Base64.getDecoder().decode(usern.get("password")
-                                    .getAsString()))),basUser.getPermissions(),basUser.getMetaData());
+                    User basicUser = new User(basUser.getName(),basUser.getUniqueId(),basUser.getApiToken(),DyHash.hashString(new String(Base64.getDecoder().decode(usern.get("password").getAsString()))),basUser.getPermissions(),basUser.getMetaData());
                     ArrayList<User> users = new ArrayList<>(getProjectMain().getCloud().getUsers());
                     AtomicReference<User> olduser = new AtomicReference<>();
                     users.forEach(t->{
@@ -130,7 +119,6 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     users.add(basicUser);
                     getProjectMain().getCloud().getUsers().addAll(users);
                     this.projectMain.getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
-                    this.projectMain.getTracking().updateUserPassword();
                     Document resp = new Document();
                     return ResponseUtil.success(fullHttpResponse, true, resp);
                 }
@@ -141,8 +129,7 @@ public class UserAPI extends MethodWebHandlerAdapter {
                 }else {
                     final String jsonuser = RequestUtil.getContent(httpRequest);
                     Document usern = Document.load(jsonuser);
-                    BasicUser basicUser = new BasicUser(usern.get("username").getAsString(),usern.get("password")
-                            .getAsString(),new ArrayList<>());
+                    BasicUser basicUser = new BasicUser(usern.get("username").getAsString(),usern.get("password").getAsString(),new ArrayList<>());
                     ArrayList<User> users = new ArrayList<>(getProjectMain().getCloud().getUsers());
                     AtomicBoolean exsist = new AtomicBoolean();
                     users.forEach(t->{
@@ -158,18 +145,15 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     getProjectMain().getCloud().getUsers().clear();
                     getProjectMain().getCloud().getUsers().addAll(users);
                     this.projectMain.getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
-                    this.projectMain.getTracking().addUser();
                     Document resp = new Document();
                     return ResponseUtil.success(fullHttpResponse, true, resp);
                 }
             }
             case "delete":{
                 if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&
-                        getProjectMain().getCloud().getProxyGroups().containsKey(RequestUtil.getHeaderValue(
-                                httpRequest,"-Xvalue"))){
+                        getProjectMain().getCloud().getProxyGroups().containsKey(RequestUtil.getHeaderValue(httpRequest,"-Xvalue"))){
                     final String username1 = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
-                    if(!UserUtil.hasPermission(user,"cloudnet.web.user.delete.*","*",
-                            "cloudnet.web.user.delete."+username1)) {
+                    if(!UserUtil.hasPermission(user,"cloudnet.web.user.delete.*","*","cloudnet.web.user.delete."+username1)) {
                         return ResponseUtil.permissionDenied(fullHttpResponse);
                     }
                     ArrayList<User> users = new ArrayList<>(getProjectMain().getCloud().getUsers());
@@ -184,7 +168,6 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     getProjectMain().getCloud().getUsers().clear();
                     getProjectMain().getCloud().getUsers().addAll(users);
                     this.projectMain.getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
-                    this.projectMain.getTracking().deleteUser();
                     Document document = new Document();
                     return ResponseUtil.success(fullHttpResponse,true,document);
                 }else{
@@ -199,8 +182,7 @@ public class UserAPI extends MethodWebHandlerAdapter {
 
     @SuppressWarnings( "deprecation" )
     @Override
-    public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
-                                    PathProvider pathProvider, HttpRequest httpRequest) {
+    public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
         return ResponseUtil.cross(httpRequest);
     }
 
