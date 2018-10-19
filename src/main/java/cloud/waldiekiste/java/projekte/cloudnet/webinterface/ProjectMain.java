@@ -45,7 +45,6 @@ public class ProjectMain extends CoreModule {
     private UpdateChannelSetup updateChannelSetup;
     private UpdateService updateService;
     private TrackerService tracking;
-    private String Prefix = getModuleConfig().getName();
 
     /**
      * In this method, the trackingservice, the updateservice and the classes are initialised.

@@ -20,9 +20,12 @@ test:
     - mvn $MAVEN_CLI_OPTS test
 
 deploy:
+  before_script:
+    - export COMMIT_TIME=$(git show -s --format=%ct $CI_COMMIT_SHA)
   stage: deploy
   script:
     - mvn $MAVEN_CLI_OPTS package
   artifacts:
+    name: "Artifact_${COMMIT_TIME}"
     paths:
       - "target/*.jar"
