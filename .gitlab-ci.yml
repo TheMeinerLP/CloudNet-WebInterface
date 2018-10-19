@@ -24,7 +24,7 @@ deploy-build:
     - ls
     - sshpass -V
     - export SSHPASS=$USER_PASS
-    - sshpass -v -e scp -o StrictHostKeyChecking=no -r target/*.jar cloudnet@madfix.me:/srv/www/update.madfix.me/public_html/projects/MaterialDesignWebInterface/module/
+    - sshpass -v -e scp -o StrictHostKeyChecking=no -r *.jar cloudnet@madfix.me:/srv/www/update.madfix.me/public_html/projects/MaterialDesignWebInterface/module/
   artifacts:
     paths:
       - "target/*.jar"
