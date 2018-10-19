@@ -105,6 +105,7 @@ public class ProjectMain extends CoreModule {
         long end = System.currentTimeMillis();
         this.tracking.onBootstrap(this,end - start);
     }
+
     /**
      * - Clearing consoleLines & screenInfos for RAM "boost" -
      */
