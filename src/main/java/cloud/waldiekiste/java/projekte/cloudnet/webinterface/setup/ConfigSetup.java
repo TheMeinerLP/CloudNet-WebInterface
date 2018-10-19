@@ -18,13 +18,24 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * This class creates the Configurationfile.
+ */
+
 public class ConfigSetup extends Setup {
     public ConfigSetup() {
         setupComplete(t->{
+
            String name = t.getString("NetworkName");
+           /*
+            at Line 32 and 33 it sets the details of the webserver (port and adress)
+             */
            String webhost = CloudNet.getInstance().getWebServer().getAddress();
            int webport = CloudNet.getInstance().getWebServer().getPort();
            String url;
+           /*
+            Here it checks if the Webserver has a SSL-Certificate.
+            */
            if (CloudNet.getInstance().getWebServer().isSsl()) {
                url = "https://"+webhost+":"+webport;
            }else{
@@ -33,13 +44,24 @@ public class ConfigSetup extends Setup {
            JsonObject jsonObject = new JsonObject();
            JsonObject server = new JsonObject();
            JsonArray servers = new JsonArray();
+           /*
+           Here it adds the properties CloudURL and CloudName, also it adds the server
+            */
            server.addProperty("CloudURL",url);
            server.addProperty("CloudName",name);
            servers.add(server);
            jsonObject.add("Servers",servers );
+           /*
+           The user gets a message as far as the setup is completed without errors, also he gets the
+           instructions to copy the config into the Webinterface.
+            */
            System.out.println("Setup complete!");
-           System.out.println("Copy now the config.json from 'local/mdwi/' into your '/assets/config/' in your WebInterface!");
+           System.out.println("Copy now the config.json from 'local/mdwi/' into your '/assets/config/'" +
+                   " in your WebInterface!");
            File f = new File("local/mdwi");
+           /*
+           Here it creats a directory and the config file
+            */
            f.mkdirs();
            File config = new File(f,"config.json");
             try {
@@ -52,8 +74,15 @@ public class ConfigSetup extends Setup {
             }
         });
         setupCancel(()->{
+            /*
+            If the user cancels the setup, he gets a Message
+             */
             System.out.println("The setup was cancel from user!");
         });
-        request(new SetupRequest("NetworkName","Please insert the network name of the cloud", "",SetupResponseType.STRING,c->true));
+        /**
+         * Here it asks the User for the NetworkName to set in the Config
+         */
+        request(new SetupRequest("NetworkName","Please insert the network name of the cloud",
+                "",SetupResponseType.STRING,c->true));
     }
 }
