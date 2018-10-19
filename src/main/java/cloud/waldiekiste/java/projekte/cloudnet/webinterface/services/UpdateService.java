@@ -86,7 +86,7 @@ public class UpdateService {
 
     }
     private UpdateData getUpdateData(VersionType branch) throws IOException {
-        String url = "https://api.mc-lifetime.de/mdwebinterface/version.php?type=modul&new&branch="+branch.getType();
+        String url = "https://api.madfix.me/version.php?type=modul&new&branch="+branch.getType();
         URL adress;
         try {
             adress = new URL( url);
@@ -120,7 +120,7 @@ public class UpdateService {
         return data;
     }
     public ArrayList<UpdateData> getUpdates(VersionType branch) throws Exception {
-        String url = "https://api.mc-lifetime.de/mdwebinterface/version.php?type=modul&branch="+branch.getType();
+        String url = "https://api.madfix.me/version.php?type=modul&branch="+branch.getType();
         URL adress = new URL( url);
         HttpURLConnection connection = (HttpURLConnection) adress.openConnection();
         connection.setConnectTimeout(2000);
