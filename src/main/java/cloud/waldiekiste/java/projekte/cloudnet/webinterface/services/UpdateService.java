@@ -27,13 +27,13 @@ public class UpdateService {
                 VersionType type = VersionType.valueOf(document.get("mdwi.updateChannel").getAsString());
                 ModuleConfig config = module.getModuleConfig();
                 String versionID = config.getVersion();
-                Integer oldVersion = new Integer(versionID.replace(".",""));
+                Long oldVersion = new Long(versionID.replace(".",""));
                 UpdateData data = getUpdateData(type);
                 if(data == null){
                     return;
                 }
                 String v = data.getVersion().replace(".","");
-                Integer newVersion = new Integer(v);
+                Long newVersion = new Long(v);
                 if(newVersion > oldVersion){
                     module.onShutdown();
                     CloudNet.getInstance().getModuleManager().disableModule(module);
