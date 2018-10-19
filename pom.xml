@@ -16,6 +16,8 @@
         <BRANCH>DEVELOPMENT</BRANCH>
         <!--suppress UnresolvedMavenProperty -->
         <VersionString>${project.version}.${BuildTime}-${BRANCH}</VersionString>
+        <!--suppress UnresolvedMavenProperty -->
+        <JarVersionString>${project.version}.${BuildTime}</JarVersionString>
     </properties>
     <version>0.11</version>
     <modelVersion>4.0.0</modelVersion>
