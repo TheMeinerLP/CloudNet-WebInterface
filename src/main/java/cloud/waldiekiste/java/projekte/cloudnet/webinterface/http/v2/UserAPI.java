@@ -130,8 +130,9 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     return ResponseUtil.permissionDenied(fullHttpResponse);
                 }else {
                     final String jsonuser = RequestUtil.getContent(httpRequest);
+
                     Document usern = Document.load(jsonuser);
-                    BasicUser basicUser = new BasicUser(usern.get("username").getAsString(),usern.get("password").getAsString(),new ArrayList<>());
+                    BasicUser basicUser = new BasicUser(usern.get("username").getAsString(),new String(Base64.getDecoder().decode(usern.get("password").getAsString())),new ArrayList<>());
                     ArrayList<User> users = new ArrayList<>(getProjectMain().getCloud().getUsers());
                     AtomicBoolean exsist = new AtomicBoolean();
                     users.forEach(t->{
