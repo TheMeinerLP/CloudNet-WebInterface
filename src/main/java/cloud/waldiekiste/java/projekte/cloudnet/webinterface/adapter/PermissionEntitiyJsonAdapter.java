@@ -25,8 +25,14 @@ public class PermissionEntitiyJsonAdapter implements JsonSerializer<PermissionEn
             JsonObject permission = t.getAsJsonObject();
             permissions.put(permission.get("key").getAsString(),permission.get("value").getAsBoolean());
         });
-        final String prefix = object.get("prefix").getAsString();
-        final String suffix = object.get("suffix").getAsString();
+        String prefix = null;
+        if (!object.get("prefix").isJsonNull()) {
+            prefix = object.get("prefix").getAsString();
+        }
+        String suffix = null;
+        if(!object.get("suffix").isJsonNull()){
+            suffix = object.get("suffix").getAsString();
+        }
         List<GroupEntityData> groups = new ArrayList<>();
         object.get("groups").getAsJsonArray().forEach(t->{
             JsonObject group = t.getAsJsonObject();
