@@ -14,7 +14,8 @@ import de.dytanic.cloudnet.command.CommandSender;
 public class CommandVersion extends Command {
     private final ProjectMain projectMain;
     public CommandVersion(ProjectMain projectMain) {
-        super("versionI", "cloudnet.webinterface.version", "mdwi_v");
+        super("versionI", "cloudnet.webinterface.version", "vI");
+        this.description = "Show you the Module Version of the Material Design Web Interface";
         this.projectMain = projectMain;
     }
 

@@ -19,51 +19,31 @@ import de.dytanic.cloudnetcore.CloudNet;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class CommandUpdateChannel extends Command implements TabCompletable {
     private ProjectMain projectMain;
     public CommandUpdateChannel(ProjectMain projectMain) {
-        super("updateI", "cloudnet.webinterface.update",new String[0]);
+        super("updateI", "cloudnet.webinterface.update","UI");
+        this.description = "Help you to Update the Material Design Web Interface Module";
         this.projectMain = projectMain;
     }
 
     @Override
     public void onExecuteCommand(CommandSender commandSender, String[] strings) {
         if(strings.length > 0){
-            String subcommand = strings[0];
-            switch (subcommand.toLowerCase()){
+            String subCommand = strings[0];
+            switch (subCommand.toLowerCase()){
                 case "manual":{
                     Document document = CloudNet.getInstance().getDbHandlers().getUpdateConfigurationDatabase().get();
                     VersionType type = VersionType.valueOf(document.get("mdwi.updateChannel").getAsString());
-                    if (strings.length > 1) {
-                        String version = strings[1];
-                        System.out.println("Search for Version...");
-                        UpdateData data = null;
+                    if (document.contains("mdwi.updateChannel")) {
                         try {
-                            Stream<UpdateData> updateDataStream = this.projectMain.getUpdateService().getUpdates(type).stream();
-                            if (updateDataStream.anyMatch(t->t.getVersion().equalsIgnoreCase(version.toLowerCase()))) {
-                                document.append("mdwi.downgrade",true);
-                                CloudNet.getInstance().getDbHandlers().getUpdateConfigurationDatabase().set(document);
-                                System.out.println("Old Version found. Doing Downgrade...");
-                                this.projectMain.onShutdown();
-                                CloudNet.getInstance().getModuleManager().disableModule(this.projectMain);
-                                System.out.println("Downgrade finish. Reloading Cloud...");
-                                this.projectMain.getUpdateService().update(data);
-                                CloudNet.getInstance().reload();
-                            }else{
-                                System.out.println("Old Version not found!");
-                            }
-                        } catch (Exception e) {}
-                    }else{
-
-                        if (document.contains("mdwi.updateChannel")) {
-                            try {
-                                System.out.println("[Updater] Available versions for update channel "+type.getType());
-                                this.projectMain.getUpdateService().getUpdates(type).forEach(t-> System.out.printf("Version: %s",t.getVersion()));
-                            } catch (Exception e) {}
-                        }
+                            System.out.println("[Updater] Available versions for update channel "+type.getType());
+                            this.projectMain.getUpdateService().getUpdates(type).forEach(t-> System.out.printf("Version: %s",t.getVersion()));
+                        } catch (Exception ignored) {}
                     }
                     return;
                 }
@@ -78,7 +58,6 @@ public class CommandUpdateChannel extends Command implements TabCompletable {
                     }else{
                         System.out.println("[Updater] Please insert a Update Channel(DEVELOPMENT,RELEASE,SNAPSHOT)");
                     }
-                    return;
                 }
             }
 
@@ -95,16 +74,6 @@ public class CommandUpdateChannel extends Command implements TabCompletable {
             }
             case 1:{
                 switch (s.toLowerCase()){
-                    case "manual":{
-                        Document document = CloudNet.getInstance().getDbHandlers().getUpdateConfigurationDatabase().get();
-                        VersionType type = VersionType.valueOf(document.get("mdwi.updateChannel").getAsString());
-                        List<String> versions = new ArrayList<>();
-                        try {
-                            this.projectMain.getUpdateService().getUpdates(type).forEach(t->versions.add(t.getVersion()));
-                        } catch (Exception e){}
-
-                        return versions;
-                    }
                     case "channel":{
                         return Arrays.asList("DEVELOPMENT","RELEASE","SNAPSHOT");
                     }
@@ -112,6 +81,6 @@ public class CommandUpdateChannel extends Command implements TabCompletable {
                 break;
             }
         }
-        return Arrays.asList("manual","channel");
+        return Collections.singletonList("manual");
     }
 }

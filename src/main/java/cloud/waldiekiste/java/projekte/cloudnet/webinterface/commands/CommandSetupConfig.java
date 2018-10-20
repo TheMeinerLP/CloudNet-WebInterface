@@ -14,8 +14,10 @@ import de.dytanic.cloudnetcore.CloudNet;
 
 public class CommandSetupConfig extends Command {
     private final ProjectMain projectMain;
+
     public CommandSetupConfig(ProjectMain projectMain) {
-        super("setupI", "cloudnet.webinterface.setup", "mdwi");
+        super("setupI", "cloudnet.webinterface.setup", "sI");
+        this.description = "Setup the CloudNet Material Design Interface";
         this.projectMain = projectMain;
     }
 
