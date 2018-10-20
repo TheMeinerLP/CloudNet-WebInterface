@@ -150,8 +150,7 @@ public class UserAPI extends MethodWebHandlerAdapter {
                 }
             }
             case "delete":{
-                if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&
-                        getProjectMain().getCloud().getProxyGroups().containsKey(RequestUtil.getHeaderValue(httpRequest,"-Xvalue"))){
+                if(RequestUtil.hasHeader(httpRequest,"-Xvalue")){
                     final String username1 = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
                     if(!UserUtil.hasPermission(user,"cloudnet.web.user.delete.*","*","cloudnet.web.user.delete."+username1)) {
                         return ResponseUtil.permissionDenied(fullHttpResponse);
