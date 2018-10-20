@@ -36,7 +36,7 @@ public class PlayerConnectionJsonAdpater implements JsonSerializer<PlayerConnect
         object.addProperty("host",playerConnection.getHost());
         object.addProperty("port",playerConnection.getPort());
         object.addProperty("onlineMode",playerConnection.isOnlineMode());
-        object.addProperty("leagacy",playerConnection.isLegacy());
+        object.addProperty("legacy",playerConnection.isLegacy());
         return object;
     }
 }
