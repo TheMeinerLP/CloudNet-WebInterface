@@ -99,27 +99,27 @@ public class CPermsApi extends MethodWebHandlerAdapter {
             case "user":{
                 if(RequestUtil.hasHeader(httpRequest,"-Xvalue")){
                     final String userUUID = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
-                    if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.info.user.*","*","cloudnet.web.cperms.info.user."+userUUID)) {
+                    if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.info.user.*","*",
+                            "cloudnet.web.cperms.info.user."+userUUID)) {
                         return ResponseUtil.permissionDenied(fullHttpResponse);
                     }else {
                         Document document = new Document();
                         if (!pool.isAvailable()) {
                             return ResponseUtil.success(fullHttpResponse, false, document);
                         }
-                        document.append("response",JsonUtil.getGson().toJson(this.projectMain.getCloud().getDbHandlers().getPlayerDatabase().getPlayer(UUID.fromString(userUUID))));
-                        return ResponseUtil.success(fullHttpResponse,true,document);
-                    }
-                }else{
-                    if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.user","*")) {
-                        return ResponseUtil.permissionDenied(fullHttpResponse);
-                    }else{
-                        Document document = new Document();
-                        if(!pool.isAvailable()){
+                        if(!CloudNet.getInstance().getDbHandlers().getNameToUUIDDatabase().getDatabase().contains(userUUID)){
                             return ResponseUtil.success(fullHttpResponse,false,document);
                         }
-                        List<String> offlineUsers = new ArrayList<>();
-                        this.projectMain.getCloud().getDbHandlers().getPlayerDatabase().getRegisteredPlayers().values().forEach(t->offlineUsers.add(JsonUtil.getGson().toJson(t)));
-                        document.append("response",offlineUsers);
+                        if (userUUID.matches(
+                                "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"))
+                        {
+                            document.append("response",JsonUtil.getGson().toJson(this.projectMain.getCloud().
+                                    getDbHandlers().getPlayerDatabase().getPlayer(UUID.fromString(userUUID))));
+                        }else{
+                            UUID id = CloudNet.getInstance().getDbHandlers().getNameToUUIDDatabase().get(userUUID);
+                            document.append("response",JsonUtil.getGson().toJson(this.projectMain.getCloud().
+                                    getDbHandlers().getPlayerDatabase().getPlayer(id)));
+                        }
                         return ResponseUtil.success(fullHttpResponse,true,document);
                     }
                 }

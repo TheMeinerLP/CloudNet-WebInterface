@@ -13,22 +13,26 @@ import de.dytanic.cloudnet.lib.player.permission.GroupEntityData;
 import de.dytanic.cloudnet.lib.player.permission.PermissionEntity;
 
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class PermissionEntitiyJsonAdapter implements JsonSerializer<PermissionEntity>,JsonDeserializer<PermissionEntity> {
     @Override
     public PermissionEntity deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject object = jsonElement.getAsJsonObject();
         final String uniqueId = object.get("uniqueId").getAsString();
-        Type permisisonsType = new TypeToken<HashMap<String, Boolean>>(){}.getType();
-        HashMap<String, Boolean> permissions = jsonDeserializationContext.deserialize(object.get("permissions"),permisisonsType);
+        HashMap<String, Boolean> permissions = new HashMap<>();
+        object.get("permissions").getAsJsonArray().forEach(t->{
+            JsonObject permission = t.getAsJsonObject();
+            permissions.put(permission.get("key").getAsString(),permission.get("value").getAsBoolean());
+        });
         final String prefix = object.get("prefix").getAsString();
         final String suffix = object.get("suffix").getAsString();
-        Type implementGroupsType = new TypeToken<Collection<GroupEntityData>>(){}.getType();
-        List<GroupEntityData> groups = jsonDeserializationContext.deserialize(object.get("groups"),implementGroupsType);
+        List<GroupEntityData> groups = new ArrayList<>();
+        object.get("groups").getAsJsonArray().forEach(t->{
+            JsonObject group = t.getAsJsonObject();
+            GroupEntityData data = new GroupEntityData(group.get("key").getAsString(),group.get("value").getAsLong());
+            groups.add(data);
+        });
         return new PermissionEntity(UUID.fromString(uniqueId),permissions,prefix,suffix,groups);
     }
 
@@ -46,8 +50,14 @@ public class PermissionEntitiyJsonAdapter implements JsonSerializer<PermissionEn
         object.add("permissions",permissions);
         object.addProperty("prefix",permissionEntity.getPrefix());
         object.addProperty("suffix",permissionEntity.getSuffix());
-        Type groups = new TypeToken<Collection<GroupEntityData>>(){}.getType();
-        object.add("groups",jsonSerializationContext.serialize(permissionEntity.getGroups(),groups));
+        JsonArray groups = new JsonArray();
+        permissionEntity.getGroups().forEach(t->{
+            JsonObject group = new JsonObject();
+            group.addProperty("key",t.getGroup());
+            group.addProperty("value",t.getTimeout());
+            groups.add(group);
+        });
+        object.add("groups",groups);
         return object;
     }
 }
