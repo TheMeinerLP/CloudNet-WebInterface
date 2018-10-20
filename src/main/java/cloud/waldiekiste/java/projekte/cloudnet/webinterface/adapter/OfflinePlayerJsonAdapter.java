@@ -26,7 +26,7 @@ public class OfflinePlayerJsonAdapter implements JsonDeserializer<OfflinePlayer>
         final long lastLogin = object.get("lastLogin").getAsLong();
         final long firstLogin = object.get("firstLogin").getAsLong();
         final PlayerConnection lastPlayerConnection = jsonDeserializationContext.deserialize(object.get("lastPlayerConnection"), PlayerConnection.class);
-        final PermissionEntity permissionEntitiy = jsonDeserializationContext.deserialize(object.get("permissionEntitiy"), PermissionEntity.class);
+        final PermissionEntity permissionEntitiy = jsonDeserializationContext.deserialize(object.get("permissionEntity"), PermissionEntity.class);
         return new OfflinePlayer(UUID.fromString(uniqueId),name,new Document(metaData),lastLogin,firstLogin,lastPlayerConnection,permissionEntitiy);
     }
 
