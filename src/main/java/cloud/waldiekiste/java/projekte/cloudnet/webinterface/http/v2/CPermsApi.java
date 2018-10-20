@@ -167,6 +167,18 @@ public class CPermsApi extends MethodWebHandlerAdapter {
                 Document document = new Document();
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
+            case "deletegroup":{
+                if(RequestUtil.hasHeader(httpRequest,"-Xvalue")) {
+                    final String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
+                    if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.group.delete.*","*","cloudnet.web.cperms.group.delete."+group)) {
+                        return ResponseUtil.permissionDenied(fullHttpResponse);
+                    }
+                    this.pool.getGroups().remove(group);
+                    CloudNet.getInstance().getNetworkManager().getModuleProperties().append("permissionPool", this.pool);
+                    Document document = new Document();
+                    return ResponseUtil.success(fullHttpResponse,true,document);
+                }
+            }
             case "user":{
                 final String userString = RequestUtil.getContent(httpRequest);
                 OfflinePlayer permissionGroup = JsonUtil.getGson().fromJson(userString, OfflinePlayer.class);
