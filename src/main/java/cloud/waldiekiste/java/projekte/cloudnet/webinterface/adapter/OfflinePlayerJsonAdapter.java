@@ -39,7 +39,7 @@ public class OfflinePlayerJsonAdapter implements JsonDeserializer<OfflinePlayer>
         object.addProperty("lastLogin",offlinePlayer.getLastLogin());
         object.addProperty("firstLogin",offlinePlayer.getFirstLogin());
         object.add("lastPlayerConnection",jsonSerializationContext.serialize(offlinePlayer.getLastPlayerConnection()));
-        object.add("permissionEntitiy",jsonSerializationContext.serialize(offlinePlayer.getPermissionEntity()));
+        object.add("permissionEntity",jsonSerializationContext.serialize(offlinePlayer.getPermissionEntity()));
         return object;
     }
 }
