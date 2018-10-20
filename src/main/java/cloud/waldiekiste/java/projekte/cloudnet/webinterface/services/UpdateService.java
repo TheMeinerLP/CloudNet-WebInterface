@@ -64,6 +64,7 @@ public class UpdateService {
                 throwable1 = throwable;
                 throw throwable;
             } finally {
+                httpURLConnection.disconnect();
                 if (inputStream != null) {
                     if (throwable1 != null) {
                         try {
@@ -117,6 +118,7 @@ public class UpdateService {
         String result = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
         JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
         UpdateData data = JsonUtil.getGson().fromJson(jsonObject.get("versions").getAsJsonArray().get(0),UpdateData.class);
+        connection.disconnect();
         return data;
     }
     public ArrayList<UpdateData> getUpdates(VersionType branch) throws Exception {
@@ -140,6 +142,7 @@ public class UpdateService {
         JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
         ArrayList<UpdateData> datas = new ArrayList<>();
         jsonObject.get("versions").getAsJsonArray().forEach(t->datas.add(JsonUtil.getGson().fromJson(t,UpdateData.class)));
+        connection.disconnect();
         return datas;
     }
 }
