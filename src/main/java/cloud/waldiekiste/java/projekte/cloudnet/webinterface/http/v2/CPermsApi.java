@@ -176,9 +176,12 @@ public class CPermsApi extends MethodWebHandlerAdapter {
                 CloudNet.getInstance().getDbHandlers().getPlayerDatabase().updatePermissionEntity(permissionGroup.getUniqueId(),permissionGroup.getPermissionEntity());
 
                 CloudNet.getInstance().getNetworkManager().sendAllUpdate(new PacketOutUpdateOfflinePlayer(CloudNet.getInstance().getDbHandlers().getPlayerDatabase().getPlayer(permissionGroup.getUniqueId())));
+
                 CloudPlayer onlinePlayer = CloudNet.getInstance().getNetworkManager().getOnlinePlayer(permissionGroup.getUniqueId());
-                onlinePlayer.setPermissionEntity(permissionGroup.getPermissionEntity());
-                CloudNet.getInstance().getNetworkManager().sendAllUpdate(new PacketOutUpdatePlayer(onlinePlayer));
+                if(onlinePlayer != null){
+                    onlinePlayer.setPermissionEntity(permissionGroup.getPermissionEntity());
+                    CloudNet.getInstance().getNetworkManager().sendAllUpdate(new PacketOutUpdatePlayer(onlinePlayer));
+                }
                 Document document = new Document();
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
