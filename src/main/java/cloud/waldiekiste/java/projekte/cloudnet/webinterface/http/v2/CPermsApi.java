@@ -13,6 +13,7 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Reque
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
 import de.dytanic.cloudnet.lib.NetworkUtils;
+import de.dytanic.cloudnet.lib.player.CloudPlayer;
 import de.dytanic.cloudnet.lib.player.OfflinePlayer;
 import de.dytanic.cloudnet.lib.player.permission.PermissionGroup;
 import de.dytanic.cloudnet.lib.player.permission.PermissionPool;
@@ -24,6 +25,8 @@ import de.dytanic.cloudnet.web.server.util.PathProvider;
 import de.dytanic.cloudnet.web.server.util.QueryDecoder;
 import de.dytanic.cloudnetcore.CloudNet;
 import de.dytanic.cloudnetcore.network.components.Wrapper;
+import de.dytanic.cloudnetcore.network.packet.out.PacketOutUpdateOfflinePlayer;
+import de.dytanic.cloudnetcore.network.packet.out.PacketOutUpdatePlayer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -171,6 +174,11 @@ public class CPermsApi extends MethodWebHandlerAdapter {
                     return ResponseUtil.permissionDenied(fullHttpResponse);
                 }
                 CloudNet.getInstance().getDbHandlers().getPlayerDatabase().updatePermissionEntity(permissionGroup.getUniqueId(),permissionGroup.getPermissionEntity());
+
+                CloudNet.getInstance().getNetworkManager().sendAllUpdate(new PacketOutUpdateOfflinePlayer(CloudNet.getInstance().getDbHandlers().getPlayerDatabase().getPlayer(permissionGroup.getUniqueId())));
+                CloudPlayer onlinePlayer = CloudNet.getInstance().getNetworkManager().getOnlinePlayer(permissionGroup.getUniqueId());
+                onlinePlayer.setPermissionEntity(permissionGroup.getPermissionEntity());
+                CloudNet.getInstance().getNetworkManager().sendAllUpdate(new PacketOutUpdatePlayer(onlinePlayer));
                 Document document = new Document();
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
