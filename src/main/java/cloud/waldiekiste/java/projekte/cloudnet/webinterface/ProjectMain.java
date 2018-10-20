@@ -45,6 +45,7 @@ public class ProjectMain extends CoreModule {
     private UpdateChannelSetup updateChannelSetup;
     private UpdateService updateService;
     private TrackerService tracking;
+
     /**
      * In this method, the trackingservice, the updateservice and the classes are initialised.
      * @see TrackerService
