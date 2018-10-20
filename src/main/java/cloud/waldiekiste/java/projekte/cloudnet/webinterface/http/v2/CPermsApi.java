@@ -13,6 +13,7 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Reque
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
 import de.dytanic.cloudnet.lib.NetworkUtils;
+import de.dytanic.cloudnet.lib.player.OfflinePlayer;
 import de.dytanic.cloudnet.lib.player.permission.PermissionGroup;
 import de.dytanic.cloudnet.lib.player.permission.PermissionPool;
 import de.dytanic.cloudnet.lib.server.ServerGroup;
@@ -160,6 +161,16 @@ public class CPermsApi extends MethodWebHandlerAdapter {
                 NetworkUtils.addAll(pool.getGroups(), this.projectMain.getConfigPermission().loadAll0());
 
                 CloudNet.getInstance().getNetworkManager().getModuleProperties().append("permissionPool", this.pool);
+                Document document = new Document();
+                return ResponseUtil.success(fullHttpResponse,true,document);
+            }
+            case "user":{
+                final String userString = RequestUtil.getContent(httpRequest);
+                OfflinePlayer permissionGroup = JsonUtil.getGson().fromJson(userString, OfflinePlayer.class);
+                if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.user.save.*","*","cloudnet.web.cperms.user.save."+permissionGroup.getName(),"cloudnet.web.cperms.user.save."+permissionGroup.getUniqueId().toString())) {
+                    return ResponseUtil.permissionDenied(fullHttpResponse);
+                }
+                CloudNet.getInstance().getDbHandlers().getPlayerDatabase().updatePermissionEntity(permissionGroup.getUniqueId(),permissionGroup.getPermissionEntity());
                 Document document = new Document();
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
