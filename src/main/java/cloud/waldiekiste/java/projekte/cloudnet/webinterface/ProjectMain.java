@@ -101,6 +101,7 @@ public class ProjectMain extends CoreModule {
         new ServerAPI(getCloud(),this);
         new WrapperAPI(getCloud(),this);
         new UtilsAPI(getCloud(),this);
+        new PlayerAPI(getCloud(),this);
         if(this.configPermission.isEnabled()) new CPermsApi(this);
         long end = System.currentTimeMillis();
         this.tracking.onBootstrap(this,end - start);

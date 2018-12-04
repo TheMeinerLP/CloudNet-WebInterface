@@ -107,6 +107,17 @@ public class ServerAPI extends MethodWebHandlerAdapter {
                     return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
                 }
             }
+            case "allservers":{
+                if(!UserUtil.hasPermission(user,"cloudnet.web.group.allservers.info.*","*")){
+                    return ResponseUtil.permissionDenied(fullHttpResponse);
+                }
+                List<String> servers = new ArrayList<>();
+                getProjectMain().getCloud().getServers().values().forEach(t->servers.add(JsonUtil.getGson().
+                        toJson(t.getLastServerInfo().toSimple())));
+                Document resp = new Document();
+                resp.append("response",servers);
+                return ResponseUtil.success(fullHttpResponse,true,resp);
+            }
             case "group":{
                 if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&
                         getProjectMain().getCloud().getServerGroups().containsKey(RequestUtil.getHeaderValue(httpRequest,"-Xvalue"))){

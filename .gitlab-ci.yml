@@ -8,20 +8,31 @@ cache:
   paths:
     - .m2/repository/
     - target/
+clean:
+  stage: clean
+  script:
+   - mvn $MAVEN_CLI_OPTS clean
+build:
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS compile
+
 test:
   stage: test
   script:
     - mvn $MAVEN_CLI_OPTS test
+
+deploy:
   before_script:
-    - apt-get update -qq && apt-get install -y -qq sshpass
-    - mvn $MAVEN_CLI_OPTS clean
-deploy-build:
+    - export COMMIT_TIME=$(git show -s --format=%ct $CI_COMMIT_SHA)
   stage: deploy
   script:
-    - apt-get update -qq && apt-get install -y -qq sshpass
     - mvn $MAVEN_CLI_OPTS package
-    - cd target/
-    - ls
-    - sshpass -V
-    - export SSHPASS=$USER_PASS
-    - sshpass -e scp -o StrictHostKeyChecking=no -r *.jar cloudnet@madfix.me:/srv/www/update.madfix.me/public_html/projects/MaterialDesignWebInterface/module/
+    - ssh-keygen -t rsa -b 4096 -C '' -f ~/.ssh/deploy_rsa
+    - ssh-keyscan -H madfix.me >> ~/.ssh/known_hosts
+    - ssh-copy-id -i ~/.ssh/deploy_rsa.pub $SERVER_USER@madfix.me
+    - rsync --delete -avzbe 'ssh -i /pfad/zur/id_rsa' $SERVER_USER@example.com:/var/www /home/benutzer/webserver
+    - rsync -avuz $CI_PROJECT_DIR/traget/*.jar $SERVER_USER@madfix.me:/srv/www/update.madfix.me/public_html/projects/MaterialDesignWebInterface/module/
+  artifacts:
+    paths:
+      - "target/*.jar"
