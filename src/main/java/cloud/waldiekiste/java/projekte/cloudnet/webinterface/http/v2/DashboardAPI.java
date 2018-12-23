@@ -8,6 +8,7 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.HttpUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
@@ -34,16 +35,17 @@ public class DashboardAPI extends MethodWebHandlerAdapter {
     }
     @SuppressWarnings( "deprecation" )
     @Override
-    public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
-        ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json; charset=utf-8");
-        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message")) return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
-        if (!RequestUtil.checkAuth(httpRequest)) return UserUtil.failedAuthorization(fullHttpResponse);
+    public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
+                                PathProvider pathProvider, HttpRequest httpRequest) {
+        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(),
+                HttpResponseStatus.OK);
+        fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse,httpRequest);
         switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
             case "players":{
                 Document document = new Document();
                 AtomicInteger integer = new AtomicInteger();
-                getProjectMain().getCloud().getServerGroups().keySet().forEach(t-> integer.getAndAdd(getProjectMain().getCloud().getOnlineCount(t)));
+                getProjectMain().getCloud().getServerGroups().keySet().forEach(t-> integer.getAndAdd(
+                        getProjectMain().getCloud().getOnlineCount(t)));
                 document.append("response",integer.get());
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
@@ -67,9 +69,9 @@ public class DashboardAPI extends MethodWebHandlerAdapter {
             }
         }
     }
-    @SuppressWarnings( "deprecation" )
     @Override
-    public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
+    public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
+                                    PathProvider pathProvider, HttpRequest httpRequest) {
         return ResponseUtil.cross(httpRequest);
     }
 

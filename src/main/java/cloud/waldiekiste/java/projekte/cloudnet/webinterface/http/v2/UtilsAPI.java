@@ -8,9 +8,11 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.HttpUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
+import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
 import de.dytanic.cloudnet.web.server.util.PathProvider;
@@ -35,10 +37,7 @@ public class UtilsAPI extends MethodWebHandlerAdapter {
                                 PathProvider pathProvider, HttpRequest httpRequest) {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(),
                 HttpResponseStatus.OK);
-        ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json; charset=utf-8");
-        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message"))
-            return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
-        if (!RequestUtil.checkAuth(httpRequest)) return UserUtil.failedAuthorization(fullHttpResponse);
+        fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse,httpRequest);
         switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
             case "version":{
                 Document document = new Document();
@@ -50,7 +49,6 @@ public class UtilsAPI extends MethodWebHandlerAdapter {
             }
         }
     }
-    @SuppressWarnings( "deprecation" )
     @Override
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {

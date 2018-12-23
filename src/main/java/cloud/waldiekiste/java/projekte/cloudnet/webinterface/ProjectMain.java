@@ -10,6 +10,7 @@ package cloud.waldiekiste.java.projekte.cloudnet.webinterface;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandSetupConfig;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandUpdateChannel;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandVersion;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandWIChangelog;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.*;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.listener.ScreenSessionEvent;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.permission.ConfigPermissions;
@@ -57,7 +58,6 @@ public class ProjectMain extends CoreModule {
     public void onLoad() {
         this.tracking = new TrackerService();
         this.tracking.init();
-        this.tracking.onLoad();
         this.updateService = new UpdateService();
         this.consoleLines = new ArrayList<>();
         CloudNet.getLogger().getHandler().add(consoleLines::add);
@@ -92,6 +92,7 @@ public class ProjectMain extends CoreModule {
         getCloud().getCommandManager().registerCommand(new CommandSetupConfig(this));
         getCloud().getCommandManager().registerCommand(new CommandVersion(this));
         getCloud().getCommandManager().registerCommand(new CommandUpdateChannel(this));
+        getCloud().getCommandManager().registerCommand(new CommandWIChangelog());
         getCloud().getEventManager().registerListener(this,new ScreenSessionEvent(this));
         new MasterAPI(getCloud(),this);
         new AuthenticationAPI(getCloud());

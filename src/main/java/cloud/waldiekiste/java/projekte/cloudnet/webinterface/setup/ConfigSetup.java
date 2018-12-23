@@ -19,7 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * This class creates the Configurationfile.
+ * This class creates the Configuration file.
  */
 
 public class ConfigSetup extends Setup {
