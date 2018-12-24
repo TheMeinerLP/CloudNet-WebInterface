@@ -51,7 +51,7 @@ public class JsonUtil {
         builder.registerTypeAdapter(SimpleServerInfo.class,new ServerInfoJsonAdapter());
         builder.registerTypeAdapter(UpdateData.class,new UpdateDataJsonAdapter());
         builder.registerTypeAdapter(PermissionGroup.class,new PermissionGroupJsonAdapter());
-        builder.registerTypeAdapter(GroupEntityData.class,new GroupEntitiyJsonAdapter());
+        builder.registerTypeAdapter(GroupEntityData.class,new GroupEntityJsonAdapter());
         builder.registerTypeAdapter(PermissionEntity.class,new PermissionEntitiyJsonAdapter());
         builder.registerTypeAdapter(PlayerConnection.class,new PlayerConnectionJsonAdpater());
         builder.registerTypeAdapter(OfflinePlayer.class,new OfflinePlayerJsonAdapter());
