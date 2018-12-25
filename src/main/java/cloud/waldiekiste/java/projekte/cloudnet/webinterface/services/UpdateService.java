@@ -44,7 +44,8 @@ public class UpdateService {
                 }else{
                     System.out.println("[Updater] No Update available!");
                 }
-            }
+            }else{
+                System.err.println("CloudNet-Web");            }
         } catch (Exception e) {e.printStackTrace();}
     }
     public void update(UpdateData data) {
@@ -102,6 +103,7 @@ public class UpdateService {
             System.err.println("Cannot connect to URL");
             return null;
         }
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
         connection.setConnectTimeout(2000);
         connection.setDoOutput(false);
         connection.setDoInput(true);
@@ -125,6 +127,7 @@ public class UpdateService {
         String url = "https://api.madfix.me/version.php?type=modul&branch="+branch.getType();
         URL adress = new URL( url);
         HttpURLConnection connection = (HttpURLConnection) adress.openConnection();
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
         connection.setConnectTimeout(2000);
         connection.setDoOutput(false);
         connection.setDoInput(true);

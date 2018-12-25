@@ -33,8 +33,10 @@ public class AuthenticationAPI extends MethodWebHandlerAdapter {
 
     @SuppressWarnings( "deprecation" )
     @Override
-    public FullHttpResponse post(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
+    public FullHttpResponse post(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
+                                 PathProvider pathProvider, HttpRequest httpRequest) {
+        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(),
+                HttpResponseStatus.OK);
         ResponseUtil.setHeader(fullHttpResponse,"Content-Type", "application/json");
         if (!RequestUtil.hasHeader(httpRequest,"-xcloudnet-user","-xcloudnet-password")) {
             return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
@@ -55,9 +57,9 @@ public class AuthenticationAPI extends MethodWebHandlerAdapter {
         document.append("response", userinfos);
         return ResponseUtil.success(fullHttpResponse,true,document);
     }
-    @SuppressWarnings( "deprecation" )
     @Override
-    public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
+    public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
+                                    PathProvider pathProvider, HttpRequest httpRequest) {
         return ResponseUtil.cross(httpRequest);
     }
 }

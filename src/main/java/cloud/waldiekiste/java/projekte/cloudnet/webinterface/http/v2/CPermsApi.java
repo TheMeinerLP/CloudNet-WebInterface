@@ -8,10 +8,7 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.JsonUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.*;
 import de.dytanic.cloudnet.lib.NetworkUtils;
 import de.dytanic.cloudnet.lib.player.CloudPlayer;
 import de.dytanic.cloudnet.lib.player.OfflinePlayer;
@@ -45,24 +42,25 @@ public class CPermsApi extends MethodWebHandlerAdapter {
         super("/cloudnet/api/v2/cperms");
         this.projectMain = projectMain;
         projectMain.getCloud().getWebServer().getWebServerProvider().registerHandler(this);
-        pool = projectMain.getCloud().getNetworkManager().getModuleProperties().getObject("permissionPool",PermissionPool.TYPE);
+        pool = projectMain.getCloud().getNetworkManager().getModuleProperties().getObject("permissionPool",
+                PermissionPool.TYPE);
     }
     @SuppressWarnings( "deprecation" )
     @Override
-    public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
-        pool = projectMain.getCloud().getNetworkManager().getModuleProperties().getObject("permissionPool",PermissionPool.TYPE);
-
-        ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json; charset=utf-8");
-        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message"))
-            return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
-        if (!RequestUtil.checkAuth(httpRequest)) return UserUtil.failedAuthorization(fullHttpResponse);
+    public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
+                                PathProvider pathProvider, HttpRequest httpRequest) {
+        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(),
+                HttpResponseStatus.OK);
+        pool = projectMain.getCloud().getNetworkManager().getModuleProperties().getObject("permissionPool",
+                PermissionPool.TYPE);
+        fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse,httpRequest);
         User user = CloudNet.getInstance().getUser(RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-user"));
         switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
             case "group":{
                 if(RequestUtil.hasHeader(httpRequest,"-Xvalue")){
                     final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
-                    if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.info.group.*","*","cloudnet.web.cperms.info.group."+group)) {
+                    if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.info.group.*","*",
+                            "cloudnet.web.cperms.info.group."+group)) {
                         return ResponseUtil.permissionDenied(fullHttpResponse);
                     }else {
                         Document document = new Document();
@@ -111,7 +109,8 @@ public class CPermsApi extends MethodWebHandlerAdapter {
                         if (!pool.isAvailable()) {
                             return ResponseUtil.success(fullHttpResponse, false, document);
                         }
-                        if(!CloudNet.getInstance().getDbHandlers().getNameToUUIDDatabase().getDatabase().contains(userUUID)){
+                        if(!CloudNet.getInstance().getDbHandlers().getNameToUUIDDatabase().getDatabase().
+                                contains(userUUID)){
                             return ResponseUtil.success(fullHttpResponse,false,document);
                         }
                         if (userUUID.matches(
@@ -146,35 +145,43 @@ public class CPermsApi extends MethodWebHandlerAdapter {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
-    public FullHttpResponse post(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) throws Exception {
-        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
+    public FullHttpResponse post(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
+                                 PathProvider pathProvider, HttpRequest httpRequest) {
+        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(),
+                HttpResponseStatus.OK);
         ResponseUtil.setHeader(fullHttpResponse,"Content-Type", "application/json");
-        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message")) return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
+        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message"))
+            return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
         if (!RequestUtil.checkAuth(httpRequest)) return UserUtil.failedAuthorization(fullHttpResponse);
         User user = CloudNet.getInstance().getUser(RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-user"));
         switch (RequestUtil.getHeaderValue(httpRequest,"-Xmessage").toLowerCase()){
             case "group":{
                 final String servergroup = RequestUtil.getContent(httpRequest);
                 PermissionGroup permissionGroup = JsonUtil.getGson().fromJson(servergroup,PermissionGroup.class);
-                if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.group.save.*","*","cloudnet.web.cperms.group.save."+permissionGroup.getName())) {
+                if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.group.save.*","*",
+                        "cloudnet.web.cperms.group.save."+permissionGroup.getName())) {
                     return ResponseUtil.permissionDenied(fullHttpResponse);
                 }
                 this.projectMain.getConfigPermission().updatePermissionGroup(permissionGroup);
                 NetworkUtils.addAll(pool.getGroups(), this.projectMain.getConfigPermission().loadAll0());
 
-                CloudNet.getInstance().getNetworkManager().getModuleProperties().append("permissionPool", this.pool);
+                CloudNet.getInstance().getNetworkManager().getModuleProperties().append("permissionPool",
+                        this.pool);
                 Document document = new Document();
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
             case "deletegroup":{
                 if(RequestUtil.hasHeader(httpRequest,"-Xvalue")) {
                     final String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
-                    if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.group.delete.*","*","cloudnet.web.cperms.group.delete."+group)) {
+                    if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.group.delete.*","*",
+                            "cloudnet.web.cperms.group.delete."+group)) {
                         return ResponseUtil.permissionDenied(fullHttpResponse);
                     }
                     this.pool.getGroups().remove(group);
-                    CloudNet.getInstance().getNetworkManager().getModuleProperties().append("permissionPool", this.pool);
+                    CloudNet.getInstance().getNetworkManager().getModuleProperties().append("permissionPool" ,
+                            this.pool);
                     Document document = new Document();
                     return ResponseUtil.success(fullHttpResponse,true,document);
                 }
@@ -182,17 +189,23 @@ public class CPermsApi extends MethodWebHandlerAdapter {
             case "user":{
                 final String userString = RequestUtil.getContent(httpRequest);
                 OfflinePlayer permissionGroup = JsonUtil.getGson().fromJson(userString, OfflinePlayer.class);
-                if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.user.save.*","*","cloudnet.web.cperms.user.save."+permissionGroup.getName(),"cloudnet.web.cperms.user.save."+permissionGroup.getUniqueId().toString())) {
+                if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.user.save.*","*",
+                        "cloudnet.web.cperms.user.save."+permissionGroup.getName(),
+                        "cloudnet.web.cperms.user.save."+permissionGroup.getUniqueId().toString())) {
                     return ResponseUtil.permissionDenied(fullHttpResponse);
                 }
-                CloudNet.getInstance().getDbHandlers().getPlayerDatabase().updatePermissionEntity(permissionGroup.getUniqueId(),permissionGroup.getPermissionEntity());
+                CloudNet.getInstance().getDbHandlers().getPlayerDatabase().updatePermissionEntity(permissionGroup.
+                        getUniqueId(),permissionGroup.getPermissionEntity());
 
-                CloudNet.getInstance().getNetworkManager().sendAllUpdate(new PacketOutUpdateOfflinePlayer(CloudNet.getInstance().getDbHandlers().getPlayerDatabase().getPlayer(permissionGroup.getUniqueId())));
+                CloudNet.getInstance().getNetworkManager().sendAllUpdate(new PacketOutUpdateOfflinePlayer(CloudNet.
+                        getInstance().getDbHandlers().getPlayerDatabase().getPlayer(permissionGroup.getUniqueId())));
 
-                CloudPlayer onlinePlayer = CloudNet.getInstance().getNetworkManager().getOnlinePlayer(permissionGroup.getUniqueId());
+                CloudPlayer onlinePlayer = CloudNet.getInstance().getNetworkManager().
+                        getOnlinePlayer(permissionGroup.getUniqueId());
                 if(onlinePlayer != null){
                     onlinePlayer.setPermissionEntity(permissionGroup.getPermissionEntity());
-                    CloudNet.getInstance().getNetworkManager().sendAllUpdate(new PacketOutUpdatePlayer(onlinePlayer));
+                    CloudNet.getInstance().getNetworkManager().
+                            sendAllUpdate(new PacketOutUpdatePlayer(onlinePlayer));
                 }
                 Document document = new Document();
                 return ResponseUtil.success(fullHttpResponse,true,document);
@@ -205,9 +218,9 @@ public class CPermsApi extends MethodWebHandlerAdapter {
 
     }
 
-    @SuppressWarnings( "deprecation" )
     @Override
-    public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
+    public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
+                                    PathProvider pathProvider, HttpRequest httpRequest) {
         return ResponseUtil.cross(httpRequest);
     }
 }

@@ -13,13 +13,13 @@
     <groupId>com.waldiekiste.java.projekte.cloudnet</groupId>
 
     <properties>
-        <BRANCH>DEVELOPMENT</BRANCH>
+        <BRANCH>RELEASE</BRANCH>
         <!--suppress UnresolvedMavenProperty -->
-        <VersionString>${project.version}.${BuildTime}-${BRANCH}</VersionString>
+        <VersionString>${BuildTime}.${project.version}-${BRANCH}</VersionString>
         <!--suppress UnresolvedMavenProperty -->
-        <JarVersionString>${project.version}.${BuildTime}</JarVersionString>
+        <JarVersionString>${BuildTime}.${project.version}</JarVersionString>
     </properties>
-    <version>0.12</version>
+    <version>0.11</version>
     <modelVersion>4.0.0</modelVersion>
 
     <repositories>
@@ -52,7 +52,7 @@
                         </goals>
                         <configuration>
                             <name>BuildTime</name>
-                            <pattern>dd.MM.yyyy.HH.mm</pattern>
+                            <pattern>yyyy.mm.dd.hh.mm.ss</pattern>
                             <locale>de_DE</locale>
                             <timeZone>Europe/Berlin</timeZone>
                         </configuration>
@@ -123,7 +123,7 @@
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet-core</artifactId>
-            <version>2.1.13.1</version>
+            <version>2.1.14.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
