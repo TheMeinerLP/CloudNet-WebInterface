@@ -27,7 +27,7 @@ public class UtilsAPI extends MethodWebHandlerAdapter {
     private final ProjectMain projectMain;
 
     public UtilsAPI(CloudNet cloudNet, ProjectMain projectMain) {
-        super("/cloudnet/api/v2/utils");
+            super("/cloudnet/api/v2/utils");
         cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
         this.projectMain = projectMain;
     }
@@ -42,6 +42,11 @@ public class UtilsAPI extends MethodWebHandlerAdapter {
             case "version":{
                 Document document = new Document();
                 document.append("response",getProjectMain().getModuleConfig().getVersion());
+                return ResponseUtil.success(fullHttpResponse,true,document);
+            }
+            case "cloudstats":{
+                Document document = new Document();
+                document.append("response",CloudNet.getInstance().getDbHandlers().getStatisticManager().getStatistics());
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
             default:{

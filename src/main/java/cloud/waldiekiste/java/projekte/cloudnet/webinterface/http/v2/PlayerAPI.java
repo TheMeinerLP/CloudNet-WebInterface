@@ -72,7 +72,7 @@ public class PlayerAPI extends MethodWebHandlerAdapter {
                             "cloudnet.web.player.*","cloudnet.web.player.send."+player)) {
                         return ResponseUtil.permissionDenied(fullHttpResponse);
                     }
-                    if(player.matches("/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i\n")){
+                    if(player.matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")){
                         CloudPlayer cloudPlayer = this.projectMain.getCloud().getNetworkManager().getOnlinePlayer(UUID.fromString(player));
                         CorePlayerExecutor.INSTANCE.sendPlayer(cloudPlayer,Server);
                     }else{
@@ -83,9 +83,15 @@ public class PlayerAPI extends MethodWebHandlerAdapter {
                             Document document = new Document();
                             return ResponseUtil.success(fullHttpResponse,true,document);
                         }else{
-                            CloudPlayer cloudPlayer = this.projectMain.getCloud().getNetworkManager().getPlayer(player);
-                            CorePlayerExecutor.INSTANCE.sendPlayer(cloudPlayer,Server);
 
+                            UUID uuid = CloudNet.getInstance().getDbHandlers().getNameToUUIDDatabase().get(player);
+                            if(uuid == null){
+                                Document document = new Document();
+                                document.append("code",404);
+                                return ResponseUtil.success(fullHttpResponse,false,document);
+                            }
+                            CloudPlayer cloudPlayer = CloudNet.getInstance().getNetworkManager().getOnlinePlayer(uuid);
+                            CorePlayerExecutor.INSTANCE.sendPlayer(cloudPlayer,Server);
                             Document document = new Document();
                             return ResponseUtil.success(fullHttpResponse,true,document);
                         }

@@ -245,8 +245,8 @@ public class ServerAPI extends MethodWebHandlerAdapter {
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
             case "start":{
-                if(RequestUtil.hasHeader(httpRequest,"-Xvalue","-xCount") &&
-                        getProjectMain().getCloud().getProxyGroups().containsKey(RequestUtil.getHeaderValue(httpRequest,
+                if(RequestUtil.hasHeader(httpRequest,"-Xvalue","-Xcount") &&
+                        getProjectMain().getCloud().getServerGroups().containsKey(RequestUtil.getHeaderValue(httpRequest,
                                 "-Xvalue"))){
                     final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
                     final int count = Integer.valueOf(RequestUtil.getHeaderValue(httpRequest,"-Xcount"));

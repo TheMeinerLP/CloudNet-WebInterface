@@ -19,7 +19,7 @@
         <!--suppress UnresolvedMavenProperty -->
         <JarVersionString>${BuildTime}.${project.version}</JarVersionString>
     </properties>
-    <version>0.11</version>
+    <version>0.12</version>
     <modelVersion>4.0.0</modelVersion>
 
     <repositories>
@@ -52,7 +52,7 @@
                         </goals>
                         <configuration>
                             <name>BuildTime</name>
-                            <pattern>yyyy.mm.dd.hh.mm.ss</pattern>
+                            <pattern>yyyy.MM.dd.hh.mm.ss</pattern>
                             <locale>de_DE</locale>
                             <timeZone>Europe/Berlin</timeZone>
                         </configuration>
@@ -99,7 +99,7 @@
                 </executions>
             </plugin>
         </plugins>
-        <resources>
+            <resources>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
@@ -116,45 +116,10 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>org.piwik.java.tracking</groupId>
-            <artifactId>piwik-java-tracker</artifactId>
-            <version>1.2</version>
-        </dependency>
-        <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet-core</artifactId>
             <version>2.1.14.2</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.1.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.1.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>5.1.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-launcher</artifactId>
-            <version>1.1.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-runner</artifactId>
-            <version>1.1.0</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
