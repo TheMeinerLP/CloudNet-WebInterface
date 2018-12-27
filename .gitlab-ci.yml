@@ -12,15 +12,15 @@ test:
   script:
     - mvn $MAVEN_CLI_OPTS test
   before_script:
-    - apt-get update -qq && apt-get install -y -qq sshpass
     - mvn $MAVEN_CLI_OPTS clean
 deploy-build:
   stage: deploy
   script:
-    - apt-get update -qq && apt-get install -y -qq sshpass
     - mvn $MAVEN_CLI_OPTS package
     - cd target/
     - ls
-    - sshpass -V
-    - export SSHPASS=$USER_PASS
-    - sshpass -e scp -o StrictHostKeyChecking=no -r *.jar cloudnet@mail.madfix.me:/srv/www/update.madfix.me/public_html/projects/MaterialDesignWebInterface/module/
+    - echo "$PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - scp -o StrictHostKeyChecking=no -r *.jar meinerlp@mail.madfix.me:/srv/www/update.madfix.me/public_html/projects/MaterialDesignWebInterface/module/
