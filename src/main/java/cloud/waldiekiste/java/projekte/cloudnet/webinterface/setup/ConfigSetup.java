@@ -96,7 +96,7 @@ public class ConfigSetup extends Setup {
         request(new SetupRequest("NetworkName","Please insert the network name of the cloud",
                 "",SetupResponseType.STRING,c->true));
         request(new SetupRequest("google.enabled","If you will enabled Google Recaptcha ?",
-                "",SetupResponseType.BOOL,c->c.equals("true") || c.equals("false")));
+                "",SetupResponseType.BOOL,c->c.equals("yes") || c.equals("no")));
         request(new SetupRequest("google.sitekey","Please insert the key for Google Recaptcha",
                 "",SetupResponseType.STRING,c->true));
         request(new SetupRequest("style.default","Please insert the default theme for WebInterface(dark-theme|light-theme|mad-theme)",
