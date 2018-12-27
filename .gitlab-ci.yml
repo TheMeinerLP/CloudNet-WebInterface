@@ -15,12 +15,13 @@ test:
     - mvn $MAVEN_CLI_OPTS clean
 deploy-build:
   stage: deploy
-  script:
-    - mvn $MAVEN_CLI_OPTS package
-    - cd target/
-    - ls
+  before_script:
+    - mkdir -p ~/.ssh
     - echo "$PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - eval "$(ssh-agent -s)"
     - ssh-add ~/.ssh/id_rsa
+  script:
+    - mvn $MAVEN_CLI_OPTS package
+    - cd target/
     - scp -o StrictHostKeyChecking=no -r *.jar meinerlp@mail.madfix.me:/srv/www/update.madfix.me/public_html/projects/MaterialDesignWebInterface/module/
