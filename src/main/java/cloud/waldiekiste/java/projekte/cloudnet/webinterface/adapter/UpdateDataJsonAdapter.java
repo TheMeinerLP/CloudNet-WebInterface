@@ -34,7 +34,7 @@ public class UpdateDataJsonAdapter implements JsonDeserializer<UpdateData> {
         String filePath = object.get("FilePath").getAsString();
         String fileName = object.get("FileName").getAsString();
         String name = object.get("name").getAsString();
-        int version = object.get("version").getAsInt();
+        int version = Integer.valueOf(object.get("version").getAsString());
         VersionType branch = VersionType.valueOf(object.get("branch").getAsString());
         String extension = object.get("extension").getAsString();
         String environment = object.get("ENVIRONMENT").getAsString();
