@@ -28,8 +28,7 @@ public class UpdateService {
             if (document.contains("mdwi.updateChannel")) {
                 VersionType type = VersionType.valueOf(document.get("mdwi.updateChannel").getAsString());
                 ModuleConfig config = module.getModuleConfig();
-                String versionID = config.getVersion();
-                Long oldVersion = new Long(versionID.replace(".",""));
+                Integer oldVersion = new Integer(config.getVersion());
                 UpdateData data = getUpdateData(type);
                 if(data == null){
                     return;
@@ -45,7 +44,8 @@ public class UpdateService {
                     System.out.println("[Updater] No Update available!");
                 }
             }else{
-                System.err.println("CloudNet-Web");            }
+                System.err.println("CloudNet-Web");
+            }
         } catch (Exception e) {e.printStackTrace();}
     }
     public void update(UpdateData data) {
