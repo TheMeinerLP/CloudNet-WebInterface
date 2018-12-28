@@ -12,12 +12,12 @@ public final class UpdateData {
     private String FilePath;
     private String FileName;
     private String name;
-    private int version;
+    private Long version;
     private VersionType branch;
     private String extension;
     private String ENVIRONMENT;
 
-    public UpdateData(String urlPath, String filePath, String fileName, String name, int version, VersionType branch, String extension, String ENVIRONMENT) {
+    public UpdateData(String urlPath, String filePath, String fileName, String name, Long version, VersionType branch, String extension, String ENVIRONMENT) {
         UrlPath = urlPath;
         FilePath = filePath;
         FileName = fileName;
@@ -44,7 +44,7 @@ public final class UpdateData {
         return name;
     }
 
-    public int getVersion() {
+    public Long getVersion() {
         return version;
     }
 

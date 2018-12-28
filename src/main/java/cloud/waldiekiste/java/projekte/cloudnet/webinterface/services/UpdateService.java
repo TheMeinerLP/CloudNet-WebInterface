@@ -28,7 +28,7 @@ public class UpdateService {
             if (document.contains("mdwi.updateChannel")) {
                 VersionType type = VersionType.valueOf(document.get("mdwi.updateChannel").getAsString());
                 ModuleConfig config = module.getModuleConfig();
-                Integer oldVersion = new Integer(config.getVersion());
+                Long oldVersion = new Long(config.getVersion());
                 UpdateData data = getUpdateData(type);
                 if(data == null){
                     return;
