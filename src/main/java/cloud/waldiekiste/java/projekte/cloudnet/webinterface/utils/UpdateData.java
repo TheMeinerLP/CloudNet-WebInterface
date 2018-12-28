@@ -8,24 +8,55 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils;
 
 public final class UpdateData {
-    private final String version,path;
-    private final VersionType versionType;
+    private String UrlPath;
+    private String FilePath;
+    private String FileName;
+    private String name;
+    private int version;
+    private VersionType branch;
+    private String extension;
+    private String ENVIRONMENT;
 
-    public UpdateData(String version, String path, VersionType versionType) {
+    public UpdateData(String urlPath, String filePath, String fileName, String name, int version, VersionType branch, String extension, String ENVIRONMENT) {
+        UrlPath = urlPath;
+        FilePath = filePath;
+        FileName = fileName;
+        this.name = name;
         this.version = version;
-        this.path = path;
-        this.versionType = versionType;
+        this.branch = branch;
+        this.extension = extension;
+        this.ENVIRONMENT = ENVIRONMENT;
     }
 
-    public String getVersion() {
+    public String getUrlPath() {
+        return UrlPath;
+    }
+
+    public String getFilePath() {
+        return FilePath;
+    }
+
+    public String getFileName() {
+        return FileName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getVersion() {
         return version;
     }
 
-    public String getPath() {
-        return path;
+    public VersionType getBranch() {
+        return branch;
     }
 
-    public VersionType getVersionType() {
-        return versionType;
+    public String getExtension() {
+        return extension;
+    }
+
+    public String getENVIRONMENT() {
+        return ENVIRONMENT;
     }
 }

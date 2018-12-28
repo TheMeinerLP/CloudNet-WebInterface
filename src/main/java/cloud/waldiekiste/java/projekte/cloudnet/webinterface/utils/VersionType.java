@@ -8,10 +8,10 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils;
 
 public enum VersionType {
-    DEVELOPMENT("DEVELOPMENT"),
-    SNAPSHOT("SNAPSHOT"),
-    RELEASE("RELEASE"),
-    DOWNGRADE("DOWNGRADE");
+    ALPHA("Alpha"),
+    BETA("Beta"),
+    SNAPSHOT("Snapshot"),
+    RELEASE("Release");
 
     private String type;
 

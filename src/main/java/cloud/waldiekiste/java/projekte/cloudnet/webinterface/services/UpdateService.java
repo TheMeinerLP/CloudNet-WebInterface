@@ -32,9 +32,7 @@ public class UpdateService {
                 if(data == null){
                     return;
                 }
-                String v = data.getVersion().replace(".","");
-                Long newVersion = new Long(v);
-                if(newVersion > oldVersion){
+                if(data.getVersion() > oldVersion){
                     module.onShutdown();
                     CloudNet.getInstance().getModuleManager().disableModule(module);
                     File f = config.getFile();
@@ -50,7 +48,7 @@ public class UpdateService {
     }
     public void update(UpdateData data) {
         try {
-            HttpURLConnection httpURLConnection = (HttpURLConnection)(new URL(data.getPath())).openConnection();
+            HttpURLConnection httpURLConnection = (HttpURLConnection)(new URL(data.getFilePath())).openConnection();
             httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
             httpURLConnection.setUseCaches(false);
             httpURLConnection.setConnectTimeout(1000);
@@ -59,7 +57,7 @@ public class UpdateService {
             InputStream inputStream = httpURLConnection.getInputStream();
             Throwable throwable1 = null;
             try {
-                File f = new File("modules",data.getPath().substring(data.getPath().lastIndexOf("/")+1));
+                File f = new File("modules",data.getFileName());
                 Files.copy(inputStream, f.toPath(), StandardCopyOption.REPLACE_EXISTING);
             } catch (Throwable throwable) {
                 throwable1 = throwable;
@@ -88,7 +86,7 @@ public class UpdateService {
 
     }
     private UpdateData getUpdateData(VersionType branch) throws IOException {
-        String url = "https://api.madfix.me/version.php?type=modul&new&branch="+branch.getType();
+        String url = String.format("https://api.madfix.me/v1/download.php?BRANCH=%s&ENVIRONMENT=CLOUDNET",branch.getType());
         URL adress;
         try {
             adress = new URL( url);
@@ -124,7 +122,7 @@ public class UpdateService {
         return data;
     }
     public ArrayList<UpdateData> getUpdates(VersionType branch) throws Exception {
-        String url = "https://api.madfix.me/version.php?type=modul&branch="+branch.getType();
+        String url = String.format("https://api.madfix.me/v1/download.php?BRANCH=%s&ENVIRONMENT=CLOUDNET",branch.getType());
         URL adress = new URL( url);
         HttpURLConnection connection = (HttpURLConnection) adress.openConnection();
         connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
@@ -144,7 +142,7 @@ public class UpdateService {
         String result = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
         JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
         ArrayList<UpdateData> datas = new ArrayList<>();
-        jsonObject.get("versions").getAsJsonArray().forEach(t->datas.add(JsonUtil.getGson().fromJson(t,UpdateData.class)));
+        jsonObject.getAsJsonArray().forEach(t->datas.add(JsonUtil.getGson().fromJson(t,UpdateData.class)));
         connection.disconnect();
         return datas;
     }
