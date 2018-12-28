@@ -15,7 +15,7 @@
     <properties>
         <BRANCH>RELEASE</BRANCH>
         <!--suppress UnresolvedMavenProperty -->
-        <VersionString>${project.version}${BuildTime}-${BRANCH}</VersionString>
+        <VersionString>${project.version}${BuildTime}   -${BRANCH}</VersionString>
         <!--suppress UnresolvedMavenProperty -->
         <JarVersionString>${project.version}${BuildTime}</JarVersionString>
     </properties>
