@@ -3,6 +3,8 @@ package cloud.waldiekiste.java.projekte.cloudnet.webinterface.services;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.JsonUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils.UpdateData;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils.VersionType;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.dytanic.cloudnet.lib.utility.document.Document;
@@ -140,9 +142,9 @@ public class UpdateService {
             return null;
         }
         String result = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
-        JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
+        JsonElement jsonObject = new JsonParser().parse(result);
         ArrayList<UpdateData> datas = new ArrayList<>();
-        jsonObject.getAsJsonArray().forEach(t->datas.add(JsonUtil.getGson().fromJson(t,UpdateData.class)));
+        jsonObject.getAsJsonObject().get("versions").getAsJsonArray().forEach(t->datas.add(JsonUtil.getGson().fromJson(t.getAsJsonObject(),UpdateData.class)));
         connection.disconnect();
         return datas;
     }
