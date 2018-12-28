@@ -35,8 +35,10 @@ public class UpdateChannelSetup extends Setup {
             if(s.length() == 0 || s == null || s.isEmpty()){
                 return false;
             }
-            if(s.equalsIgnoreCase(VersionType.DEVELOPMENT.getType())){
+            if(s.equalsIgnoreCase(VersionType.ALPHA.getType())){
                return true;
+            }else if(s.equalsIgnoreCase(VersionType.BETA.getType())){
+                return true;
             }else if(s.equalsIgnoreCase(VersionType.RELEASE.getType())){
                return true;
             }else if(s.equalsIgnoreCase(VersionType.SNAPSHOT.getType())){
