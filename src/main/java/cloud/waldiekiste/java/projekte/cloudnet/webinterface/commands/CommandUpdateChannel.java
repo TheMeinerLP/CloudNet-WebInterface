@@ -56,7 +56,7 @@ public class CommandUpdateChannel extends Command implements TabCompletable {
                         CloudNet.getInstance().getDbHandlers().getUpdateConfigurationDatabase().set(document);
                         System.out.println("[Updater] Update Channel now "+type.getType());
                     }else{
-                        System.out.println("[Updater] Please insert a Update Channel(DEVELOPMENT,RELEASE,SNAPSHOT)");
+                        System.out.println("[Updater] Please insert a Update Channel(ALPHA,BETA,RELEASE,SNAPSHOT)");
                     }
                 }
             }
@@ -75,7 +75,7 @@ public class CommandUpdateChannel extends Command implements TabCompletable {
             case 1:{
                 switch (s.toLowerCase()){
                     case "channel":{
-                        return Arrays.asList("DEVELOPMENT","RELEASE","SNAPSHOT");
+                        return Arrays.asList("ALPHA","BETA","RELEASE","SNAPSHOT");
                     }
                 }
                 break;
