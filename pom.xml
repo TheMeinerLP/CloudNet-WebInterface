@@ -15,11 +15,11 @@
     <properties>
         <BRANCH>RELEASE</BRANCH>
         <!--suppress UnresolvedMavenProperty -->
-        <VersionString>${BuildTime}.${project.version}-${BRANCH}</VersionString>
+        <VersionString>${BuildTime}${project.version}-${BRANCH}</VersionString>
         <!--suppress UnresolvedMavenProperty -->
-        <JarVersionString>${BuildTime}.${project.version}</JarVersionString>
+        <JarVersionString>${BuildTime}${project.version}</JarVersionString>
     </properties>
-    <version>0.12</version>
+    <version>012</version>
     <modelVersion>4.0.0</modelVersion>
 
     <repositories>
@@ -52,7 +52,7 @@
                         </goals>
                         <configuration>
                             <name>BuildTime</name>
-                            <pattern>yyyy.MM.dd.hh.mm.ss</pattern>
+                            <pattern>yyyyMMddhhmmss</pattern>
                             <locale>de_DE</locale>
                             <timeZone>Europe/Berlin</timeZone>
                         </configuration>

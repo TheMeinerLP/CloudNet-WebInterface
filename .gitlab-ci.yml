@@ -24,4 +24,4 @@ deploy-build:
   script:
     - mvn $MAVEN_CLI_OPTS package
     - cd target/
-    - scp -o StrictHostKeyChecking=no -r *.jar meinerlp@mail.madfix.me:/srv/www/update.madfix.me/public_html/projects/MaterialDesignWebInterface/module/
+    - scp -o StrictHostKeyChecking=no -r *.jar meinerlp@mail.madfix.me:/srv/www/update.madfix.me/public_html/projects/MaterialDesignWebInterface/files/CLOUDNET
