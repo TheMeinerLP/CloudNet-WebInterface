@@ -29,7 +29,7 @@ import de.dytanic.cloudnet.lib.service.ServiceId;
 import de.dytanic.cloudnet.lib.service.plugin.ServerInstallablePlugin;
 import de.dytanic.cloudnet.lib.user.User;
 
-public class JsonUtil {
+public class    JsonUtil {
     public static Gson getGson() {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(AutoSlot.class,new AutoSlotJsonAdapter());

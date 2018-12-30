@@ -13,13 +13,13 @@
     <groupId>com.waldiekiste.java.projekte.cloudnet</groupId>
 
     <properties>
-        <BRANCH>RELEASE</BRANCH>
+        <BRANCH>ALPHA</BRANCH>
         <!--suppress UnresolvedMavenProperty -->
-        <VersionString>${project.version}${BuildTime}   -${BRANCH}</VersionString>
+        <VersionString>${project.version}${BuildTime}-${BRANCH}</VersionString>
         <!--suppress UnresolvedMavenProperty -->
         <JarVersionString>${project.version}${BuildTime}</JarVersionString>
     </properties>
-    <version>012</version>
+    <version>013</version>
     <modelVersion>4.0.0</modelVersion>
 
     <repositories>

@@ -19,7 +19,7 @@ In this class, the user chooses the Updatechannel
 public class UpdateChannelSetup extends Setup {
     public UpdateChannelSetup() {
         setupComplete(t->{
-            final String type = t.get("type").getAsString();
+            final String type = t.get("type").getAsString().toUpperCase();
             Document document = CloudNet.getInstance().getDbHandlers().getUpdateConfigurationDatabase().get();
             document.append("mdwi.updateChannel",VersionType.valueOf(type).getType());
             CloudNet.getInstance().getDbHandlers().getUpdateConfigurationDatabase().set(document);
