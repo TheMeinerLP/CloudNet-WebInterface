@@ -13,7 +13,7 @@
     <groupId>com.waldiekiste.java.projekte.cloudnet</groupId>
 
     <properties>
-        <BRANCH>ALPHA</BRANCH>
+        <BRANCH>BETA</BRANCH>
         <!--suppress UnresolvedMavenProperty -->
         <VersionString>${project.version}${BuildTime}-${BRANCH}</VersionString>
         <!--suppress UnresolvedMavenProperty -->

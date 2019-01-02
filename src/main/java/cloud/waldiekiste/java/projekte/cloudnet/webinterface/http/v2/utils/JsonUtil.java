@@ -11,6 +11,7 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter.*;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils.UpdateData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import de.dytanic.cloudnet.lib.network.WrapperInfo;
 import de.dytanic.cloudnet.lib.player.OfflinePlayer;
 import de.dytanic.cloudnet.lib.player.PlayerConnection;
 import de.dytanic.cloudnet.lib.player.permission.GroupEntityData;
@@ -28,6 +29,8 @@ import de.dytanic.cloudnet.lib.server.template.Template;
 import de.dytanic.cloudnet.lib.service.ServiceId;
 import de.dytanic.cloudnet.lib.service.plugin.ServerInstallablePlugin;
 import de.dytanic.cloudnet.lib.user.User;
+import de.dytanic.cloudnetcore.network.components.Wrapper;
+import de.dytanic.cloudnetcore.network.components.WrapperMeta;
 
 public class    JsonUtil {
     public static Gson getGson() {
@@ -55,6 +58,9 @@ public class    JsonUtil {
         builder.registerTypeAdapter(PermissionEntity.class,new PermissionEntitiyJsonAdapter());
         builder.registerTypeAdapter(PlayerConnection.class,new PlayerConnectionJsonAdpater());
         builder.registerTypeAdapter(OfflinePlayer.class,new OfflinePlayerJsonAdapter());
+        builder.registerTypeAdapter(Wrapper.class,new WrapperAdpater());
+        builder.registerTypeAdapter(WrapperMeta.class,new WrapperMetaAdapter());
+        builder.registerTypeAdapter(WrapperInfo.class,new WrapperInfoAdpater() );
         return builder.create();
     }
 }
