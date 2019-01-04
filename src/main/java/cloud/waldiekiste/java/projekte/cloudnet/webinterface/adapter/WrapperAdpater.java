@@ -16,9 +16,6 @@ public class WrapperAdpater implements JsonSerializer<Wrapper> {
         object.addProperty("cpuUsage",wrapper.getCpuUsage());
         object.addProperty("usedMemory",wrapper.getUsedMemory());
         object.addProperty("usedMemoryAndWaiting",wrapper.getUsedMemoryAndWaitings());
-        JsonArray BinndedPorts = new JsonArray();
-        wrapper.getBinndedPorts().forEach(BinndedPorts::add);
-        object.add("BinndedPorts",BinndedPorts);
         object.addProperty("serverId",wrapper.getServerId());
         return object;
     }

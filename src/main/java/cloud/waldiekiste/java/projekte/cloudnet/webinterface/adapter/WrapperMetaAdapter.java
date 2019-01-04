@@ -6,9 +6,7 @@ import de.dytanic.cloudnetcore.network.components.WrapperMeta;
 import java.lang.reflect.Type;
 
 public class WrapperMetaAdapter implements JsonSerializer<WrapperMeta>,JsonDeserializer<WrapperMeta> {
-    private String id;
-    private String hostName;
-    private String user;
+
     @Override
     public WrapperMeta deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext)
             throws JsonParseException {
