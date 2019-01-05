@@ -12,13 +12,7 @@
         <artifactId>CloudNet-Service-Websocket-Extension</artifactId>
     <groupId>com.waldiekiste.java.projekte.cloudnet</groupId>
 
-    <properties>
-        <BRANCH>BETA</BRANCH>
-        <!--suppress UnresolvedMavenProperty -->
-        <VersionString>${project.version}${BuildTime}-${BRANCH}</VersionString>
-        <!--suppress UnresolvedMavenProperty -->
-        <JarVersionString>${project.version}${BuildTime}</JarVersionString>
-    </properties>
+
     <version>013</version>
     <modelVersion>4.0.0</modelVersion>
 
@@ -29,7 +23,7 @@
         </repository>
     </repositories>
     <build>
-        <finalName>${project.artifactId}-${VersionString}</finalName>
+        <finalName>${project.artifactId}-${project.version}${BuildTime}-${BRANCH}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -43,7 +37,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.10</version>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <id>timestamp-property</id>
@@ -84,7 +78,7 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <finalName>${project.artifactId}-${VersionString}</finalName>
+                    <finalName>${project.artifactId}-${project.version}${BuildTime}-${BRANCH}</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
 
                 </configuration>
@@ -114,6 +108,9 @@
             </extension>
         </extensions>
     </build>
+    <properties>
+        <BRANCH>BETA</BRANCH>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>

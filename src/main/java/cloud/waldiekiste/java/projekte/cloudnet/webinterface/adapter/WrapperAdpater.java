@@ -17,6 +17,9 @@ public class WrapperAdpater implements JsonSerializer<Wrapper> {
         object.addProperty("usedMemory",wrapper.getUsedMemory());
         object.addProperty("usedMemoryAndWaiting",wrapper.getUsedMemoryAndWaitings());
         object.addProperty("serverId",wrapper.getServerId());
+        object.addProperty("servers",wrapper.getServers().size());
+        object.addProperty("proxys",wrapper.getProxys().size());
+        object.addProperty("queue",wrapper.getWaitingServices().size());
         return object;
     }
 }

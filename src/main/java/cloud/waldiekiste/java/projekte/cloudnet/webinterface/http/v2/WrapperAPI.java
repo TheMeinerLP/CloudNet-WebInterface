@@ -29,7 +29,6 @@ public class WrapperAPI extends MethodWebHandlerAdapter {
     public WrapperAPI(CloudNet cloudNet, ProjectMain projectMain) {
         super("/cloudnet/api/v2/wrapper");
         cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
-        ProjectMain projectMain1 = projectMain;
     }
     @SuppressWarnings( "deprecation" )
     @Override
@@ -45,7 +44,7 @@ public class WrapperAPI extends MethodWebHandlerAdapter {
                 document.append("response",CloudNet.getInstance().getWrappers().keySet());
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
-            case "warpperInfos":{
+            case "warpperinfos":{
                 if(!UserUtil.hasPermission(user,"*","cloudnet.web.wrapper.item.*")){
                     return ResponseUtil.permissionDenied(fullHttpResponse);
                 }else {

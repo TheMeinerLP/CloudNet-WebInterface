@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ServerAPI extends MethodWebHandlerAdapter {
+public final class ServerAPI extends MethodWebHandlerAdapter {
     private final ProjectMain projectMain;
 
     public ServerAPI(CloudNet cloudNet, ProjectMain projectMain) {
