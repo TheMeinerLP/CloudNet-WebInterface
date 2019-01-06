@@ -27,7 +27,7 @@ public class ServerInstallablePluginJsonAdapter implements JsonSerializer<Server
     public JsonElement serialize(ServerInstallablePlugin serverInstallablePlugin, Type type, JsonSerializationContext jsonSerializationContext) {
         JsonObject object = new JsonObject();
         object.addProperty("name",serverInstallablePlugin.getName());
-        object.addProperty("pluginResourceType",serverInstallablePlugin.getPluginResourceType().name());
+        object.addProperty("pluginResourceType",serverInstallablePlugin.getPluginResourceType().name().toUpperCase());
         object.addProperty("url",serverInstallablePlugin.getUrl());
         return object;
     }

@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ServerAPI extends MethodWebHandlerAdapter {
+public final class ServerAPI extends MethodWebHandlerAdapter {
     private final ProjectMain projectMain;
 
     public ServerAPI(CloudNet cloudNet, ProjectMain projectMain) {
@@ -92,13 +92,24 @@ public class ServerAPI extends MethodWebHandlerAdapter {
                     }
                     List<String> servers = new ArrayList<>();
                     getProjectMain().getCloud().getServers(group).forEach(t->servers.add(JsonUtil.getGson().
-                            toJson(t.getLastServerInfo().toSimple())));
+                            toJson(t.getLastServerInfo())));
                     Document resp = new Document();
                     resp.append("response",servers);
                     return ResponseUtil.success(fullHttpResponse,true,resp);
                 }else{
                     return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
                 }
+            }
+            case "allservers":{
+                if(!UserUtil.hasPermission(user,"cloudnet.web.group.allservers.info.*","*")){
+                    return ResponseUtil.permissionDenied(fullHttpResponse);
+                }
+                List<String> servers = new ArrayList<>();
+                getProjectMain().getCloud().getServers().values().forEach(t->servers.add(JsonUtil.getGson().
+                        toJson(t.getLastServerInfo().toSimple())));
+                Document resp = new Document();
+                resp.append("response",servers);
+                return ResponseUtil.success(fullHttpResponse,true,resp);
             }
             case "group":{
                 if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&
@@ -234,8 +245,8 @@ public class ServerAPI extends MethodWebHandlerAdapter {
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
             case "start":{
-                if(RequestUtil.hasHeader(httpRequest,"-Xvalue","-xCount") &&
-                        getProjectMain().getCloud().getProxyGroups().containsKey(RequestUtil.getHeaderValue(httpRequest,
+                if(RequestUtil.hasHeader(httpRequest,"-Xvalue","-Xcount") &&
+                        getProjectMain().getCloud().getServerGroups().containsKey(RequestUtil.getHeaderValue(httpRequest,
                                 "-Xvalue"))){
                     final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
                     final int count = Integer.valueOf(RequestUtil.getHeaderValue(httpRequest,"-Xcount"));

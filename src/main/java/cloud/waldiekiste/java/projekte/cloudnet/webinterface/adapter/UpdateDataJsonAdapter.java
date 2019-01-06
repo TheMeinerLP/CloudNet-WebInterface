@@ -17,9 +17,27 @@ public class UpdateDataJsonAdapter implements JsonDeserializer<UpdateData> {
     @Override
     public UpdateData deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject object = jsonElement.getAsJsonObject();
-        final String version = object.get("version").getAsString();
-        final String path = object.get("path").getAsString();
-        final VersionType type1 = VersionType.valueOf(object.get("type").getAsString());
-        return new UpdateData(version,path,type1);
+        /**
+         * {
+         * UrlPath: "http://update.madfix.me/projects/MaterialDesignWebInterface/files/CLOUDNET",
+         * FilePath: "http://update.madfix.me/projects/MaterialDesignWebInterface/files/CLOUDNET/CloudNet-Service-Websocket-Extension-20181228121456012-RELEASE.jar",
+         * FileName: "CloudNet-Service-Websocket-Extension-20181228121456012-RELEASE.jar",
+         * name: "CloudNet-Service-Websocket-Extension",
+         * version: "20181228121456012",
+         * branch: "RELEASE",
+         * extension: "jar",
+         * ENVIRONMENT: "CLOUDNET",
+         * SYSTEM: null
+         * }
+         */
+        String urlPath = object.get("UrlPath").getAsString();
+        String filePath = object.get("FilePath").getAsString();
+        String fileName = object.get("FileName").getAsString();
+        String name = object.get("name").getAsString();
+        long version = Long.valueOf(object.get("version").getAsString());
+        VersionType branch = VersionType.valueOf(object.get("branch").getAsString());
+        String extension = object.get("extension").getAsString();
+        String environment = object.get("ENVIRONMENT").getAsString();
+        return new UpdateData(urlPath,filePath,fileName,name,version,branch,extension,environment);
     }
 }

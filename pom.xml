@@ -12,14 +12,8 @@
         <artifactId>CloudNet-Service-Websocket-Extension</artifactId>
     <groupId>com.waldiekiste.java.projekte.cloudnet</groupId>
 
-    <properties>
-        <BRANCH>RELEASE</BRANCH>
-        <!--suppress UnresolvedMavenProperty -->
-        <VersionString>${BuildTime}.${project.version}-${BRANCH}</VersionString>
-        <!--suppress UnresolvedMavenProperty -->
-        <JarVersionString>${BuildTime}.${project.version}</JarVersionString>
-    </properties>
-    <version>0.11</version>
+
+    <version>013</version>
     <modelVersion>4.0.0</modelVersion>
 
     <repositories>
@@ -29,7 +23,7 @@
         </repository>
     </repositories>
     <build>
-        <finalName>${project.artifactId}-${VersionString}</finalName>
+        <finalName>${project.artifactId}-${project.version}${BuildTime}-${BRANCH}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -43,7 +37,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.10</version>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <id>timestamp-property</id>
@@ -52,7 +46,7 @@
                         </goals>
                         <configuration>
                             <name>BuildTime</name>
-                            <pattern>yyyy.mm.dd.hh.mm.ss</pattern>
+                            <pattern>yyyyMMddhhmm</pattern>
                             <locale>de_DE</locale>
                             <timeZone>Europe/Berlin</timeZone>
                         </configuration>
@@ -84,7 +78,7 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <finalName>${project.artifactId}-${VersionString}</finalName>
+                    <finalName>${project.artifactId}-${project.version}${BuildTime}-${BRANCH}</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
 
                 </configuration>
@@ -99,7 +93,7 @@
                 </executions>
             </plugin>
         </plugins>
-        <resources>
+            <resources>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
@@ -114,47 +108,15 @@
             </extension>
         </extensions>
     </build>
+    <properties>
+        <BRANCH>RELEASE</BRANCH>
+    </properties>
     <dependencies>
-        <dependency>
-            <groupId>org.piwik.java.tracking</groupId>
-            <artifactId>piwik-java-tracker</artifactId>
-            <version>1.2</version>
-        </dependency>
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet-core</artifactId>
             <version>2.1.14.2</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.1.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.1.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>5.1.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-launcher</artifactId>
-            <version>1.1.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-runner</artifactId>
-            <version>1.1.0</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

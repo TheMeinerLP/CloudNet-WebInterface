@@ -15,7 +15,6 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.*;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.listener.ScreenSessionEvent;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.permission.ConfigPermissions;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.services.ErrorService;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.services.TrackerService;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.services.UpdateService;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.setup.ConfigSetup;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.setup.UpdateChannelSetup;
@@ -45,19 +44,15 @@ public class ProjectMain extends CoreModule {
     private ConfigSetup configSetup;
     private UpdateChannelSetup updateChannelSetup;
     private UpdateService updateService;
-    private TrackerService tracking;
 
     /**
      * In this method, the trackingservice, the updateservice and the classes are initialised.
-     * @see TrackerService
      * @see UpdateChannelSetup
      * @see UpdateService
      * @see ConfigSetup
      */
     @Override
     public void onLoad() {
-        this.tracking = new TrackerService();
-        this.tracking.init();
         this.updateService = new UpdateService();
         this.consoleLines = new ArrayList<>();
         CloudNet.getLogger().getHandler().add(consoleLines::add);
@@ -82,7 +77,6 @@ public class ProjectMain extends CoreModule {
      */
     @Override
     public void onBootstrap() {
-        long start = System.currentTimeMillis();
         versionCheck();
         try {
             this.configPermission = new ConfigPermissions();
@@ -92,7 +86,7 @@ public class ProjectMain extends CoreModule {
         getCloud().getCommandManager().registerCommand(new CommandSetupConfig(this));
         getCloud().getCommandManager().registerCommand(new CommandVersion(this));
         getCloud().getCommandManager().registerCommand(new CommandUpdateChannel(this));
-        getCloud().getCommandManager().registerCommand(new CommandWIChangelog());
+        //getCloud().getCommandManager().registerCommand(new CommandWIChangelog());
         getCloud().getEventManager().registerListener(this,new ScreenSessionEvent(this));
         new MasterAPI(getCloud(),this);
         new AuthenticationAPI(getCloud());
@@ -102,9 +96,8 @@ public class ProjectMain extends CoreModule {
         new ServerAPI(getCloud(),this);
         new WrapperAPI(getCloud(),this);
         new UtilsAPI(getCloud(),this);
+        new PlayerAPI(getCloud(),this);
         if(this.configPermission.isEnabled()) new CPermsApi(this);
-        long end = System.currentTimeMillis();
-        this.tracking.onBootstrap(this,end - start);
     }
 
     /**
@@ -152,7 +145,6 @@ public class ProjectMain extends CoreModule {
      * Getter for the base stuff
      * @see UpdateService
      * @see ConfigSetup
-     * @see TrackerService
      * @see ConfigPermissions
      */
 
@@ -172,13 +164,6 @@ public class ProjectMain extends CoreModule {
         return configSetup;
     }
 
-    /**
-     * Here its getting the Tracker service and its returning that service
-     * @see TrackerService
-      */
-    public TrackerService getTracking() {
-        return tracking;
-    }
 
     /**
      * Here its getting the ConfigPermission and its returning them

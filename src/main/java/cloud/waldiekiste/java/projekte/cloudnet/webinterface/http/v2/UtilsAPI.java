@@ -12,6 +12,7 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.HttpU
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
+import de.dytanic.cloudnet.lib.NetworkUtils;
 import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
@@ -27,7 +28,7 @@ public class UtilsAPI extends MethodWebHandlerAdapter {
     private final ProjectMain projectMain;
 
     public UtilsAPI(CloudNet cloudNet, ProjectMain projectMain) {
-        super("/cloudnet/api/v2/utils");
+            super("/cloudnet/api/v2/utils");
         cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
         this.projectMain = projectMain;
     }
@@ -42,6 +43,27 @@ public class UtilsAPI extends MethodWebHandlerAdapter {
             case "version":{
                 Document document = new Document();
                 document.append("response",getProjectMain().getModuleConfig().getVersion());
+                return ResponseUtil.success(fullHttpResponse,true,document);
+            }
+            case "cloudversion":{
+                Document document = new Document();
+                document.append("response",NetworkUtils.class.getPackage().getSpecificationVersion());
+                return ResponseUtil.success(fullHttpResponse,true,document);
+            }
+            case "badges":{
+                Document document = new Document();
+                Document infos = new Document();
+                infos.append("proxy_groups",CloudNet.getInstance().getProxyGroups().size());
+                infos.append("server_groups",CloudNet.getInstance().getServerGroups().size());
+                infos.append("proxies",CloudNet.getInstance().getProxys().size());
+                infos.append("servers",CloudNet.getInstance().getServers().size());
+                infos.append("wrappers",CloudNet.getInstance().getWrappers().size());
+                document.append("response",infos);
+                return ResponseUtil.success(fullHttpResponse,true,document);
+            }
+            case "cloudstats":{
+                Document document = new Document();
+                document.append("response",CloudNet.getInstance().getDbHandlers().getStatisticManager().getStatistics());
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
             default:{

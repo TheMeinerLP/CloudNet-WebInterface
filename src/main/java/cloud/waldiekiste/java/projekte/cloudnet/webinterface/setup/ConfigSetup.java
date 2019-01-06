@@ -51,6 +51,17 @@ public class ConfigSetup extends Setup {
            server.addProperty("CloudName",name);
            servers.add(server);
            jsonObject.add("Servers",servers );
+           JsonObject GoogleRecaptcha = new JsonObject();
+           GoogleRecaptcha.addProperty("enabled",t.getBoolean("google.enabled"));
+           GoogleRecaptcha.addProperty("SiteKey",t.getString("google.sitekey"));
+           jsonObject.add("GoogleRecaptcha",GoogleRecaptcha);
+            JsonObject style = new JsonObject();
+            style.addProperty("default",t.getString("style.default"));
+            jsonObject.add("style",style);
+            JsonObject settings = new JsonObject();
+            settings.addProperty("branding",t.getString("settings.branding"));
+            settings.addProperty("timeout",t.getInt("settings.timeout"));
+            jsonObject.add("settings",settings);
            /*
            The user gets a message as far as the setup is completed without errors, also he gets the
            instructions to copy the config into the Webinterface.
@@ -83,6 +94,16 @@ public class ConfigSetup extends Setup {
          * Here it asks the User for the NetworkName to set in the Config
          */
         request(new SetupRequest("NetworkName","Please insert the network name of the cloud",
+                "",SetupResponseType.STRING,c->true));
+        request(new SetupRequest("google.enabled","If you will enabled Google Recaptcha ?",
+                "",SetupResponseType.BOOL,c->c.equals("yes")));
+        request(new SetupRequest("google.sitekey","Please insert the key for Google Recaptcha",
+                "",SetupResponseType.STRING,c->true));
+        request(new SetupRequest("style.default","Please insert the default theme for WebInterface(dark-theme|light-theme|mad-theme|venymc-thme)",
+                "",SetupResponseType.STRING,c->true));
+        request(new SetupRequest("settings.timeout","Please insert the session timeout for WebInterface Session(In Minutes)",
+                "Minutes to tiny",SetupResponseType.NUMBER,c->Integer.valueOf(c) > 5));
+        request(new SetupRequest("settings.branding","Please insert the Branding for WebInterface",
                 "",SetupResponseType.STRING,c->true));
     }
 }

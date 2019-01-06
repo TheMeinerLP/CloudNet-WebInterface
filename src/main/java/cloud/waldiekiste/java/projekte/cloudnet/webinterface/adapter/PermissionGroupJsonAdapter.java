@@ -9,10 +9,8 @@ package cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.JsonUtil;
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
 import de.dytanic.cloudnet.lib.player.permission.PermissionGroup;
 
-import javax.json.Json;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;

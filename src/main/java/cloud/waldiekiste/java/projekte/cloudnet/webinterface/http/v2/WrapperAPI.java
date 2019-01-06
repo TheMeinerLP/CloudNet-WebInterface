@@ -8,10 +8,7 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.HttpUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.*;
 import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
@@ -24,12 +21,14 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class WrapperAPI extends MethodWebHandlerAdapter {
 
     public WrapperAPI(CloudNet cloudNet, ProjectMain projectMain) {
         super("/cloudnet/api/v2/wrapper");
         cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
-        ProjectMain projectMain1 = projectMain;
     }
     @SuppressWarnings( "deprecation" )
     @Override
@@ -44,6 +43,17 @@ public class WrapperAPI extends MethodWebHandlerAdapter {
                 Document document = new Document();
                 document.append("response",CloudNet.getInstance().getWrappers().keySet());
                 return ResponseUtil.success(fullHttpResponse,true,document);
+            }
+            case "warpperinfos":{
+                if(!UserUtil.hasPermission(user,"*","cloudnet.web.wrapper.item.*")){
+                    return ResponseUtil.permissionDenied(fullHttpResponse);
+                }else {
+                    List<String> wrappers = new ArrayList<>();
+                    CloudNet.getInstance().getWrappers().values().forEach(t -> wrappers.add(JsonUtil.getGson().toJson(t)));
+                    Document resp = new Document();
+                    resp.append("response", wrappers);
+                    return ResponseUtil.success(fullHttpResponse, true, resp);
+                }
             }
             default:{
                 return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
