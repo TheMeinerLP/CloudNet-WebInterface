@@ -17,8 +17,14 @@ public class WrapperAdpater implements JsonSerializer<Wrapper> {
         object.addProperty("usedMemory",wrapper.getUsedMemory());
         object.addProperty("usedMemoryAndWaiting",wrapper.getUsedMemoryAndWaitings());
         object.addProperty("serverId",wrapper.getServerId());
-        object.addProperty("servers",wrapper.getServers().size());
-        object.addProperty("proxys",wrapper.getProxys().size());
+        JsonArray servers = new JsonArray();
+        wrapper.getServers().values().forEach(t->servers.add(jsonSerializationContext.serialize(t)));
+        object.add("servers",servers);
+        JsonArray proxys = new JsonArray();
+        wrapper.getProxys().values().forEach(t->proxys.add(jsonSerializationContext.serialize(t)));
+        object.add("proxys",proxys);
+        JsonArray cloudServers = new JsonArray();
+        wrapper.getCloudServers().values().forEach(t->cloudServers.add(jsonSerializationContext.serialize(t)));
         object.addProperty("queue",wrapper.getWaitingServices().size());
         return object;
     }

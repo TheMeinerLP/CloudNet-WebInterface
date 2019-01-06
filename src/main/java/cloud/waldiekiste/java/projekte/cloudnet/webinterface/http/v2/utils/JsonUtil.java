@@ -11,6 +11,7 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter.*;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils.UpdateData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import de.dytanic.cloudnet.lib.cloudserver.CloudServerMeta;
 import de.dytanic.cloudnet.lib.network.WrapperInfo;
 import de.dytanic.cloudnet.lib.player.OfflinePlayer;
 import de.dytanic.cloudnet.lib.player.PlayerConnection;
@@ -18,8 +19,7 @@ import de.dytanic.cloudnet.lib.player.permission.GroupEntityData;
 import de.dytanic.cloudnet.lib.player.permission.PermissionEntity;
 import de.dytanic.cloudnet.lib.player.permission.PermissionGroup;
 import de.dytanic.cloudnet.lib.proxylayout.*;
-import de.dytanic.cloudnet.lib.server.ProxyGroup;
-import de.dytanic.cloudnet.lib.server.ServerGroup;
+import de.dytanic.cloudnet.lib.server.*;
 import de.dytanic.cloudnet.lib.server.advanced.AdvancedServerConfig;
 import de.dytanic.cloudnet.lib.server.info.SimpleProxyInfo;
 import de.dytanic.cloudnet.lib.server.info.SimpleServerInfo;
@@ -29,8 +29,8 @@ import de.dytanic.cloudnet.lib.server.template.Template;
 import de.dytanic.cloudnet.lib.service.ServiceId;
 import de.dytanic.cloudnet.lib.service.plugin.ServerInstallablePlugin;
 import de.dytanic.cloudnet.lib.user.User;
-import de.dytanic.cloudnetcore.network.components.Wrapper;
-import de.dytanic.cloudnetcore.network.components.WrapperMeta;
+import de.dytanic.cloudnetcore.network.NetworkInfo;
+import de.dytanic.cloudnetcore.network.components.*;
 
 public class    JsonUtil {
     public static Gson getGson() {
@@ -60,7 +60,15 @@ public class    JsonUtil {
         builder.registerTypeAdapter(OfflinePlayer.class,new OfflinePlayerJsonAdapter());
         builder.registerTypeAdapter(Wrapper.class,new WrapperAdpater());
         builder.registerTypeAdapter(WrapperMeta.class,new WrapperMetaAdapter());
-        builder.registerTypeAdapter(WrapperInfo.class,new WrapperInfoAdpater() );
+        builder.registerTypeAdapter(WrapperInfo.class,new WrapperInfoAdpater());
+        builder.registerTypeAdapter(ServerProcessMeta.class,new ServerProcessMetaJsonAdapter());
+        builder.registerTypeAdapter(ServerConfig.class,new ServerConfigJsonAdapter());
+        builder.registerTypeAdapter(ProxyServer.class,new ProxyServerJsonAdapter());
+        builder.registerTypeAdapter(ProxyProcessMeta.class,new ProxyProcessMetaJsonAdapter());
+        builder.registerTypeAdapter(NetworkInfo.class,new NetworkInfoJsonAdapter());
+        builder.registerTypeAdapter(MinecraftServer.class,new MinecraftServerJsonAdapter());
+        builder.registerTypeAdapter(CloudServerMeta.class,new CloudServerMetaJsonAdapter());
+        builder.registerTypeAdapter(CloudServer.class,new CloudServeJsonAdapter());
         return builder.create();
     }
 }
