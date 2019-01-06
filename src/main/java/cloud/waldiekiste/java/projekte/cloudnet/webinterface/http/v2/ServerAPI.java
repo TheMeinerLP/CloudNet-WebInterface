@@ -92,7 +92,7 @@ public final class ServerAPI extends MethodWebHandlerAdapter {
                     }
                     List<String> servers = new ArrayList<>();
                     getProjectMain().getCloud().getServers(group).forEach(t->servers.add(JsonUtil.getGson().
-                            toJson(t.getLastServerInfo().toSimple())));
+                            toJson(t.getLastServerInfo())));
                     Document resp = new Document();
                     resp.append("response",servers);
                     return ResponseUtil.success(fullHttpResponse,true,resp);
