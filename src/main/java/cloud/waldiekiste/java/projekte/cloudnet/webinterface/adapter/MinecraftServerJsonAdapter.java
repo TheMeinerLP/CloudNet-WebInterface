@@ -16,7 +16,7 @@ public class MinecraftServerJsonAdapter implements JsonSerializer<MinecraftServe
         object.add("processMeta",jsonSerializationContext.serialize(minecraftServer.getProcessMeta()));
         object.add("wrapper",jsonSerializationContext.serialize(minecraftServer.getWrapper()));
         object.addProperty("groupMode",minecraftServer.getGroupMode().name().toUpperCase());
-        object.add("lastServerInfo",jsonSerializationContext.serialize(minecraftServer.getLastServerInfo()));
+        object.add("serverInfo",jsonSerializationContext.serialize(minecraftServer.getLastServerInfo().toSimple()));
         return object;
     }
 }

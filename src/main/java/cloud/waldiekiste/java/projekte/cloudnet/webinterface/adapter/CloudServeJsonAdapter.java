@@ -16,7 +16,7 @@ public class CloudServeJsonAdapter implements JsonSerializer<CloudServer> {
         object.add("cloudServerMeta",jsonSerializationContext.serialize(cloudServer.getCloudServerMeta()));
         object.add("cloudServerMeta",jsonSerializationContext.serialize(cloudServer.getWrapper()));
         object.addProperty("serverGroupType",cloudServer.getServerGroupType().name().toUpperCase());
-        object.add("serverInfo",jsonSerializationContext.serialize(cloudServer.getLastServerInfo()));
+        object.add("serverInfo",jsonSerializationContext.serialize(cloudServer.getLastServerInfo().toSimple()));
         return object;
     }
 }

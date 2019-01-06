@@ -25,6 +25,7 @@ public class WrapperAdpater implements JsonSerializer<Wrapper> {
         object.add("proxys",proxys);
         JsonArray cloudServers = new JsonArray();
         wrapper.getCloudServers().values().forEach(t->cloudServers.add(jsonSerializationContext.serialize(t)));
+        object.add("cloudServers",cloudServers);
         object.addProperty("queue",wrapper.getWaitingServices().size());
         return object;
     }
