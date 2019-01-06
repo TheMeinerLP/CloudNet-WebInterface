@@ -13,7 +13,6 @@ public class ProxyServerJsonAdapter implements JsonSerializer<ProxyServer> {
     public JsonElement serialize(ProxyServer proxyServer, Type type, JsonSerializationContext jsonSerializationContext) {
         JsonObject object = new JsonObject();
         object.add("serviceId",jsonSerializationContext.serialize(proxyServer.getServiceId()));
-        object.add("wrapper",jsonSerializationContext.serialize(proxyServer.getWrapper()));
         object.add("networkInfo",jsonSerializationContext.serialize(proxyServer.getNetworkInfo()));
         object.add("lastProxyInfo",jsonSerializationContext.serialize(proxyServer.getLastProxyInfo().toSimple()));
         object.add("processMeta",jsonSerializationContext.serialize(proxyServer.getProcessMeta()));
