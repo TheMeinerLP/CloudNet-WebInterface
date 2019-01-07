@@ -115,11 +115,11 @@ test-alpha:
   before_script:
     - mvn $MAVEN_CLI_OPTS -DBRANCH=ALPHA clean
 build-alpha:
-  stage: build
-  only:
-    refs:
-      - alpha
-  script:
+    stage: build
+    only:
+      refs:
+        - alpha
+    script:
       - mvn $MAVEN_CLI_OPTS -DBRANCH=ALPHA package
 build-alpha:
     stage: deploy
