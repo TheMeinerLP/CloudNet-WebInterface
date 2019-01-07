@@ -7,21 +7,127 @@ cache:
   paths:
     - .m2/repository/
     - target/
-test:
+#RLEASE
+test-release:
   stage: test
+  only:
+    refs:
+      - release
   script:
     - mvn $MAVEN_CLI_OPTS test
   before_script:
-    - mvn $MAVEN_CLI_OPTS clean
-deploy-build:
-  stage: deploy
-  before_script:
-    - mkdir -p ~/.ssh
-    - echo "$PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - eval "$(ssh-agent -s)"
-    - ssh-add ~/.ssh/id_rsa
+    - mvn $MAVEN_CLI_OPTS -DBRANCH=RELEASE clean
+build-release:
+  stage: build
+  only:
+    refs:
+      - release
   script:
-    - mvn $MAVEN_CLI_OPTS package
-    - cd target/
-    - scp -o StrictHostKeyChecking=no -r *.jar meinerlp@mail.madfix.me:/srv/www/update.madfix.me/public_html/projects/MaterialDesignWebInterface/files/CLOUDNET
+      - mvn $MAVEN_CLI_OPTS -DBRANCH=RELEASE package
+build-release:
+    stage: build
+    only:
+      refs:
+        - release
+    before_script:
+        - mkdir -p ~/.ssh
+        - echo "$PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+        - chmod 600 ~/.ssh/id_rsa
+        - eval "$(ssh-agent -s)"
+        - ssh-add ~/.ssh/id_rsa
+    script:
+        - cd target/
+        - scp -o StrictHostKeyChecking=no -r *.jar meinerlp@mail.madfix.me:/srv/www/update.madfix.me/public_html/projects/MaterialDesignWebInterface/files/CLOUDNET
+#Snapshot
+test-snapshot:
+  stage: test
+  only:
+    refs:
+      - snapshot
+  script:
+    - mvn $MAVEN_CLI_OPTS test
+  before_script:
+    - mvn $MAVEN_CLI_OPTS -DBRANCH=SNAPSHOT clean
+build-snapshot:
+  stage: build
+  only:
+    refs:
+      - snapshot
+  script:
+      - mvn $MAVEN_CLI_OPTS -DBRANCH=SNAPSHOT package
+build-snapshot:
+    stage: build
+    only:
+      refs:
+        - snapshot
+    before_script:
+        - mkdir -p ~/.ssh
+        - echo "$PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+        - chmod 600 ~/.ssh/id_rsa
+        - eval "$(ssh-agent -s)"
+        - ssh-add ~/.ssh/id_rsa
+    script:
+        - cd target/
+        - scp -o StrictHostKeyChecking=no -r *.jar meinerlp@mail.madfix.me:/srv/www/update.madfix.me/public_html/projects/MaterialDesignWebInterface/files/CLOUDNET
+#Beta
+test-beta:
+  stage: test
+  only:
+    refs:
+      - beta
+  script:
+    - mvn $MAVEN_CLI_OPTS test
+  before_script:
+    - mvn $MAVEN_CLI_OPTS -DBRANCH=BETA clean
+build-beta:
+  stage: build
+  only:
+    refs:
+      - beta
+  script:
+      - mvn $MAVEN_CLI_OPTS -DBRANCH=BETA package
+build-beta:
+    stage: build
+    only:
+      refs:
+        - beta
+    before_script:
+        - mkdir -p ~/.ssh
+        - echo "$PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+        - chmod 600 ~/.ssh/id_rsa
+        - eval "$(ssh-agent -s)"
+        - ssh-add ~/.ssh/id_rsa
+    script:
+        - cd target/
+        - scp -o StrictHostKeyChecking=no -r *.jar meinerlp@mail.madfix.me:/srv/www/update.madfix.me/public_html/projects/MaterialDesignWebInterface/files/CLOUDNET
+#ALPHA
+test-beta:
+  stage: test
+  only:
+    refs:
+      - alpha
+  script:
+    - mvn $MAVEN_CLI_OPTS test
+  before_script:
+    - mvn $MAVEN_CLI_OPTS -DBRANCH=ALPHA clean
+build-beta:
+  stage: build
+  only:
+    refs:
+      - alpha
+  script:
+      - mvn $MAVEN_CLI_OPTS -DBRANCH=ALPHA package
+build-beta:
+    stage: build
+    only:
+      refs:
+        - alpha
+    before_script:
+        - mkdir -p ~/.ssh
+        - echo "$PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+        - chmod 600 ~/.ssh/id_rsa
+        - eval "$(ssh-agent -s)"
+        - ssh-add ~/.ssh/id_rsa
+    script:
+        - cd target/
+        - scp -o StrictHostKeyChecking=no -r *.jar meinerlp@mail.madfix.me:/srv/www/update.madfix.me/public_html/projects/MaterialDesignWebInterface/files/CLOUDNET
