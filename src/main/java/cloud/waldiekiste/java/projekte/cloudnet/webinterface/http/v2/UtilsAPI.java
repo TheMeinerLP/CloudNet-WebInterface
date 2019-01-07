@@ -47,7 +47,7 @@ public class UtilsAPI extends MethodWebHandlerAdapter {
             }
             case "cloudversion":{
                 Document document = new Document();
-                document.append("response",NetworkUtils.class.getPackage().getSpecificationVersion());
+                document.append("response",NetworkUtils.class.getPackage().getImplementationVersion());
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
             case "badges":{
