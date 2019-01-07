@@ -105,23 +105,23 @@ build-beta:
         - cd target/
         - scp -o StrictHostKeyChecking=no -r *.jar meinerlp@mail.madfix.me:/srv/www/update.madfix.me/public_html/projects/MaterialDesignWebInterface/files/CLOUDNET
 #ALPHA
-test-beta:
+test-alpha:
   stage: test
   only:
     refs:
       - alpha
   script:
-    - mvn $MAVEN_CLI_OPTS test
+    - mvn $MAVEN_CLI_OPTS -DBRANCH=ALPHA test
   before_script:
     - mvn $MAVEN_CLI_OPTS -DBRANCH=ALPHA clean
-build-beta:
+build-alpha:
   stage: build
   only:
     refs:
       - alpha
   script:
       - mvn $MAVEN_CLI_OPTS -DBRANCH=ALPHA package
-build-beta:
+build-alpha:
     stage: deploy
     only:
       refs:
