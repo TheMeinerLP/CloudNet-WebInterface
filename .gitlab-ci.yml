@@ -28,7 +28,7 @@ build-release:
       - release
   script:
       - mvn $MAVEN_CLI_OPTS -DBRANCH=RELEASE package
-build-release:
+deploy-release:
     stage: deploy
     only:
       refs:
@@ -59,7 +59,7 @@ build-snapshot:
       - snapshot
   script:
       - mvn $MAVEN_CLI_OPTS -DBRANCH=SNAPSHOT package
-build-snapshot:
+deploy-snapshot:
     stage: deploy
     only:
       refs:
@@ -90,7 +90,7 @@ build-beta:
       - beta
   script:
       - mvn $MAVEN_CLI_OPTS -DBRANCH=BETA package
-build-beta:
+deploy-beta:
     stage: deploy
     only:
       refs:
@@ -121,7 +121,7 @@ build-alpha:
         - alpha
     script:
       - mvn $MAVEN_CLI_OPTS -DBRANCH=ALPHA package
-build-alpha:
+deploy-alpha:
     stage: deploy
     only:
       refs:
