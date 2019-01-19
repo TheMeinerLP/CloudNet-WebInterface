@@ -97,6 +97,7 @@ public class ProjectMain extends CoreModule {
         new WrapperAPI(getCloud(),this);
         new UtilsAPI(getCloud(),this);
         new PlayerAPI(getCloud(),this);
+        new SignApi(this);
         if(this.configPermission.isEnabled()) new CPermsApi(this);
     }
 
