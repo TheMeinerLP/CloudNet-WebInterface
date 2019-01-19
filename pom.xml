@@ -109,7 +109,7 @@
         </extensions>
     </build>
     <properties>
-        <BRANCH>RELEASE</BRANCH>
+        <BRANCH>ALPHA</BRANCH>
     </properties>
     <dependencies>
         <dependency>
