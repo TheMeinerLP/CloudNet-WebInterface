@@ -48,7 +48,6 @@ public class SignApi extends MethodWebHandlerAdapter {
             }
             case "groups":{
                 final Document document = Document.loadDocument(this.path);
-
                 JsonArray groupLayouts = new JsonArray();
                 final SignLayoutConfig signLayoutConfig = document.getObject("layout_config", new TypeToken<SignLayoutConfig>() {}.getType());
                 for (SignGroupLayouts layout : signLayoutConfig.getGroupLayouts()) {
@@ -58,7 +57,7 @@ public class SignApi extends MethodWebHandlerAdapter {
                         group.addProperty("name", layout.getName());
                         JsonArray array = new JsonArray();
                         layout.getLayouts().forEach(t -> array.add(JsonUtil.getGson().toJson(t)));
-                        group.add("layouts", group);
+                        group.add("layouts", array);
                         groupLayouts.add(group);
                     } else continue;
                 }
