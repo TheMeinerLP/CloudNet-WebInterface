@@ -26,6 +26,7 @@ import de.dytanic.cloudnet.lib.server.info.SimpleServerInfo;
 import de.dytanic.cloudnet.lib.server.priority.PriorityConfig;
 import de.dytanic.cloudnet.lib.server.priority.PriorityService;
 import de.dytanic.cloudnet.lib.server.template.Template;
+import de.dytanic.cloudnet.lib.serverselectors.sign.SignLayout;
 import de.dytanic.cloudnet.lib.service.ServiceId;
 import de.dytanic.cloudnet.lib.service.plugin.ServerInstallablePlugin;
 import de.dytanic.cloudnet.lib.user.User;
@@ -69,6 +70,7 @@ public class    JsonUtil {
         builder.registerTypeAdapter(MinecraftServer.class,new MinecraftServerJsonAdapter());
         builder.registerTypeAdapter(CloudServerMeta.class,new CloudServerMetaJsonAdapter());
         builder.registerTypeAdapter(CloudServer.class,new CloudServeJsonAdapter());
+        builder.registerTypeAdapter(SignLayout.class,new SignLayoutAdapter());
         return builder.create();
     }
 }
