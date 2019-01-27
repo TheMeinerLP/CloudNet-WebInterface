@@ -23,13 +23,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class SignApi extends MethodWebHandlerAdapter {
-    private final ProjectMain projectMain;
     private final Path path;
 
-    public SignApi(ProjectMain projectMain) {
+    public SignApi() {
         super("/cloudnet/api/v2/sign");
         CloudNet.getInstance().getWebServer().getWebServerProvider().registerHandler(this);
-        this.projectMain = projectMain;
         this.path = Paths.get("local/signLayout.json");
     }
     @SuppressWarnings("deprecation")

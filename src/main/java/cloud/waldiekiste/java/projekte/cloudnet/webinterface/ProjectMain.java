@@ -10,7 +10,6 @@ package cloud.waldiekiste.java.projekte.cloudnet.webinterface;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandSetupConfig;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandUpdateChannel;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandVersion;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandWIChangelog;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.*;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.listener.ScreenSessionEvent;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.permission.ConfigPermissions;
@@ -97,7 +96,7 @@ public class ProjectMain extends CoreModule {
         new WrapperAPI(getCloud(),this);
         new UtilsAPI(getCloud(),this);
         new PlayerAPI(getCloud(),this);
-        new SignApi(this);
+        new SignApi();
         if(this.configPermission.isEnabled()) new CPermsApi(this);
     }
 
@@ -138,16 +137,8 @@ public class ProjectMain extends CoreModule {
         if(new Integer( NetworkUtils.class.getPackage().getImplementationVersion().replace(".",""))
                 < 218){
             System.err.println("This Module is not compatible with this CloudNet Version");
-            return;
         }
     }
-
-    /**
-     * Getter for the base stuff
-     * @see UpdateService
-     * @see ConfigSetup
-     * @see ConfigPermissions
-     */
 
     /**
     * Here its getting the Updateservice and it is returning that service
