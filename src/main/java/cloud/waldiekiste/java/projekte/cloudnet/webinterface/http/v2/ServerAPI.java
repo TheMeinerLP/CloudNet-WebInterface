@@ -205,7 +205,7 @@ public final class ServerAPI extends MethodWebHandlerAdapter {
             }
             case "delete":{
                 if(RequestUtil.hasHeader(httpRequest,"-Xvalue") &&
-                        getProjectMain().getCloud().getProxyGroups().containsKey(
+                        getProjectMain().getCloud().getServerGroups().containsKey(
                                 RequestUtil.getHeaderValue(httpRequest,"-Xvalue"))){
                     final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
                     if(!UserUtil.hasPermission(user,"cloudnet.web.group.server.delete.*","*",
