@@ -15,7 +15,7 @@ public class SearchingAnimationAdapter implements JsonSerializer<SearchingAnimat
         int animations = object.get("animations").getAsInt();
         int animationsPerSecond = object.get("animationsPerSecond").getAsInt();
         ArrayList<SignLayout> searchingLayouts = new ArrayList<>();
-        jsonElement.getAsJsonArray().forEach(t->searchingLayouts.add(jsonDeserializationContext.deserialize(t,SignLayout.class)));
+        object.get("searchingLayouts").getAsJsonArray().forEach(t->searchingLayouts.add(jsonDeserializationContext.deserialize(t,SignLayout.class)));
         return new SearchingAnimation(animations,animationsPerSecond,searchingLayouts);
     }
 
