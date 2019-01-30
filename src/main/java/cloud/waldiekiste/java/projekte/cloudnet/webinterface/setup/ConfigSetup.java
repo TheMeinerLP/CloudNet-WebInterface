@@ -17,6 +17,7 @@ import de.dytanic.cloudnetcore.CloudNet;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * This class creates the Configuration file.
@@ -51,6 +52,10 @@ public class ConfigSetup extends Setup {
            server.addProperty("CloudName",name);
            servers.add(server);
            jsonObject.add("Servers",servers );
+           JsonObject analytics = new JsonObject();
+           analytics.addProperty("enabled",t.getBoolean("analytics.enabled"));
+           analytics.addProperty("ID", UUID.randomUUID().toString());
+           jsonObject.add("analytics",analytics);
            JsonObject GoogleRecaptcha = new JsonObject();
            GoogleRecaptcha.addProperty("enabled",t.getBoolean("google.enabled"));
            GoogleRecaptcha.addProperty("SiteKey",t.getString("google.sitekey"));
@@ -98,6 +103,8 @@ public class ConfigSetup extends Setup {
         /**
          * Here it asks the User for the NetworkName to set in the Config
          */
+        request(new SetupRequest("analytics.enabled","If you will enabled Analytics?",
+                "",SetupResponseType.BOOL,c->c.equals("yes")));
         request(new SetupRequest("NetworkName","Please insert the network name of the cloud",
                 "",SetupResponseType.STRING,c->true));
         request(new SetupRequest("google.enabled","If you will enabled Google Recaptcha ?",
@@ -110,9 +117,9 @@ public class ConfigSetup extends Setup {
                 "Minutes to tiny",SetupResponseType.NUMBER,c->Integer.valueOf(c) > 5));
         request(new SetupRequest("settings.branding","Please insert the Branding for WebInterface",
                 "",SetupResponseType.STRING,c->true));
-        request(new SetupRequest("settings.interval.console","Please insert the interval time (Milliseconds) for the live console update",
+        request(new SetupRequest("settings.interval.console","Please enter the update interval in milliseconds for the console live update",
                 "",SetupResponseType.NUMBER,c->true));
-        request(new SetupRequest("settings.interval.dashboard","Please insert the interval time (Milliseconds) for the dashboard update",
+        request(new SetupRequest("settings.interval.dashboard","Please enter the update interval in milliseconds for the dashboard live update",
                 "",SetupResponseType.NUMBER,c->true));
     }
 }
