@@ -61,7 +61,12 @@ public class ConfigSetup extends Setup {
             JsonObject settings = new JsonObject();
             settings.addProperty("branding",t.getString("settings.branding"));
             settings.addProperty("timeout",t.getInt("settings.timeout"));
+            JsonObject interval = new JsonObject();
+            interval.addProperty("console",t.getInt("settings.interval.console"));
+            interval.addProperty("dashboard",t.getInt("settings.interval.dashboard"));
+            settings.add("interval",interval);
             jsonObject.add("settings",settings);
+
            /*
            The user gets a message as far as the setup is completed without errors, also he gets the
            instructions to copy the config into the Webinterface.
@@ -105,5 +110,9 @@ public class ConfigSetup extends Setup {
                 "Minutes to tiny",SetupResponseType.NUMBER,c->Integer.valueOf(c) > 5));
         request(new SetupRequest("settings.branding","Please insert the Branding for WebInterface",
                 "",SetupResponseType.STRING,c->true));
+        request(new SetupRequest("settings.interval.console","Please insert the interval time (Milliseconds) for the live console update",
+                "",SetupResponseType.NUMBER,c->true));
+        request(new SetupRequest("settings.interval.dashboard","Please insert the interval time (Milliseconds) for the dashboard update",
+                "",SetupResponseType.NUMBER,c->true));
     }
 }
