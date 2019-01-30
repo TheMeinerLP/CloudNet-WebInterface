@@ -57,7 +57,7 @@ public class SignApi extends MethodWebHandlerAdapter {
             case "random":{
                 Random random = new Random();
                 ArrayList<MinecraftServer> arrayList = new ArrayList<>(CloudNet.getInstance().getServers().values());
-                if (arrayList.size() > 1) {
+                if (arrayList.size() > 0) {
                     Document resp = new Document();
                     resp.append("response", JsonUtil.getGson().toJson(arrayList.get(random.nextInt(arrayList.size()))));
                     return ResponseUtil.success(fullHttpResponse,true,resp);
