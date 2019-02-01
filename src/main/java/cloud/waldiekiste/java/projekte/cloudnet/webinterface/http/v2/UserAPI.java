@@ -77,6 +77,9 @@ public class UserAPI extends MethodWebHandlerAdapter {
         switch (RequestUtil.getHeaderValue(httpRequest,"-Xmessage").toLowerCase()){
             case "save":{
                 final String jsonuser = RequestUtil.getContent(httpRequest);
+                if(jsonuser.isEmpty()){
+                    return ResponseUtil.success(fullHttpResponse, false, new Document());
+                }
                 User saveduser = JsonUtil.getGson().fromJson(jsonuser,User.class);
                 if(!UserUtil.hasPermission(user,"*","cloudnet.web.user.save.*",
                         "cloudnet.web.user.save."+saveduser.getName())){

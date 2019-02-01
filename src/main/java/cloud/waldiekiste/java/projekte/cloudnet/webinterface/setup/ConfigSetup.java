@@ -105,11 +105,11 @@ public class ConfigSetup extends Setup {
          */
         request(new SetupRequest("analytics.enabled","If you will enabled Analytics?",
                 "",SetupResponseType.BOOL,c->c.equals("yes")));
-        request(new SetupRequest("NetworkName","Please insert the network name of the cloud",
+        request(new SetupRequest("NetworkName","Please insert the network name of the cloud.",
                 "",SetupResponseType.STRING,c->true));
         request(new SetupRequest("google.enabled","If you will enabled Google Recaptcha ?",
                 "",SetupResponseType.BOOL,c->c.equals("yes")));
-        request(new SetupRequest("google.sitekey","Please insert the key for Google Recaptcha",
+        request(new SetupRequest("google.sitekey","Please insert the key for Google Recaptcha.",
                 "",SetupResponseType.STRING,c->true));
         request(new SetupRequest("style.default","Please insert the default theme for WebInterface(dark-theme|light-theme|mad-theme|venymc-thme)",
                 "",SetupResponseType.STRING,c->true));
@@ -117,7 +117,7 @@ public class ConfigSetup extends Setup {
                 "Minutes to tiny",SetupResponseType.NUMBER,c->Integer.valueOf(c) > 5));
         request(new SetupRequest("settings.branding","Please insert the Branding for WebInterface",
                 "",SetupResponseType.STRING,c->true));
-        request(new SetupRequest("settings.interval.console","Please enter the update interval in milliseconds for the console live update",
+        request(new SetupRequest("settings.interval.console","Please enter the update interval in milliseconds for the console live update.",
                 "",SetupResponseType.NUMBER,c->true));
         request(new SetupRequest("settings.interval.dashboard","Please enter the update interval in milliseconds for the dashboard live update",
                 "",SetupResponseType.NUMBER,c->true));

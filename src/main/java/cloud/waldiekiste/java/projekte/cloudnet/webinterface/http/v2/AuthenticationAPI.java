@@ -26,9 +26,9 @@ import java.util.ArrayList;
 
 public class AuthenticationAPI extends MethodWebHandlerAdapter {
 
-    public AuthenticationAPI(CloudNet cloudNet) {
+    public AuthenticationAPI() {
         super("/cloudnet/api/v2/auth");
-        cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
+        CloudNet.getInstance().getWebServer().getWebServerProvider().registerHandler(this);
     }
 
     @SuppressWarnings( "deprecation" )

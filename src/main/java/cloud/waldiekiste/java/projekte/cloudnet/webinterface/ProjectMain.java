@@ -88,7 +88,7 @@ public class ProjectMain extends CoreModule {
         //getCloud().getCommandManager().registerCommand(new CommandWIChangelog());
         getCloud().getEventManager().registerListener(this,new ScreenSessionEvent(this));
         new MasterAPI(getCloud(),this);
-        new AuthenticationAPI(getCloud());
+        new AuthenticationAPI();
         new ProxyAPI(getCloud(),this);
         new UserAPI(getCloud(),this);
         new DashboardAPI(getCloud(),this);
