@@ -81,6 +81,9 @@ public class SignApi extends MethodWebHandlerAdapter {
         switch (RequestUtil.getHeaderValue(httpRequest,"-Xmessage").toLowerCase()){
             case "save":{
                 String content = RequestUtil.getContent(httpRequest);
+                if(content.isEmpty()){
+                    return ResponseUtil.success(fullHttpResponse,false,new Document());
+                }
                 if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.sign.save")) {
                     return ResponseUtil.success(fullHttpResponse,false,new Document());
                 }

@@ -244,6 +244,9 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
             }
             case "save":{
                 final String proxygroup = RequestUtil.getContent(httpRequest);
+                if(proxygroup.isEmpty()){
+                    return ResponseUtil.success(fullHttpResponse,false,new Document());
+                }
                 ProxyGroup proxygn = JsonUtil.getGson().fromJson(proxygroup,ProxyGroup.class);
                 if(!UserUtil.hasPermission(user,"cloudnet.web.group.proxy.save.*","*",
                         "cloudnet.web.group.proxy.save."+proxygn.getName())) {

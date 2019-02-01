@@ -133,7 +133,9 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     return ResponseUtil.permissionDenied(fullHttpResponse);
                 }else {
                     final String jsonuser = RequestUtil.getContent(httpRequest);
-
+                    if(jsonuser.isEmpty()){
+                        return ResponseUtil.success(fullHttpResponse,false,new Document());
+                    }
                     Document usern = Document.load(jsonuser);
                     BasicUser basicUser = new BasicUser(usern.get("username").getAsString(),new String(Base64.
                             getDecoder().decode(usern.get("password").getAsString())),new ArrayList<>());

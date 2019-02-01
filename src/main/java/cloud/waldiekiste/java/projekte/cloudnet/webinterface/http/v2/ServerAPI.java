@@ -227,6 +227,9 @@ public final class ServerAPI extends MethodWebHandlerAdapter {
             }
             case "save":{
                 final String servergroup = RequestUtil.getContent(httpRequest);
+                if(servergroup.isEmpty()){
+                    return ResponseUtil.success(fullHttpResponse,false,new Document());
+                }
                 ServerGroup serverGroup = JsonUtil.getGson().fromJson(servergroup,ServerGroup.class);
                 if(!UserUtil.hasPermission(user,"cloudnet.web.group.server.save.*","*",
                         "cloudnet.web.group.server.save."+serverGroup.getName())) {

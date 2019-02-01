@@ -159,6 +159,9 @@ public class CPermsApi extends MethodWebHandlerAdapter {
         switch (RequestUtil.getHeaderValue(httpRequest,"-Xmessage").toLowerCase()){
             case "group":{
                 final String servergroup = RequestUtil.getContent(httpRequest);
+                if(servergroup.isEmpty()){
+                    return ResponseUtil.success(fullHttpResponse,false,new Document());
+                }
                 PermissionGroup permissionGroup = JsonUtil.getGson().fromJson(servergroup,PermissionGroup.class);
                 if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.group.save.*","*",
                         "cloudnet.web.cperms.group.save."+permissionGroup.getName())) {
@@ -188,6 +191,9 @@ public class CPermsApi extends MethodWebHandlerAdapter {
             }
             case "user":{
                 final String userString = RequestUtil.getContent(httpRequest);
+                if(userString.isEmpty()){
+                    return ResponseUtil.success(fullHttpResponse,false,new Document());
+                }
                 OfflinePlayer permissionGroup = JsonUtil.getGson().fromJson(userString, OfflinePlayer.class);
                 if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.user.save.*","*",
                         "cloudnet.web.cperms.user.save."+permissionGroup.getName(),
