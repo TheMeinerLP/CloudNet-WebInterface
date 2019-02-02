@@ -12,6 +12,7 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandUpd
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandVersion;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.*;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.listener.ScreenSessionEvent;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.mob.MobDatabase;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.permission.ConfigPermissions;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.services.ErrorService;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.services.UpdateService;
@@ -45,6 +46,7 @@ public class ProjectMain extends CoreModule {
     private UpdateChannelSetup updateChannelSetup;
     private UpdateService updateService;
     private SignDatabase signDatabase;
+    private MobDatabase mobDatabase;
 
     /**
      * In this method, the trackingservice, the updateservice and the classes are initialised.
@@ -83,6 +85,7 @@ public class ProjectMain extends CoreModule {
         try {
             this.configPermission = new ConfigPermissions();
             this.signDatabase = new SignDatabase(this.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
+            this.mobDatabase = new MobDatabase(this.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
         } catch (Exception e) {
             ErrorService.error(101);
         }
@@ -101,6 +104,7 @@ public class ProjectMain extends CoreModule {
         new UtilsAPI(getCloud(),this);
         new PlayerAPI(getCloud(),this);
         new SignApi(this);
+        new MobAPI(this);
         if(this.configPermission.isEnabled()) new CPermsApi(this);
     }
 
@@ -185,5 +189,9 @@ public class ProjectMain extends CoreModule {
 
     public SignDatabase getSignDatabase() {
         return signDatabase;
+    }
+
+    public MobDatabase getMobDatabase() {
+        return mobDatabase;
     }
 }

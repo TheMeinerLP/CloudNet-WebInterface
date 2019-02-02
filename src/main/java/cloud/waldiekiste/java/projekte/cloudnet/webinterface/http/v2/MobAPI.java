@@ -3,6 +3,8 @@ package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.*;
 import com.google.gson.reflect.TypeToken;
+import de.dytanic.cloudnet.lib.serverselectors.mob.MobConfig;
+import de.dytanic.cloudnet.lib.serverselectors.mob.ServerMob;
 import de.dytanic.cloudnet.lib.serverselectors.sign.Sign;
 import de.dytanic.cloudnet.lib.serverselectors.sign.SignLayoutConfig;
 import de.dytanic.cloudnet.lib.user.User;
@@ -20,16 +22,19 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
-public class SignApi extends MethodWebHandlerAdapter {
+public class MobAPI extends MethodWebHandlerAdapter {
     private final Path path;
     private final ProjectMain projectMain;
 
-    public SignApi(ProjectMain projectMain) {
-        super("/cloudnet/api/v2/sign");
+    public MobAPI(ProjectMain projectMain) {
+        super("/cloudnet/api/v2/mob");
         CloudNet.getInstance().getWebServer().getWebServerProvider().registerHandler(this);
-        this.path = Paths.get("local/signLayout.json");
+        this.path = Paths.get("local/servermob_config.json");
         this.projectMain = projectMain;
     }
     @SuppressWarnings("deprecation")
@@ -41,37 +46,25 @@ public class SignApi extends MethodWebHandlerAdapter {
         fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse,httpRequest);
         User user = HttpUtil.getUser(httpRequest);
 
-        if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.sign.load")) {
+        if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.mob.load")) {
             return ResponseUtil.success(fullHttpResponse,false,new Document());
         }
         switch (RequestUtil.getHeaderValue(httpRequest,"-Xmessage").toLowerCase()){
 
             case "check":{
                 Document resp = new Document();
-                resp.append("response", !CloudNet.getInstance().getConfig().getDisabledModules().contains("CloudNet-Service-SignsModule"));
+                resp.append("response", !CloudNet.getInstance().getConfig().getDisabledModules().contains("CloudNet-Service-MobModule"));
                 return ResponseUtil.success(fullHttpResponse,true,resp);
             }
             case "config":{
-                final Document document = Document.loadDocument(this.path);
-                final SignLayoutConfig signLayoutConfig = document.getObject("layout_config", new TypeToken<SignLayoutConfig>() {}.getType());
+                MobConfig config = Document.loadDocument(this.path).getObject("mobConfig", new TypeToken<MobConfig>() {}.getType());
                 Document resp = new Document();
-                resp.append("response", JsonUtil.getGson().toJson(signLayoutConfig));
+                resp.append("response", JsonUtil.getGson().toJson(config));
                 return ResponseUtil.success(fullHttpResponse,true,resp);
             }
-            case "random":{
-                Random random = new Random();
-                ArrayList<MinecraftServer> arrayList = new ArrayList<>(CloudNet.getInstance().getServers().values());
-                if (arrayList.size() > 0) {
-                    Document resp = new Document();
-                    resp.append("response", JsonUtil.getGson().toJson(arrayList.get(random.nextInt(arrayList.size()))));
-                    return ResponseUtil.success(fullHttpResponse,true,resp);
-                }else{
-                    return ResponseUtil.success(fullHttpResponse,false,new Document());
-                }
-            }
             case "db":{
-               List<String> signs = new ArrayList<>();
-                projectMain.getSignDatabase().loadAll().values().forEach(sign -> signs.add(JsonUtil.getGson().toJson(sign)));
+                List<String> signs = new ArrayList<>();
+                projectMain.getMobDatabase()    .loadAll().values().forEach(sign -> signs.add(JsonUtil.getGson().toJson(sign)));
                 Document resp = new Document();
                 resp.append("response", signs);
                 return ResponseUtil.success(fullHttpResponse,true,resp);
@@ -96,32 +89,32 @@ public class SignApi extends MethodWebHandlerAdapter {
                 if(content.isEmpty()){
                     return ResponseUtil.success(fullHttpResponse,false,new Document());
                 }
-                if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.sign.save")) {
+                if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.mob.save")) {
                     return ResponseUtil.success(fullHttpResponse,false,new Document());
                 }
-                SignLayoutConfig signLayoutConfig = JsonUtil.getGson().fromJson(content, SignLayoutConfig.class);
+                MobConfig signLayoutConfig = JsonUtil.getGson().fromJson(content, MobConfig.class);
                 final Document document = Document.loadDocument(this.path);
-                document.append("layout_config", signLayoutConfig);
+                document.append("mobConfig", signLayoutConfig);
                 document.saveAsConfig(this.path);
                 return ResponseUtil.success(fullHttpResponse,true,new Document());
             }
             case "delete":{
                 String content = RequestUtil.getContent(httpRequest);
-                if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.sign.delete.*","cloudnet.web.module.sign.delete."+content)) {
+                ServerMob mob = JsonUtil.getGson().fromJson(content,ServerMob.class);
+                if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.mob.delete")) {
                     return ResponseUtil.success(fullHttpResponse,false,new Document());
                 }
-                UUID id = UUID.fromString(content);
-                projectMain.getSignDatabase().removeSign(id);
+                projectMain.getMobDatabase().remove(mob);
                 return ResponseUtil.success(fullHttpResponse,true,new Document());
             }
 
             case "add":{
-                if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.sign.add")) {
+                String content = RequestUtil.getContent(httpRequest);
+                ServerMob mob = JsonUtil.getGson().fromJson(content,ServerMob.class);
+                if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.mob.add")) {
                     return ResponseUtil.success(fullHttpResponse,false,new Document());
                 }
-                String content = RequestUtil.getContent(httpRequest);
-                Sign s = JsonUtil.getGson().fromJson(content,Sign.class);
-                projectMain.getSignDatabase().appendSign(s);
+                projectMain.getMobDatabase().append(mob);
                 CloudNet.getInstance().getNetworkManager().updateAll();
                 return ResponseUtil.success(fullHttpResponse,true,new Document());
             }
@@ -137,5 +130,4 @@ public class SignApi extends MethodWebHandlerAdapter {
                                     PathProvider pathProvider, HttpRequest httpRequest) {
         return ResponseUtil.cross(httpRequest);
     }
-
 }

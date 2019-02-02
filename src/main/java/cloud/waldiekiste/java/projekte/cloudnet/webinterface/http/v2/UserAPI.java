@@ -59,7 +59,6 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     return ResponseUtil.success(fullHttpResponse, true, resp);
                 }
             }
-
             default:{
                 return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
             }
@@ -82,7 +81,6 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     return ResponseUtil.success(fullHttpResponse, false, new Document());
                 }
                 User saveduser = JsonUtil.getGson().fromJson(jsonuser,User.class);
-                System.out.println(JsonUtil.getGson().toJson(saveduser));
                 if(!UserUtil.hasPermission(user,"*","cloudnet.web.user.save.*",
                         "cloudnet.web.user.save."+saveduser.getName())){
                     return ResponseUtil.permissionDenied(fullHttpResponse);
