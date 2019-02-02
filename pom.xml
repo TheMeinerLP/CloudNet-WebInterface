@@ -13,7 +13,7 @@
     <groupId>com.waldiekiste.java.projekte.cloudnet</groupId>
 
 
-    <version>101</version>
+    <version>110</version>
     <modelVersion>4.0.0</modelVersion>
 
     <repositories>
@@ -109,7 +109,7 @@
         </extensions>
     </build>
     <properties>
-        <BRANCH>RELEASE</BRANCH>
+        <BRANCH>ALPHA</BRANCH>
     </properties>
     <dependencies>
         <dependency>

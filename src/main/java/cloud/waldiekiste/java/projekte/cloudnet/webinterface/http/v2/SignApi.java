@@ -20,10 +20,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class SignApi extends MethodWebHandlerAdapter {
     private final Path path;
@@ -72,6 +69,14 @@ public class SignApi extends MethodWebHandlerAdapter {
                     return ResponseUtil.success(fullHttpResponse,false,new Document());
                 }
             }
+            case "db":{
+               List<String> signs = new ArrayList<>();
+                projectMain.getSignDatabase().loadAll().values().forEach(sign -> signs.add(JsonUtil.getGson().toJson(sign)));
+                Document resp = new Document();
+                resp.append("response", signs);
+                return ResponseUtil.success(fullHttpResponse,true,resp);
+
+            }
             default:{
                 return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
             }
@@ -98,6 +103,19 @@ public class SignApi extends MethodWebHandlerAdapter {
                 final Document document = Document.loadDocument(this.path);
                 document.append("layout_config", signLayoutConfig);
                 document.saveAsConfig(this.path);
+                return ResponseUtil.success(fullHttpResponse,true,new Document());
+            }
+            case "delete":{
+                if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.sign.delete")) {
+                    return ResponseUtil.success(fullHttpResponse,false,new Document());
+                }
+                return ResponseUtil.success(fullHttpResponse,true,new Document());
+            }
+
+            case "add":{
+                if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.sign.add")) {
+                    return ResponseUtil.success(fullHttpResponse,false,new Document());
+                }
                 return ResponseUtil.success(fullHttpResponse,true,new Document());
             }
             default:{
