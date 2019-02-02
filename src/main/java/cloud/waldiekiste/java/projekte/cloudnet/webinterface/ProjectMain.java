@@ -17,6 +17,7 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.services.ErrorServi
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.services.UpdateService;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.setup.ConfigSetup;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.setup.UpdateChannelSetup;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.sign.SignDatabase;
 import de.dytanic.cloudnet.lib.NetworkUtils;
 import de.dytanic.cloudnetcore.CloudNet;
 import de.dytanic.cloudnetcore.api.CoreModule;
@@ -43,6 +44,7 @@ public class ProjectMain extends CoreModule {
     private ConfigSetup configSetup;
     private UpdateChannelSetup updateChannelSetup;
     private UpdateService updateService;
+    private SignDatabase signDatabase;
 
     /**
      * In this method, the trackingservice, the updateservice and the classes are initialised.
@@ -57,6 +59,7 @@ public class ProjectMain extends CoreModule {
         CloudNet.getLogger().getHandler().add(consoleLines::add);
         this.configSetup = new ConfigSetup();
         this.updateChannelSetup = new UpdateChannelSetup();
+
     }
 
     /**
@@ -79,6 +82,7 @@ public class ProjectMain extends CoreModule {
         versionCheck();
         try {
             this.configPermission = new ConfigPermissions();
+            this.signDatabase = new SignDatabase(this.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
         } catch (Exception e) {
             ErrorService.error(101);
         }
@@ -96,7 +100,7 @@ public class ProjectMain extends CoreModule {
         new WrapperAPI(getCloud(),this);
         new UtilsAPI(getCloud(),this);
         new PlayerAPI(getCloud(),this);
-        new SignApi();
+        new SignApi(this);
         if(this.configPermission.isEnabled()) new CPermsApi(this);
     }
 
@@ -177,5 +181,9 @@ public class ProjectMain extends CoreModule {
      */
     public Map<String, List<String>> getScreenInfos() {
         return screenInfos;
+    }
+
+    public SignDatabase getSignDatabase() {
+        return signDatabase;
     }
 }

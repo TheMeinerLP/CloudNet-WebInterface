@@ -26,10 +26,7 @@ import de.dytanic.cloudnet.lib.server.info.SimpleServerInfo;
 import de.dytanic.cloudnet.lib.server.priority.PriorityConfig;
 import de.dytanic.cloudnet.lib.server.priority.PriorityService;
 import de.dytanic.cloudnet.lib.server.template.Template;
-import de.dytanic.cloudnet.lib.serverselectors.sign.SearchingAnimation;
-import de.dytanic.cloudnet.lib.serverselectors.sign.SignGroupLayouts;
-import de.dytanic.cloudnet.lib.serverselectors.sign.SignLayout;
-import de.dytanic.cloudnet.lib.serverselectors.sign.SignLayoutConfig;
+import de.dytanic.cloudnet.lib.serverselectors.sign.*;
 import de.dytanic.cloudnet.lib.service.ServiceId;
 import de.dytanic.cloudnet.lib.service.plugin.ServerInstallablePlugin;
 import de.dytanic.cloudnet.lib.user.User;
@@ -77,6 +74,8 @@ public class    JsonUtil {
         builder.registerTypeAdapter(SearchingAnimation.class,new SearchingAnimationAdapter());
         builder.registerTypeAdapter(SignGroupLayouts.class,new SignGroupLayoutsAdapter());
         builder.registerTypeAdapter(SignLayoutConfig.class,new SignLayoutConfigAdapter());
+        builder.registerTypeAdapter(Sign.class, new SignJsonAdapter());
+        builder.registerTypeAdapter(Position.class,new PositionJsonAdapter());
         return builder.create();
     }
 }

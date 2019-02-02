@@ -3,6 +3,7 @@ package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.*;
 import com.google.gson.reflect.TypeToken;
+import de.dytanic.cloudnet.lib.serverselectors.sign.Sign;
 import de.dytanic.cloudnet.lib.serverselectors.sign.SignLayoutConfig;
 import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
@@ -20,15 +21,19 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 public class SignApi extends MethodWebHandlerAdapter {
     private final Path path;
+    private final ProjectMain projectMain;
 
-    public SignApi() {
+    public SignApi(ProjectMain projectMain) {
         super("/cloudnet/api/v2/sign");
         CloudNet.getInstance().getWebServer().getWebServerProvider().registerHandler(this);
         this.path = Paths.get("local/signLayout.json");
+        this.projectMain = projectMain;
     }
     @SuppressWarnings("deprecation")
     @Override
@@ -38,16 +43,18 @@ public class SignApi extends MethodWebHandlerAdapter {
                 HttpResponseStatus.OK);
         fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse,httpRequest);
         User user = HttpUtil.getUser(httpRequest);
+
+        if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.sign.load")) {
+            return ResponseUtil.success(fullHttpResponse,false,new Document());
+        }
         switch (RequestUtil.getHeaderValue(httpRequest,"-Xmessage").toLowerCase()){
+
             case "check":{
                 Document resp = new Document();
                 resp.append("response", !CloudNet.getInstance().getConfig().getDisabledModules().contains("CloudNet-Service-SignsModule"));
                 return ResponseUtil.success(fullHttpResponse,true,resp);
             }
             case "config":{
-                if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.sign.load")) {
-                    return ResponseUtil.success(fullHttpResponse,false,new Document());
-                }
                 final Document document = Document.loadDocument(this.path);
                 final SignLayoutConfig signLayoutConfig = document.getObject("layout_config", new TypeToken<SignLayoutConfig>() {}.getType());
                 Document resp = new Document();
