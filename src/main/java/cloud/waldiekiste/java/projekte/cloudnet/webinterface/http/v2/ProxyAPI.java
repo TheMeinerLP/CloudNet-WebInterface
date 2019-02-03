@@ -260,6 +260,7 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
                     CloudNet.getInstance().getProxyGroups().replace(proxygn.getName(),proxygn);
                 }
                 CloudNet.getInstance().toWrapperInstances(proxygn.getWrapper()).forEach(Wrapper::updateWrapper);
+                CloudNet.getInstance().getNetworkManager().updateAll();
                 Document document = new Document();
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }

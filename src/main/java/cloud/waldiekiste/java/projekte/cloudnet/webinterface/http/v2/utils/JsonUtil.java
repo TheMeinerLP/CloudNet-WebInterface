@@ -28,6 +28,8 @@ import de.dytanic.cloudnet.lib.server.priority.PriorityService;
 import de.dytanic.cloudnet.lib.server.template.Template;
 import de.dytanic.cloudnet.lib.serverselectors.mob.MobConfig;
 import de.dytanic.cloudnet.lib.serverselectors.mob.MobItemLayout;
+import de.dytanic.cloudnet.lib.serverselectors.mob.MobPosition;
+import de.dytanic.cloudnet.lib.serverselectors.mob.ServerMob;
 import de.dytanic.cloudnet.lib.serverselectors.sign.*;
 import de.dytanic.cloudnet.lib.service.ServiceId;
 import de.dytanic.cloudnet.lib.service.plugin.ServerInstallablePlugin;
@@ -80,6 +82,8 @@ public class    JsonUtil {
         builder.registerTypeAdapter(Sign.class, new SignJsonAdapter());
         builder.registerTypeAdapter(MobConfig.class,new MobConfigJsonAdapter());
         builder.registerTypeAdapter(MobItemLayout.class, new MobItemLayoutJsonAdapter());
+        builder.registerTypeAdapter(MobPosition.class, new MobPositionJsonAdapter());
+        builder.registerTypeAdapter(ServerMob.class, new ServerMobJsonAdapter());
         return builder.create();
     }
 }

@@ -24,8 +24,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 
 public class MobAPI extends MethodWebHandlerAdapter {
     private final Path path;
@@ -64,7 +62,7 @@ public class MobAPI extends MethodWebHandlerAdapter {
             }
             case "db":{
                 List<String> signs = new ArrayList<>();
-                projectMain.getMobDatabase()    .loadAll().values().forEach(sign -> signs.add(JsonUtil.getGson().toJson(sign)));
+                projectMain.getMobDatabase().loadAll().values().forEach(sign -> signs.add(JsonUtil.getGson().toJson(sign)));
                 Document resp = new Document();
                 resp.append("response", signs);
                 return ResponseUtil.success(fullHttpResponse,true,resp);
