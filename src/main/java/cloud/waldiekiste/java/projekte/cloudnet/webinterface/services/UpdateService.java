@@ -54,33 +54,20 @@ public class UpdateService {
             HttpURLConnection httpURLConnection = (HttpURLConnection)(new URL(data.getFilePath())).openConnection();
             httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
             httpURLConnection.setUseCaches(false);
-            httpURLConnection.setConnectTimeout(1000);
+            httpURLConnection.setConnectTimeout(10000);
             httpURLConnection.connect();
             System.out.println("Downloading update...");
             InputStream inputStream = httpURLConnection.getInputStream();
-            Throwable throwable1 = null;
-            try {
-                File f = new File("modules",data.getFileName());
-                Files.copy(inputStream, f.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            } catch (Throwable throwable) {
-                throwable1 = throwable;
-                throw throwable;
-            } finally {
-                httpURLConnection.disconnect();
-                if (inputStream != null) {
-                    if (throwable1 != null) {
-                        try {
-                            inputStream.close();
-                        } catch (Throwable throwable) {
-                            throwable1.addSuppressed(throwable);
-                        }
-                    } else {
-                        inputStream.close();
-                    }
-                }
-
+            if(inputStream == null){
+                System.out.println("[Updater] No Update available!");
+                return;
             }
-
+            File f = new File("modules",data.getFileName());
+            try {
+                Files.copy(inputStream, f.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (Exception e){
+                e.printStackTrace();
+            }
             httpURLConnection.disconnect();
             System.out.println("Download complete!");
         } catch (IOException var18) {
