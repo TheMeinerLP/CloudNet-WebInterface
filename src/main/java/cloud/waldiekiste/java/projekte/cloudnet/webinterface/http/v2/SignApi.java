@@ -103,6 +103,7 @@ public class SignApi extends MethodWebHandlerAdapter {
                 final Document document = Document.loadDocument(this.path);
                 document.append("layout_config", signLayoutConfig);
                 document.saveAsConfig(this.path);
+                CloudNet.getInstance().getNetworkManager().updateAll();
                 return ResponseUtil.success(fullHttpResponse,true,new Document());
             }
             case "delete":{

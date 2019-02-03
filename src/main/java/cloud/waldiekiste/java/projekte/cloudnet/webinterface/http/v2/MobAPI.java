@@ -96,6 +96,7 @@ public class MobAPI extends MethodWebHandlerAdapter {
                 final Document document = Document.loadDocument(this.path);
                 document.append("mobConfig", signLayoutConfig);
                 document.saveAsConfig(this.path);
+                CloudNet.getInstance().getNetworkManager().updateAll();
                 return ResponseUtil.success(fullHttpResponse,true,new Document());
             }
             case "delete":{
