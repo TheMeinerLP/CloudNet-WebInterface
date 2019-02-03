@@ -113,6 +113,7 @@ public class SignApi extends MethodWebHandlerAdapter {
                 }
                 UUID id = UUID.fromString(content);
                 projectMain.getSignDatabase().removeSign(id);
+                CloudNet.getInstance().getNetworkManager().updateAll();
                 return ResponseUtil.success(fullHttpResponse,true,new Document());
             }
 

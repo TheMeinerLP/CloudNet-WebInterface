@@ -172,6 +172,7 @@ public class CPermsApi extends MethodWebHandlerAdapter {
 
                 CloudNet.getInstance().getNetworkManager().getModuleProperties().append("permissionPool",
                         this.pool);
+                CloudNet.getInstance().getNetworkManager().updateAll();
                 Document document = new Document();
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
@@ -185,6 +186,7 @@ public class CPermsApi extends MethodWebHandlerAdapter {
                     this.pool.getGroups().remove(group);
                     CloudNet.getInstance().getNetworkManager().getModuleProperties().append("permissionPool" ,
                             this.pool);
+                    CloudNet.getInstance().getNetworkManager().updateAll();
                     Document document = new Document();
                     return ResponseUtil.success(fullHttpResponse,true,document);
                 }
@@ -213,6 +215,7 @@ public class CPermsApi extends MethodWebHandlerAdapter {
                     CloudNet.getInstance().getNetworkManager().
                             sendAllUpdate(new PacketOutUpdatePlayer(onlinePlayer));
                 }
+                CloudNet.getInstance().getNetworkManager().updateAll();
                 Document document = new Document();
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }

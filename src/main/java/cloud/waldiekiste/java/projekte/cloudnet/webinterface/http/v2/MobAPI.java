@@ -104,6 +104,7 @@ public class MobAPI extends MethodWebHandlerAdapter {
                     return ResponseUtil.success(fullHttpResponse,false,new Document());
                 }
                 projectMain.getMobDatabase().remove(mob);
+                CloudNet.getInstance().getNetworkManager().updateAll();
                 return ResponseUtil.success(fullHttpResponse,true,new Document());
             }
 
