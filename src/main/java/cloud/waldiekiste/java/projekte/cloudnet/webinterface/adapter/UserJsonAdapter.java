@@ -20,7 +20,7 @@ public class UserJsonAdapter implements JsonSerializer<User>,JsonDeserializer<Us
     public User deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject object = jsonElement.getAsJsonObject();
         final String name = object.get("name").getAsString();
-        final UUID uuid = UUID.fromString(object.get("uuid").getAsString());
+        final UUID uuid = UUID.fromString(object.get("uniqueId").getAsString());
         final String token = object.get("token").getAsString();
         final String password = new String(Base64.getDecoder().decode(object.get("password").getAsString()),StandardCharsets.UTF_8);
         Collection<String> permissions = new ArrayList<>();
@@ -34,7 +34,7 @@ public class UserJsonAdapter implements JsonSerializer<User>,JsonDeserializer<Us
     public JsonElement serialize(User user, Type type, JsonSerializationContext jsonSerializationContext) {
         JsonObject object = new JsonObject();
         object.addProperty("name",user.getName());
-        object.addProperty("uuid",user.getUniqueId().toString());
+        object.addProperty("uniqueId",user.getUniqueId().toString());
         object.addProperty("token",user.getApiToken());
         object.addProperty("password",Base64.getEncoder().encodeToString(user.getHashedPassword().getBytes(StandardCharsets.UTF_8)));
         JsonArray array = new JsonArray();
