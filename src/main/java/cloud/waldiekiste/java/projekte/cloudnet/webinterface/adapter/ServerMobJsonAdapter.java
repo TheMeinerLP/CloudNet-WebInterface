@@ -21,7 +21,7 @@ public class ServerMobJsonAdapter implements JsonSerializer<ServerMob>, JsonDese
         boolean autoJoin = object.get("autoJoin").getAsBoolean();
         MobPosition position = jsonDeserializationContext.deserialize(object.get("position"), MobPosition.class);
         String displayMessage = object.get("displayMessage").getAsString();
-        Document metaDataDoc = new Document(object.get("metaDataDoc").getAsString());
+        Document metaDataDoc = new Document(object.get("metaDataDoc").getAsJsonObject().toString());
         return new ServerMob(uniqueId,display,name,type,targetGroup,itemId,autoJoin,position,displayMessage,metaDataDoc);
     }
 
