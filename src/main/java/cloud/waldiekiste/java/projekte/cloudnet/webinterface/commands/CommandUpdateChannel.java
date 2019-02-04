@@ -50,9 +50,9 @@ public class CommandUpdateChannel extends Command implements TabCompletable {
                 case "channel":{
                     if (strings.length > 1){
                         String channel = strings[1];
-                        VersionType type = VersionType.valueOf(channel);
+                        VersionType type = VersionType.valueOf(channel.toUpperCase());
                         Document document = CloudNet.getInstance().getDbHandlers().getUpdateConfigurationDatabase().get();
-                        document.append("mdwi.updateChannel",type.getType());
+                        document.append("mdwi.updateChannel",type.getType().toUpperCase());
                         CloudNet.getInstance().getDbHandlers().getUpdateConfigurationDatabase().set(document);
                         System.out.println("[Updater] Update Channel now "+type.getType());
                     }else{
