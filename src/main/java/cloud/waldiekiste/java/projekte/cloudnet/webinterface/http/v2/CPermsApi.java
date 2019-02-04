@@ -58,6 +58,9 @@ public class CPermsApi extends MethodWebHandlerAdapter {
         switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
             case "group":{
                 if(RequestUtil.hasHeader(httpRequest,"-Xvalue")){
+                    /**
+                     * Gibt genaue Informationen über die Angegben Gruppe
+                     */
                     final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
                     if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.info.group.*","*",
                             "cloudnet.web.cperms.info.group."+group)) {
@@ -71,6 +74,9 @@ public class CPermsApi extends MethodWebHandlerAdapter {
                         return ResponseUtil.success(fullHttpResponse,true,document);
                     }
                 }else{
+                    /**
+                     * Gibt alle genauen Gruppen Informationen
+                     */
                     if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.groups","*")) {
                         return ResponseUtil.permissionDenied(fullHttpResponse);
                     }else{

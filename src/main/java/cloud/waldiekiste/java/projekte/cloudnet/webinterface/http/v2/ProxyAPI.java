@@ -105,9 +105,8 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
                                 "-Xvalue"))){
                     final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
                     ProxyServer server = getProjectMain().getCloud().getProxy(group);
-                    if(!UserUtil.hasPermission(user,"cloudnet.web.screen.proxys.info.*","*","" +
-                            "cloudnet.web.screen.proxys.info."+group,
-                            "cloudnet.web.screen.proxys.info.group."+server.getServiceId().getGroup())){
+                    if(!UserUtil.hasPermission(user,"cloudnet.web.screen.proxys.info.*","*",
+                            "cloudnet.web.screen.proxys.info."+server.getServiceId().getGroup())){
                         return ResponseUtil.permissionDenied(fullHttpResponse);
                     }
                     if (!getProjectMain().getCloud().getScreenProvider().getScreens().containsKey(
@@ -179,10 +178,6 @@ public class ProxyAPI extends MethodWebHandlerAdapter {
                         getProjectMain().getCloud().getScreenProvider().getScreens().containsKey(
                                 RequestUtil.getHeaderValue(httpRequest,"-Xvalue"))){
                     final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
-                    if(!UserUtil.hasPermission(user,"cloudnet.web.screen.proxy.stop.*","*",
-                            "cloudnet.web.screen.proxy.stop."+group)) {
-                        return ResponseUtil.permissionDenied(fullHttpResponse);
-                    }
                     ProxyServer server = getProjectMain().getCloud().getProxy(group);
                     server.getWrapper().disableScreen(server.getProxyInfo());
                     Document document = new Document();
