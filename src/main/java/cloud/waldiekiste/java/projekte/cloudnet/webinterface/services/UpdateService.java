@@ -51,6 +51,7 @@ public class UpdateService {
     }
     public void update(UpdateData data) {
         try {
+            System.out.println(data.getFilePath());
             HttpURLConnection httpURLConnection = (HttpURLConnection)(new URL(data.getFilePath())).openConnection();
             httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
             httpURLConnection.setUseCaches(false);
