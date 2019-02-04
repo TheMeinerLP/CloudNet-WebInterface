@@ -86,7 +86,7 @@ public class CPermsApi extends MethodWebHandlerAdapter {
                 }
             }
             case "groups":{
-                if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.info.groups*","*")) {
+                if(!UserUtil.hasPermission(user,"cloudnet.web.cperms.info.groups.*","*")) {
                     return ResponseUtil.permissionDenied(fullHttpResponse);
                 }else {
                     Document document = new Document();
