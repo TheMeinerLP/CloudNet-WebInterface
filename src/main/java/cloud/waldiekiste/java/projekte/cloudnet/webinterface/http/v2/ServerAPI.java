@@ -63,7 +63,6 @@ public final class ServerAPI extends MethodWebHandlerAdapter {
                     final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
                     MinecraftServer server = CloudNet.getInstance().getServer(group);
                     if(!UserUtil.hasPermission(user,"cloudnet.web.screen.servers.info.*","*",
-                            "cloudnet.web.screen.servers.info."+group,
                             "cloudnet.web.screen.servers.info.group."+server.getServiceId().getGroup())){
                         return ResponseUtil.permissionDenied(fullHttpResponse);
                     }
@@ -175,7 +174,7 @@ public final class ServerAPI extends MethodWebHandlerAdapter {
                     final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
                     final String command = RequestUtil.getHeaderValue(httpRequest,"-Xcount");
                     if(!UserUtil.hasPermission(user,"cloudnet.web.screen.server.command.*","*",
-                            "cloudnet.web.screen.server.command."+command.split(" ")[0])) {
+                                "cloudnet.web.screen.server.command."+command.split(" ")[0])) {
                         return ResponseUtil.permissionDenied(fullHttpResponse);
                     }
                     MinecraftServer server = getProjectMain().getCloud().getServer(group);
@@ -191,10 +190,6 @@ public final class ServerAPI extends MethodWebHandlerAdapter {
                         getProjectMain().getCloud().getScreenProvider().getScreens().containsKey(
                                 RequestUtil.getHeaderValue(httpRequest,"-Xvalue"))){
                     final String group = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
-                    if(!UserUtil.hasPermission(user,"cloudnet.web.screen.server.stop.*","*",
-                            "cloudnet.web.screen.server.stop."+group)) {
-                        return ResponseUtil.permissionDenied(fullHttpResponse);
-                    }
                     MinecraftServer server = getProjectMain().getCloud().getServer(group);
                     server.getWrapper().disableScreen(server.getServerInfo());
                     Document document = new Document();

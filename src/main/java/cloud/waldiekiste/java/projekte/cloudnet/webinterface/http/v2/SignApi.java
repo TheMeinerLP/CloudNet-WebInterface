@@ -108,7 +108,7 @@ public class SignApi extends MethodWebHandlerAdapter {
             }
             case "delete":{
                 String content = RequestUtil.getContent(httpRequest);
-                if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.sign.delete.*","cloudnet.web.module.sign.delete."+content)) {
+                if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.sign.delete.*")) {
                     return ResponseUtil.success(fullHttpResponse,false,new Document());
                 }
                 UUID id = UUID.fromString(content);
