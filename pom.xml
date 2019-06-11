@@ -13,7 +13,7 @@
     <groupId>com.waldiekiste.java.projekte.cloudnet</groupId>
 
 
-    <version>110</version>
+    <version>111</version>
     <modelVersion>4.0.0</modelVersion>
 
     <repositories>
@@ -115,7 +115,7 @@
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet-core</artifactId>
-            <version>2.1.14.2</version>
+            <version>2.1.15</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

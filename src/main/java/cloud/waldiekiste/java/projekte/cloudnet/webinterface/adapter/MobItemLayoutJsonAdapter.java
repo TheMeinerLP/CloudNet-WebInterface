@@ -12,17 +12,19 @@ public class MobItemLayoutJsonAdapter implements JsonSerializer<MobItemLayout>, 
     public MobItemLayout deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject object = jsonElement.getAsJsonObject();
         int itemId = object.get("itemId").getAsInt();
+        String itemName = object.get("itemName").getAsString();
         int subId = object.get("subId").getAsInt();
         String display = object.get("display").getAsString();
         List<String> lore = new ArrayList<>();
         object.get("lore").getAsJsonArray().forEach(line -> lore.add(line.getAsString()));
-        return new MobItemLayout(itemId,subId,display,lore);
+        return new MobItemLayout(itemId,itemName,subId,display,lore);
     }
 
     @Override
     public JsonElement serialize(MobItemLayout mobItemLayout, Type type, JsonSerializationContext jsonSerializationContext) {
         JsonObject object = new JsonObject();
         object.addProperty("itemId",mobItemLayout.getItemId());
+        object.addProperty("itemName",mobItemLayout.getItemName());
         object.addProperty("subId",mobItemLayout.getSubId());
         object.addProperty("display",mobItemLayout.getDisplay());
         JsonArray lore = new JsonArray();

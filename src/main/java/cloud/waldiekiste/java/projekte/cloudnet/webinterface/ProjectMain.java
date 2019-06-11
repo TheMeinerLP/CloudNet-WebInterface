@@ -32,7 +32,7 @@ import java.util.Map;
  *  This is the class, which is the base of the websocket-extension.
  *  At the startup, this class is used by the Modulemanager.
  */
-public class ProjectMain extends CoreModule {
+public final class ProjectMain extends CoreModule {
 
 
 
@@ -87,12 +87,11 @@ public class ProjectMain extends CoreModule {
             this.signDatabase = new SignDatabase(this.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
             this.mobDatabase = new MobDatabase(this.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
         } catch (Exception e) {
-            ErrorService.error(101);
+            e.printStackTrace();
         }
         getCloud().getCommandManager().registerCommand(new CommandSetupConfig(this));
         getCloud().getCommandManager().registerCommand(new CommandVersion(this));
         getCloud().getCommandManager().registerCommand(new CommandUpdateChannel(this));
-        //getCloud().getCommandManager().registerCommand(new CommandWIChangelog());
         getCloud().getEventManager().registerListener(this,new ScreenSessionEvent(this));
         new MasterAPI(getCloud(),this);
         new AuthenticationAPI();
@@ -100,7 +99,7 @@ public class ProjectMain extends CoreModule {
         new UserAPI(getCloud(),this);
         new DashboardAPI(getCloud(),this);
         new ServerAPI(getCloud(),this);
-        new WrapperAPI(getCloud(),this);
+        new WrapperAPI(getCloud());
         new UtilsAPI(getCloud(),this);
         new PlayerAPI(getCloud(),this);
         new SignApi(this);

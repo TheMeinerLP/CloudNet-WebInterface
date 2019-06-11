@@ -14,7 +14,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.nio.charset.StandardCharsets;
 
-public class UserUtil {
+public final class UserUtil {
 
     public static boolean hasPermission(User user, String... permissions){
         for (String permission : permissions) {

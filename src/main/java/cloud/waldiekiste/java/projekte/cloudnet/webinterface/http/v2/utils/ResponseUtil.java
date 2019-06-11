@@ -16,7 +16,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-public class ResponseUtil {
+public final class ResponseUtil {
     public static FullHttpResponse permissionDenied(FullHttpResponse response){
         Document dataDocument = new Document("success", false).append("reason", new ArrayList<>()).append("response", new Document());
         dataDocument.append("reason", "permission denied!");

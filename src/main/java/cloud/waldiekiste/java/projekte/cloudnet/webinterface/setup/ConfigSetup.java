@@ -23,8 +23,12 @@ import java.util.UUID;
  * This class creates the Configuration file.
  */
 
-public class ConfigSetup extends Setup {
-    public ConfigSetup() {
+public final class ConfigSetup extends Setup {
+
+  private boolean defaultDashboard = false;
+  private boolean defaultConsole = false;
+
+  public ConfigSetup() {
         setupComplete(t->{
 
            String name = t.getString("NetworkName");
@@ -58,7 +62,9 @@ public class ConfigSetup extends Setup {
            jsonObject.add("analytics",analytics);
            JsonObject GoogleRecaptcha = new JsonObject();
            GoogleRecaptcha.addProperty("enabled",t.getBoolean("google.enabled"));
-           GoogleRecaptcha.addProperty("SiteKey",t.getString("google.sitekey"));
+           if(t.contains("google.sitekey")){
+             GoogleRecaptcha.addProperty("SiteKey",t.getString("google.sitekey"));
+           }
            jsonObject.add("GoogleRecaptcha",GoogleRecaptcha);
             JsonObject style = new JsonObject();
             style.addProperty("default",t.getString("style.default"));
@@ -67,8 +73,16 @@ public class ConfigSetup extends Setup {
             settings.addProperty("branding",t.getString("settings.branding"));
             settings.addProperty("timeout",t.getInt("settings.timeout"));
             JsonObject interval = new JsonObject();
-            interval.addProperty("console",t.getInt("settings.interval.console"));
-            interval.addProperty("dashboard",t.getInt("settings.interval.dashboard"));
+            if(defaultConsole){
+              interval.addProperty("console",1000);
+            }else{
+              interval.addProperty("console",t.getInt("settings.interval.console"));
+            }
+            if(defaultDashboard){
+              interval.addProperty("dashboard",1000);
+            }else{
+              interval.addProperty("dashboard",t.getInt("settings.interval.dashboard"));
+            }
             settings.add("interval",interval);
             jsonObject.add("settings",settings);
 
@@ -108,18 +122,36 @@ public class ConfigSetup extends Setup {
         request(new SetupRequest("NetworkName","Please insert the network name of the cloud.",
                 "",SetupResponseType.STRING,c->true));
         request(new SetupRequest("google.enabled","If you will enabled Google Recaptcha ?",
-                "",SetupResponseType.BOOL,c->c.equals("yes")));
-        request(new SetupRequest("google.sitekey","Please insert the key for Google Recaptcha.",
-                "",SetupResponseType.STRING,c->true));
+                "",SetupResponseType.BOOL,c->{
+          if (c.equalsIgnoreCase("yes")) {
+            request(new SetupRequest("google.sitekey","Please insert the key for Google Recaptcha.",
+                "",SetupResponseType.STRING,c1->true));
+            return true;
+          }else{
+            return false;
+          }
+        }));
         request(new SetupRequest("style.default","Please insert the default theme for WebInterface(dark-theme|light-theme|mad-theme|venymc-thme)",
                 "",SetupResponseType.STRING,c->true));
         request(new SetupRequest("settings.timeout","Please insert the session timeout for WebInterface Session(In Minutes)",
-                "Minutes to tiny",SetupResponseType.NUMBER,c->Integer.valueOf(c) > 5));
+                "Minutes to tiny",SetupResponseType.NUMBER,c->Integer.valueOf(c) > 2));
         request(new SetupRequest("settings.branding","Please insert the Branding for WebInterface",
                 "",SetupResponseType.STRING,c->true));
-        request(new SetupRequest("settings.interval.console","Please enter the update interval in milliseconds for the console live update.",
-                "",SetupResponseType.NUMBER,c->true));
-        request(new SetupRequest("settings.interval.dashboard","Please enter the update interval in milliseconds for the dashboard live update",
-                "",SetupResponseType.NUMBER,c->true));
+        request(new SetupRequest("settings.interval.console","Please enter the update interval in milliseconds for the console live update. Default is 1000",
+                "Allowed minimum is 1000, all under is properly laggy and can crash your Browser or PC",SetupResponseType.NUMBER,c->{
+          if(c.isEmpty()){
+            this.defaultConsole  = true;
+            return true;
+          }else
+            return Integer.valueOf(c) >= 1000;
+        }));
+        request(new SetupRequest("settings.interval.dashboard","Please enter the update interval in milliseconds for the dashboard live update. Default is 1000",
+                "Allowed minimum is 1000, all under is properly laggy and can crash your Browser or PC",SetupResponseType.NUMBER,c->{
+          if(c.isEmpty()){
+            this.defaultDashboard  = true;
+            return true;
+          }else
+            return Integer.valueOf(c) >= 1000;
+        }));
     }
 }

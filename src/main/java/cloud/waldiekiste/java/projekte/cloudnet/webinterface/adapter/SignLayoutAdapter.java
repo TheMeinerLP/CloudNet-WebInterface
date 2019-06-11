@@ -14,17 +14,19 @@ public class SignLayoutAdapter implements JsonSerializer<SignLayout>, JsonDeseri
     public SignLayout deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject object = jsonElement.getAsJsonObject();
         String name = object.get("name").getAsString();
+        String blockName = object.get("blockName").getAsString();
         List<String> signLayout = new ArrayList<>();
         object.get("signLayout").getAsJsonArray().forEach(t->signLayout.add(t.getAsString()));
         int blockId = object.get("blockId").getAsInt();
         int subId = object.get("subId").getAsInt();
-        return new SignLayout(name,signLayout.toArray(new String[0]),blockId,subId);
+        return new SignLayout(name,signLayout.toArray(new String[0]),blockId,blockName,subId);
     }
 
     @Override
     public JsonElement serialize(SignLayout signLayout, Type type, JsonSerializationContext jsonSerializationContext) {
         JsonObject object = new JsonObject();
         object.addProperty("name",signLayout.getName());
+        object.addProperty("blockName",signLayout.getBlockName());
         JsonArray signLayouts = new JsonArray();
         Arrays.asList(signLayout.getSignLayout()).forEach(signLayouts::add);
         object.add("signLayout",signLayouts);

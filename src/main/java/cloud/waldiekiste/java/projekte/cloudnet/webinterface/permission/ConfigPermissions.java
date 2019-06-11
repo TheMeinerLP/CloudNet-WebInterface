@@ -23,7 +23,7 @@ import java.nio.file.attribute.FileAttribute;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ConfigPermissions {
+public final class ConfigPermissions {
     private final Path path;
     private Configuration cache;
     @SuppressWarnings("unchecked")
@@ -35,9 +35,9 @@ public class ConfigPermissions {
             configuration.set("enabled", true);
             configuration.set("groups", new Configuration());
             if (!Files.exists(Paths.get("local/permissions.yml"))) {
-                final PermissionGroup member = new PermissionGroup("default", "§eMember §7\u258e ", "§f", "§e", 9999, 0, true, new HashMap<>(), MapWrapper.valueableHashMap(new Return<>("Lobby", Collections.singletonList("test.permission.for.group.Lobby"))), new HashMap<>(), new ArrayList<>());
+                final PermissionGroup member = new PermissionGroup("default", "","§eMember §7\u258e ", "§f", "§e", 9999, 0, true, new HashMap<>(), MapWrapper.valueableHashMap(new Return<>("Lobby", Collections.singletonList("test.permission.for.group.Lobby"))), new HashMap<>(), new ArrayList<>());
                 this.write(member, configuration);
-                final PermissionGroup admin = new PermissionGroup("Admin", "§cAdmin §7\u258e ", "§f", "§c", 0, 100, false, (HashMap<String, Boolean>)MapWrapper.valueableHashMap(new Return[] { new Return<>("*", true) }), MapWrapper.valueableHashMap(new Return<>("Lobby", Collections.singletonList("test.permission.for.group.Lobby"))), new HashMap<>(), new ArrayList<>());
+                final PermissionGroup admin = new PermissionGroup("Admin", "","§cAdmin §7\u258e ", "§f", "§c", 0, 100, false, (HashMap<String, Boolean>)MapWrapper.valueableHashMap(new Return[] { new Return<>("*", true) }), MapWrapper.valueableHashMap(new Return<>("Lobby", Collections.singletonList("test.permission.for.group.Lobby"))), new HashMap<>(), new ArrayList<>());
                 this.write(admin, configuration);
             }
             else {
@@ -135,7 +135,7 @@ public class ConfigPermissions {
             for (final String entry2 : permissionSectionGroups.getKeys()) {
                 permissionsGroups.put(entry2, permissionSectionGroups.getStringList(entry2));
             }
-            final PermissionGroup permissionGroup = new PermissionGroup(key, group.getString("prefix"), group.getString("suffix"), group.getString("display"), group.getInt("tagId"), group.getInt("joinPower"), group.getBoolean("defaultGroup"), permissions, permissionsGroups, group.getSection("options").self, group.getStringList("implements"));
+            final PermissionGroup permissionGroup = new PermissionGroup(key, group.getString("prefix"),group.getString("color"), group.getString("suffix"), group.getString("display"), group.getInt("tagId"), group.getInt("joinPower"), group.getBoolean("defaultGroup"), permissions, permissionsGroups, group.getSection("options").self, group.getStringList("implements"));
             maps.put(permissionGroup.getName(), permissionGroup);
         }
         return maps;

@@ -5,7 +5,7 @@ import de.dytanic.cloudnetcore.CloudNet;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 
-public class HttpUtil {
+public final class HttpUtil {
 
     public static FullHttpResponse simpleCheck(FullHttpResponse fullHttpResponse, HttpRequest httpRequest){
         ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json; charset=utf-8");

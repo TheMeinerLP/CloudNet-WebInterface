@@ -13,7 +13,7 @@ import de.dytanic.cloudnetcore.api.event.server.ScreenInfoEvent;
 
 import java.util.ArrayList;
 
-public class ScreenSessionEvent implements IEventListener<ScreenInfoEvent> {
+public final class ScreenSessionEvent implements IEventListener<ScreenInfoEvent> {
     private final ProjectMain projectMain;
     public ScreenSessionEvent(ProjectMain projectMain) {
         this.projectMain = projectMain;

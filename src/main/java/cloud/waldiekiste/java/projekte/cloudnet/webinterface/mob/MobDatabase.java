@@ -10,7 +10,7 @@ import de.dytanic.cloudnet.lib.utility.document.Document;
 import java.util.Map;
 import java.util.UUID;
 
-public class MobDatabase extends DatabaseUsable
+public final class MobDatabase extends DatabaseUsable
 {
     public MobDatabase(final Database database) {
         super(database);
@@ -22,7 +22,7 @@ public class MobDatabase extends DatabaseUsable
     }
 
     public void append(final ServerMob serverMob) {
-        final Document document = this.database.getDocument("server_selector_mobs").getDocument("mobs").append(serverMob.getUniqueId().toString(), serverMob);
+        final Document document = this.database.getDocument("server_selector_mobs").getDocument("mobs").append(serverMob.getUniqueId().toString(), Document.GSON.toJsonTree(serverMob));
         this.database.insert(new Document[] { document });
     }
 
@@ -46,7 +46,7 @@ public class MobDatabase extends DatabaseUsable
         }
         if (injectable) {
             final Document document = this.database.getDocument("server_selector_mobs");
-            document.append("mobs", mobMap);
+            document.append("mobs", Document.GSON.toJsonTree(mobMap));
             this.database.insert(new Document[] { document });
         }
         return mobMap;

@@ -25,7 +25,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.UUID;
 
-public class PlayerAPI extends MethodWebHandlerAdapter {
+public final class PlayerAPI extends MethodWebHandlerAdapter {
     private final ProjectMain projectMain;
 
     public PlayerAPI(CloudNet cloudNet, ProjectMain projectMain) {
@@ -33,25 +33,6 @@ public class PlayerAPI extends MethodWebHandlerAdapter {
         cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
         this.projectMain = projectMain;
     }
-
-    /**
-     *
-     */
-    @SuppressWarnings( "deprecation" )
-    @Override
-    public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
-        ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json; charset=utf-8");
-        if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message")) return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
-        if (!RequestUtil.checkAuth(httpRequest)) return UserUtil.failedAuthorization(fullHttpResponse);
-        switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
-
-            default:{
-                return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
-            }
-        }
-    }
-
     /**
      *
      */

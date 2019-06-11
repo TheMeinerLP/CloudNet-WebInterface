@@ -15,9 +15,9 @@ public final class UpdateData {
     private Long version;
     private VersionType branch;
     private String extension;
-    private String ENVIRONMENT;
+    private String environment;
 
-    public UpdateData(String urlPath, String filePath, String fileName, String name, Long version, VersionType branch, String extension, String ENVIRONMENT) {
+    public UpdateData(String urlPath, String filePath, String fileName, String name, Long version, VersionType branch, String extension, String environment) {
         UrlPath = urlPath;
         FilePath = filePath;
         FileName = fileName;
@@ -25,7 +25,7 @@ public final class UpdateData {
         this.version = version;
         this.branch = branch;
         this.extension = extension;
-        this.ENVIRONMENT = ENVIRONMENT;
+        this.environment = environment;
     }
 
     public String getUrlPath() {
@@ -56,7 +56,7 @@ public final class UpdateData {
         return extension;
     }
 
-    public String getENVIRONMENT() {
-        return ENVIRONMENT;
+    public String getEnvironment() {
+        return environment;
     }
 }

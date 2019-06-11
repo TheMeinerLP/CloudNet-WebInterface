@@ -12,7 +12,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpRequest;
 
-public class RequestUtil {
+public final class RequestUtil {
     public static boolean hasHeader(HttpRequest request,String... headers){
         for (String header : headers) {
             if(request.headers().contains(header.toLowerCase())){

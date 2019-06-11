@@ -21,7 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
-public class UpdateService {
+public final class UpdateService {
     public void checkUpdate(Module module){
         try {
             Document document = CloudNet.getInstance().getDbHandlers().getUpdateConfigurationDatabase().get();

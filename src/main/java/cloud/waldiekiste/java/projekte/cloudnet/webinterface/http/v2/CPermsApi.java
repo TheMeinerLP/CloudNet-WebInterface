@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class CPermsApi extends MethodWebHandlerAdapter {
+public final class CPermsApi extends MethodWebHandlerAdapter {
     private final ProjectMain projectMain;
     private PermissionPool pool;
 

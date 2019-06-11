@@ -11,7 +11,7 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
 import de.dytanic.cloudnet.command.Command;
 import de.dytanic.cloudnet.command.CommandSender;
 
-public class CommandVersion extends Command {
+public final class CommandVersion extends Command {
     private final ProjectMain projectMain;
     public CommandVersion(ProjectMain projectMain) {
         super("versionI", "cloudnet.webinterface.version", "vI");

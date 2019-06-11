@@ -12,7 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class SignDatabase extends DatabaseUsable
+public final class SignDatabase extends DatabaseUsable
 {
     public SignDatabase(final Database database) {
         super(database);
@@ -25,7 +25,7 @@ public class SignDatabase extends DatabaseUsable
     public SignDatabase appendSign(final Sign sign) {
         final Document x = this.database.getDocument("signs");
         final Document document = x.getDocument("signs");
-        document.append(sign.getUniqueId().toString(), sign);
+        document.append(sign.getUniqueId().toString(), Document.GSON.toJsonTree(sign));
         this.database.insert(document);
         return this;
     }

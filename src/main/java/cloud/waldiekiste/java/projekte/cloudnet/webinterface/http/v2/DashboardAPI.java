@@ -25,7 +25,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class DashboardAPI extends MethodWebHandlerAdapter {
+public final class DashboardAPI extends MethodWebHandlerAdapter {
     private final ProjectMain projectMain;
 
     public DashboardAPI(CloudNet cloudNet, ProjectMain projectMain) {

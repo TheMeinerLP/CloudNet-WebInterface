@@ -4,7 +4,7 @@ package cloud.waldiekiste.java.projekte.cloudnet.webinterface.services;
  * In this class, the errors are listed and there messages are specified.
  */
 
-public class ErrorService {
+public final class ErrorService {
 
     /**
      * Getting the error code and sending a specified ErrorMessage for the ErrorCode.

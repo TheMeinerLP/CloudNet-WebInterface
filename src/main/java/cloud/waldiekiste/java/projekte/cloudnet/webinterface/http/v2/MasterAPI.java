@@ -26,7 +26,7 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
-public class MasterAPI extends MethodWebHandlerAdapter {
+public final class MasterAPI extends MethodWebHandlerAdapter {
     private final ProjectMain projectMain;
 
     public MasterAPI(CloudNet cloudNet, ProjectMain projectMain) {

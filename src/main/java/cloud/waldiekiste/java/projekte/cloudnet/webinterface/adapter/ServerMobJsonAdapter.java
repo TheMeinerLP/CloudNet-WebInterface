@@ -15,6 +15,7 @@ public class ServerMobJsonAdapter implements JsonSerializer<ServerMob>, JsonDese
         UUID uniqueId = UUID.fromString(object.get("uniqueId").getAsString());
         String display = object.get("display").getAsString();
         String name = object.get("name").getAsString();
+        String itemName = object.get("itemName").getAsString();
         String type = object.get("type").getAsString();
         String targetGroup = object.get("targetGroup").getAsString();
         int itemId = object.get("itemId").getAsInt();
@@ -22,7 +23,7 @@ public class ServerMobJsonAdapter implements JsonSerializer<ServerMob>, JsonDese
         MobPosition position = jsonDeserializationContext.deserialize(object.get("position"), MobPosition.class);
         String displayMessage = object.get("displayMessage").getAsString();
         Document metaDataDoc = new Document(object.get("metaDataDoc").getAsJsonObject().toString());
-        return new ServerMob(uniqueId,display,name,type,targetGroup,itemId,autoJoin,position,displayMessage,metaDataDoc);
+        return new ServerMob(uniqueId,display,name,type,targetGroup,itemId,itemName,autoJoin,position,displayMessage,metaDataDoc);
     }
 
     @Override
@@ -30,6 +31,7 @@ public class ServerMobJsonAdapter implements JsonSerializer<ServerMob>, JsonDese
         JsonObject object = new JsonObject();
         object.addProperty("uniqueId",serverMob.getUniqueId().toString());
         object.addProperty("display",serverMob.getDisplay());
+        object.addProperty("itemName",serverMob.getItemName());
         object.addProperty("name",serverMob.getName());
         object.addProperty("type",serverMob.getType());
         object.addProperty("targetGroup",serverMob.getTargetGroup());

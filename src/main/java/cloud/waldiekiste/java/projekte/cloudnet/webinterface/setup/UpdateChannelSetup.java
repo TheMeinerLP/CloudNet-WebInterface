@@ -16,7 +16,7 @@ import de.dytanic.cloudnetcore.CloudNet;
 /*
 In this class, the user chooses the Updatechannel
  */
-public class UpdateChannelSetup extends Setup {
+public final class UpdateChannelSetup extends Setup {
     public UpdateChannelSetup() {
         setupComplete(t->{
             final String type = t.get("type").getAsString().toUpperCase();
@@ -30,7 +30,7 @@ public class UpdateChannelSetup extends Setup {
          If he types a other Message or something other, he gets a ErrorMessage.
          */
         request(new SetupRequest("type",
-                "Which UpdateChannel you want to use?(RELEASE,DEVELOPMENT,SNAPSHOT)",
+                "Which Update Channel you want to use?(RELEASE,DEVELOPMENT,SNAPSHOT)",
                 "This Channel not exsists", SetupResponseType.STRING, s -> {
             if(s.length() == 0 || s == null || s.isEmpty()){
                 return false;

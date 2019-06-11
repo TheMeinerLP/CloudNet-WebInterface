@@ -25,7 +25,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MobAPI extends MethodWebHandlerAdapter {
+public final class MobAPI extends MethodWebHandlerAdapter {
     private final Path path;
     private final ProjectMain projectMain;
 

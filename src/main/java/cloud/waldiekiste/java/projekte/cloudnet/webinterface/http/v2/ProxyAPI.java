@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ProxyAPI extends MethodWebHandlerAdapter {
+public final class ProxyAPI extends MethodWebHandlerAdapter {
     private final ProjectMain projectMain;
 
     public ProxyAPI(CloudNet cloudNet, ProjectMain projectMain) {

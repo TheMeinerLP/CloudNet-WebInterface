@@ -24,13 +24,14 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 @SuppressWarnings("ALL")
-public class UserAPI extends MethodWebHandlerAdapter {
+public final class UserAPI extends MethodWebHandlerAdapter {
     private final ProjectMain projectMain;
 
     public UserAPI(CloudNet cloudNet, ProjectMain projectMain) {
@@ -53,7 +54,7 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     return ResponseUtil.permissionDenied(fullHttpResponse);
                 }else {
                     List<String> users = new ArrayList<>();
-                    getProjectMain().getCloud().getUsers().forEach(t -> users.add(JsonUtil.getGson().toJson(t)));
+                    CloudNet.getInstance().getConfig().getUsers().forEach(t -> users.add(JsonUtil.getGson().toJson(t)));
                     Document resp = new Document();
                     resp.append("response", users);
                     return ResponseUtil.success(fullHttpResponse, true, resp);
@@ -101,7 +102,7 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     return ResponseUtil.success(fullHttpResponse, true, resp);
                 }
             }
-            case "resetpassword":{
+            case "reseth":{
                 final String jsonuser = RequestUtil.getContent(httpRequest);
                 Document usern = Document.load(jsonuser);
                 User basUser = getProjectMain().getCloud().getUser(usern.get("username").getAsString());
@@ -142,20 +143,18 @@ public class UserAPI extends MethodWebHandlerAdapter {
                     ArrayList<User> users = new ArrayList<>(getProjectMain().getCloud().getUsers());
                     AtomicBoolean exsist = new AtomicBoolean();
                     users.forEach(t->{
-                        if (t.getName().equals(usern.get("username").getAsString())) {
+                        if (t.getName().equals(basicUser.getName())) {
                             exsist.set(true);
                         }
                     });
                     if(exsist.get()){
-                        Document resp = new Document();
-                        return ResponseUtil.success(fullHttpResponse, false, resp);
+                        return ResponseUtil.success(fullHttpResponse, false, new Document());
                     }
                     users.add(basicUser);
                     getProjectMain().getCloud().getUsers().clear();
                     getProjectMain().getCloud().getUsers().addAll(users);
                     this.projectMain.getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
-                    Document resp = new Document();
-                    return ResponseUtil.success(fullHttpResponse, true, resp);
+                    return ResponseUtil.success(fullHttpResponse, true, new Document());
                 }
             }
             case "delete":{

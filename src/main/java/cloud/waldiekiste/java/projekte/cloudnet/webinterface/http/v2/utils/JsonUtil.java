@@ -37,7 +37,7 @@ import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnetcore.network.NetworkInfo;
 import de.dytanic.cloudnetcore.network.components.*;
 
-public class    JsonUtil {
+public final class JsonUtil {
     public static Gson getGson() {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(AutoSlot.class,new AutoSlotJsonAdapter());

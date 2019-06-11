@@ -22,6 +22,7 @@ public class PermissionGroupJsonAdapter implements JsonDeserializer<PermissionGr
     public PermissionGroup deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject object = jsonElement.getAsJsonObject();
         final String name = object.get("name").getAsString();
+        final String color = object.get("color").getAsString();
         final String prefix = object.get("prefix").getAsString();
         final String suffix = object.get("suffix").getAsString();
         final String display = object.get("display").getAsString();
@@ -51,13 +52,14 @@ public class PermissionGroupJsonAdapter implements JsonDeserializer<PermissionGr
         });
         List<String> implement = new ArrayList<>();
         object.get("implementGroups").getAsJsonArray().forEach(t->implement.add(t.getAsString()));
-        return new PermissionGroup(name,prefix,suffix,display,tagId,joinPower,defaultGroup,permissions,serverGroupPermissions,options,implement);
+        return new PermissionGroup(name,color,prefix,suffix,display,tagId,joinPower,defaultGroup,permissions,serverGroupPermissions,options,implement);
     }
 
     @Override
     public JsonElement serialize(PermissionGroup permissionGroup, Type type, JsonSerializationContext jsonSerializationContext) {
         JsonObject object = new JsonObject();
         object.addProperty("name",permissionGroup.getName());
+        object.addProperty("color",permissionGroup.getColor());
         object.addProperty("prefix",permissionGroup.getPrefix());
         object.addProperty("suffix",permissionGroup.getSuffix());
         object.addProperty("display",permissionGroup.getDisplay());

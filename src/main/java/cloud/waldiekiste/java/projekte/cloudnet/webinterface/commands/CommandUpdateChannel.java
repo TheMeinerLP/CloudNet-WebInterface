@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class CommandUpdateChannel extends Command implements TabCompletable {
+public final class CommandUpdateChannel extends Command implements TabCompletable {
     private ProjectMain projectMain;
     public CommandUpdateChannel(ProjectMain projectMain) {
         super("updateI", "cloudnet.webinterface.update","UI");

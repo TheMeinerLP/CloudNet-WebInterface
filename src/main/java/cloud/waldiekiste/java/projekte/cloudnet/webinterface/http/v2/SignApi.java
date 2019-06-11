@@ -22,7 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class SignApi extends MethodWebHandlerAdapter {
+public final class SignApi extends MethodWebHandlerAdapter {
     private final Path path;
     private final ProjectMain projectMain;
 

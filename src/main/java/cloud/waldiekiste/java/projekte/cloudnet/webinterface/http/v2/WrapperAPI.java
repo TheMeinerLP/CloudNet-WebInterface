@@ -24,9 +24,9 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WrapperAPI extends MethodWebHandlerAdapter {
+public final class WrapperAPI extends MethodWebHandlerAdapter {
 
-    public WrapperAPI(CloudNet cloudNet, ProjectMain projectMain) {
+    public WrapperAPI(CloudNet cloudNet) {
         super("/cloudnet/api/v2/wrapper");
         cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
     }
