@@ -8,12 +8,12 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils.UpdateData;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils.VersionType;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
 
 public class UpdateDataJsonAdapter implements JsonDeserializer<UpdateData> {
+
     @Override
     public UpdateData deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject object = jsonElement.getAsJsonObject();
@@ -30,14 +30,11 @@ public class UpdateDataJsonAdapter implements JsonDeserializer<UpdateData> {
          * SYSTEM: null
          * }
          */
-        String urlPath = object.get("UrlPath").getAsString();
         String filePath = object.get("FilePath").getAsString();
         String fileName = object.get("FileName").getAsString();
         String name = object.get("name").getAsString();
-        long version = Long.valueOf(object.get("version").getAsString());
-        VersionType branch = VersionType.valueOf(object.get("branch").getAsString());
+        long version = Long.parseLong(object.get("version").getAsString());
         String extension = object.get("extension").getAsString();
-        String environment = object.get("ENVIRONMENT").getAsString();
-        return new UpdateData(urlPath,filePath,fileName,name,version,branch,extension,environment);
+        return new UpdateData(filePath,fileName,name,version,extension);
     }
 }
