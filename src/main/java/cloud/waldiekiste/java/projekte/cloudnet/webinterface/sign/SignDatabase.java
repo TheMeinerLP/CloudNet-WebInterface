@@ -12,8 +12,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public final class SignDatabase extends DatabaseUsable
-{
+public final class SignDatabase extends DatabaseUsable {
+
     public SignDatabase(final Database database) {
         super(database);
         final Document document = database.getDocument("signs");
