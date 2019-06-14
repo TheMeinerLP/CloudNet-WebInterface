@@ -14,6 +14,7 @@ public final class HttpUtil {
         if (!RequestUtil.checkAuth(httpRequest)) return UserUtil.failedAuthorization(fullHttpResponse);
         return fullHttpResponse;
     }
+
     public static User getUser(HttpRequest httpRequest){
         return CloudNet.getInstance().getUser(RequestUtil.getHeaderValue(httpRequest,"-xcloudnet-user"));
     }

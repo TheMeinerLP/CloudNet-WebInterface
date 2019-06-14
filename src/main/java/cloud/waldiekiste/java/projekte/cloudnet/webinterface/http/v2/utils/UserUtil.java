@@ -25,7 +25,8 @@ public final class UserUtil {
         }
         return false;
     }
-    public  static FullHttpResponse failedAuthorization(FullHttpResponse response){
+
+    public static FullHttpResponse failedAuthorization(FullHttpResponse response) {
         Document dataDocument = new Document("success", false);
         dataDocument.append("reason", "failed authorization!");
         dataDocument.append("response", new Document());
@@ -33,5 +34,4 @@ public final class UserUtil {
         response.content().writeBytes(dataDocument.convertToJsonString().getBytes(StandardCharsets.UTF_8));
         return response;
     }
-
 }

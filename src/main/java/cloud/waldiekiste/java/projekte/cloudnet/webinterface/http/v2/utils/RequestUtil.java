@@ -13,7 +13,8 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpRequest;
 
 public final class RequestUtil {
-    public static boolean hasHeader(HttpRequest request,String... headers){
+
+    public static boolean hasHeader(HttpRequest request,String... headers) {
         for (String header : headers) {
             if(request.headers().contains(header.toLowerCase())){
                 return true;
@@ -21,14 +22,15 @@ public final class RequestUtil {
         }
         return false;
     }
-    public static String getHeaderValue(HttpRequest request,String header){
-        if(hasHeader(request,header.toLowerCase())){
-            return request.headers().get(header.toLowerCase());
-        }else{
-            throw new NullPointerException("Header Field "+header+" not found!");
 
+    public static String getHeaderValue(HttpRequest request,String header) {
+        if(hasHeader(request,header.toLowerCase())) {
+            return request.headers().get(header.toLowerCase());
+        }else {
+            throw new NullPointerException("Header Field " + header + " not found!");
         }
     }
+
     public static String getContent(HttpRequest request){
         FullHttpRequest fullHttpRequest = (FullHttpRequest) request;
         if (fullHttpRequest.content().readableBytes() != 0) {
@@ -40,6 +42,7 @@ public final class RequestUtil {
             throw new NullPointerException("No Content found found!");
         }
     }
+
     public static boolean checkAuth(HttpRequest httpRequest){
         String username = RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-user");
         String token = RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-token");

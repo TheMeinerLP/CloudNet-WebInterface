@@ -13,6 +13,7 @@ import de.dytanic.cloudnet.command.CommandSender;
 import de.dytanic.cloudnetcore.CloudNet;
 
 public final class CommandSetupConfig extends Command {
+
     private final ProjectMain projectMain;
 
     public CommandSetupConfig(ProjectMain projectMain) {
