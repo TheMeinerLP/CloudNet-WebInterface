@@ -27,6 +27,7 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 public final class MasterAPI extends MethodWebHandlerAdapter {
+
     private final ProjectMain projectMain;
 
     public MasterAPI(CloudNet cloudNet, ProjectMain projectMain) {
@@ -34,6 +35,7 @@ public final class MasterAPI extends MethodWebHandlerAdapter {
         cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
         this.projectMain = projectMain;
     }
+
     @SuppressWarnings( "deprecation" )
     @Override
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
@@ -44,12 +46,12 @@ public final class MasterAPI extends MethodWebHandlerAdapter {
         switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
             case "corelog":{
                 Document document = new Document();
-                document.append("response",getProjectMain().getConsoleLines());
+                document.append("response",projectMain.getConsoleLines());
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
             case "commands":{
                 Document document = new Document();
-                document.append("response",getProjectMain().getCloud().getCommandManager().getCommands());
+                document.append("response",projectMain.getCloud().getCommandManager().getCommands());
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
             default:{
@@ -57,6 +59,7 @@ public final class MasterAPI extends MethodWebHandlerAdapter {
             }
         }
     }
+
     @SuppressWarnings("deprecation")
     @Override
     public FullHttpResponse post(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
@@ -150,7 +153,7 @@ public final class MasterAPI extends MethodWebHandlerAdapter {
                             "cloudnet.web.master.command."+command)) {
                         return ResponseUtil.permissionDenied(fullHttpResponse);
                     }
-                    getProjectMain().getCloud().getCommandManager().dispatchCommand(command);
+                    projectMain.getCloud().getCommandManager().dispatchCommand(command);
                     Document document = new Document();
                     return ResponseUtil.success(fullHttpResponse,true,document);
                 }else{
@@ -167,9 +170,5 @@ public final class MasterAPI extends MethodWebHandlerAdapter {
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {
         return ResponseUtil.cross(httpRequest);
-    }
-
-    private ProjectMain getProjectMain() {
-        return projectMain;
     }
 }

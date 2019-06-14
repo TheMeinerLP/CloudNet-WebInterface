@@ -11,9 +11,7 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.HttpUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
 import de.dytanic.cloudnet.lib.NetworkUtils;
-import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
 import de.dytanic.cloudnet.web.server.util.PathProvider;
@@ -24,7 +22,9 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
+
 public final class UtilsAPI extends MethodWebHandlerAdapter {
+
     private final ProjectMain projectMain;
 
     public UtilsAPI(CloudNet cloudNet, ProjectMain projectMain) {
@@ -42,7 +42,7 @@ public final class UtilsAPI extends MethodWebHandlerAdapter {
         switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
             case "version":{
                 Document document = new Document();
-                document.append("response",getProjectMain().getModuleConfig().getVersion());
+                document.append("response", projectMain.getModuleConfig().getVersion());
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
             case "cloudversion":{
@@ -53,11 +53,11 @@ public final class UtilsAPI extends MethodWebHandlerAdapter {
             case "badges":{
                 Document document = new Document();
                 Document infos = new Document();
-                infos.append("proxy_groups",CloudNet.getInstance().getProxyGroups().size());
-                infos.append("server_groups",CloudNet.getInstance().getServerGroups().size());
-                infos.append("proxies",CloudNet.getInstance().getProxys().size());
-                infos.append("servers",CloudNet.getInstance().getServers().size());
-                infos.append("wrappers",CloudNet.getInstance().getWrappers().size());
+                infos.append("proxy_groups", CloudNet.getInstance().getProxyGroups().size());
+                infos.append("server_groups", CloudNet.getInstance().getServerGroups().size());
+                infos.append("proxies", CloudNet.getInstance().getProxys().size());
+                infos.append("servers", CloudNet.getInstance().getServers().size());
+                infos.append("wrappers", CloudNet.getInstance().getWrappers().size());
                 document.append("response",infos);
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
@@ -75,8 +75,5 @@ public final class UtilsAPI extends MethodWebHandlerAdapter {
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {
         return ResponseUtil.cross(httpRequest);
-    }
-    private ProjectMain getProjectMain() {
-        return projectMain;
     }
 }
