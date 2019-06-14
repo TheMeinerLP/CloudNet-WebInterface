@@ -11,10 +11,9 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandSet
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandUpdateChannel;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandVersion;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.*;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.listener.ScreenSessionEvent;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.listener.ScreenSessionListener;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.mob.MobDatabase;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.permission.ConfigPermissions;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.services.ErrorService;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.services.UpdateService;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.setup.ConfigSetup;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.setup.UpdateChannelSetup;
@@ -33,8 +32,6 @@ import java.util.Map;
  *  At the startup, this class is used by the Modulemanager.
  */
 public final class ProjectMain extends CoreModule {
-
-
 
     /**
      * At this part, the basic Strings,Lists,Services, Setups and Maps  are listed.
@@ -77,7 +74,6 @@ public final class ProjectMain extends CoreModule {
      * @see ServerAPI
      * @see WrapperAPI
      * @see UtilsAPI
-     * @see ErrorService
      */
     @Override
     public void onBootstrap() {
@@ -90,9 +86,9 @@ public final class ProjectMain extends CoreModule {
             e.printStackTrace();
         }
         getCloud().getCommandManager().registerCommand(new CommandSetupConfig(this));
-        getCloud().getCommandManager().registerCommand(new CommandVersion(this));
+        getCloud().getCommandManager().registerCommand(new CommandVersion(getVersion()));
         getCloud().getCommandManager().registerCommand(new CommandUpdateChannel(this));
-        getCloud().getEventManager().registerListener(this,new ScreenSessionEvent(this));
+        getCloud().getEventManager().registerListener(this,new ScreenSessionListener(this));
         new MasterAPI(getCloud(),this);
         new AuthenticationAPI();
         new ProxyAPI(getCloud(),this);
@@ -122,26 +118,25 @@ public final class ProjectMain extends CoreModule {
     private void versionCheck(){
         if (!getCloud().getDbHandlers().getUpdateConfigurationDatabase().get().contains("mdwi.downgrade")) {
             if (!getCloud().getDbHandlers().getUpdateConfigurationDatabase().get().getBoolean("mdwi.downgrade")) {
-
                 if (!getCloud().getDbHandlers().getUpdateConfigurationDatabase().get().contains("mdwi.updateChannel")) {
                     this.updateChannelSetup.start(CloudNet.getLogger().getReader());
                     this.updateService.checkUpdate(this);
-                }else{
+                } else {
                     this.updateService.checkUpdate(this);
                 }
             }
-        }else{
+        } else {
             if (!getCloud().getDbHandlers().getUpdateConfigurationDatabase().get().contains("mdwi.updateChannel")) {
                 this.updateChannelSetup.start(CloudNet.getLogger().getReader());
                 this.updateService.checkUpdate(this);
-            }else{
+            } else {
                 this.updateService.checkUpdate(this);
             }
         }
         /*
         * Checking CloudNet Version and sending Error-Message if its lower than the version 2.1.8
          */
-        if(new Integer( NetworkUtils.class.getPackage().getImplementationVersion().replace(".",""))
+        if (new Integer( NetworkUtils.class.getPackage().getImplementationVersion().replace(".",""))
                 < 218){
             System.err.println("This Module is not compatible with this CloudNet Version");
         }
@@ -162,7 +157,6 @@ public final class ProjectMain extends CoreModule {
     public ConfigSetup getConfigSetup() {
         return configSetup;
     }
-
 
     /**
      * Here its getting the ConfigPermission and its returning them
