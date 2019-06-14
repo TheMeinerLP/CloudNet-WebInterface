@@ -7,7 +7,6 @@
 
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2;
 
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.*;
 import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
@@ -30,6 +29,7 @@ public final class WrapperAPI extends MethodWebHandlerAdapter {
         super("/cloudnet/api/v2/wrapper");
         cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
     }
+
     @SuppressWarnings( "deprecation" )
     @Override
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
@@ -41,13 +41,13 @@ public final class WrapperAPI extends MethodWebHandlerAdapter {
         switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
             case "wrappers":{
                 Document document = new Document();
-                document.append("response",CloudNet.getInstance().getWrappers().keySet());
-                return ResponseUtil.success(fullHttpResponse,true,document);
+                document.append("response", CloudNet.getInstance().getWrappers().keySet());
+                return ResponseUtil.success(fullHttpResponse,true, document);
             }
             case "warpperinfos":{
                 if(!UserUtil.hasPermission(user,"*","cloudnet.web.wrapper.item.*")){
                     return ResponseUtil.permissionDenied(fullHttpResponse);
-                }else {
+                } else {
                     List<String> wrappers = new ArrayList<>();
                     CloudNet.getInstance().getWrappers().values().forEach(t -> wrappers.add(JsonUtil.getGson().toJson(t)));
                     Document resp = new Document();
