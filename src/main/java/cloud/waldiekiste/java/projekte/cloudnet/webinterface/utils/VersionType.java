@@ -8,7 +8,7 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils;
 
 public enum VersionType {
-    ALPHA("Alpha"),
+
     BETA("Beta"),
     SNAPSHOT("Snapshot"),
     RELEASE("Release");
