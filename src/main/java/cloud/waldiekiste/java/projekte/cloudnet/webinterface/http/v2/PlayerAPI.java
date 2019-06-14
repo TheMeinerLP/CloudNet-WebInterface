@@ -4,18 +4,13 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
-import de.dytanic.cloudnet.lib.NetworkUtils;
 import de.dytanic.cloudnet.lib.player.CloudPlayer;
-import de.dytanic.cloudnet.lib.player.PlayerCommandExecution;
-import de.dytanic.cloudnet.lib.player.PlayerExecutor;
 import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
-import de.dytanic.cloudnet.web.server.handler.MethodWebHandler;
 import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
 import de.dytanic.cloudnet.web.server.util.PathProvider;
 import de.dytanic.cloudnet.web.server.util.QueryDecoder;
 import de.dytanic.cloudnetcore.CloudNet;
-import de.dytanic.cloudnetcore.network.components.Wrapper;
 import de.dytanic.cloudnetcore.player.CorePlayerExecutor;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
@@ -26,6 +21,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import java.util.UUID;
 
 public final class PlayerAPI extends MethodWebHandlerAdapter {
+
     private final ProjectMain projectMain;
 
     public PlayerAPI(CloudNet cloudNet, ProjectMain projectMain) {
@@ -33,12 +29,13 @@ public final class PlayerAPI extends MethodWebHandlerAdapter {
         cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
         this.projectMain = projectMain;
     }
+
     /**
      *
      */
-    @SuppressWarnings("deprecation")
+
     @Override
-    public FullHttpResponse post(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) throws Exception {
+    public FullHttpResponse post(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
         ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json; charset=utf-8");
         if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message")) return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
@@ -90,7 +87,6 @@ public final class PlayerAPI extends MethodWebHandlerAdapter {
     /**
      * Fix the issue for CORS Error
      */
-    @SuppressWarnings( "deprecation" )
     @Override
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {

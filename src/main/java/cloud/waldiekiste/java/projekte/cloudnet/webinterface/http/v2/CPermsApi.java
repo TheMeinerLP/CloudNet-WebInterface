@@ -14,14 +14,12 @@ import de.dytanic.cloudnet.lib.player.CloudPlayer;
 import de.dytanic.cloudnet.lib.player.OfflinePlayer;
 import de.dytanic.cloudnet.lib.player.permission.PermissionGroup;
 import de.dytanic.cloudnet.lib.player.permission.PermissionPool;
-import de.dytanic.cloudnet.lib.server.ServerGroup;
 import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
 import de.dytanic.cloudnet.web.server.util.PathProvider;
 import de.dytanic.cloudnet.web.server.util.QueryDecoder;
 import de.dytanic.cloudnetcore.CloudNet;
-import de.dytanic.cloudnetcore.network.components.Wrapper;
 import de.dytanic.cloudnetcore.network.packet.out.PacketOutUpdateOfflinePlayer;
 import de.dytanic.cloudnetcore.network.packet.out.PacketOutUpdatePlayer;
 import io.netty.channel.ChannelHandlerContext;
@@ -35,6 +33,7 @@ import java.util.List;
 import java.util.UUID;
 
 public final class CPermsApi extends MethodWebHandlerAdapter {
+
     private final ProjectMain projectMain;
     private PermissionPool pool;
 
@@ -45,6 +44,7 @@ public final class CPermsApi extends MethodWebHandlerAdapter {
         pool = projectMain.getCloud().getNetworkManager().getModuleProperties().getObject("permissionPool",
                 PermissionPool.TYPE);
     }
+
     @SuppressWarnings( "deprecation" )
     @Override
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,

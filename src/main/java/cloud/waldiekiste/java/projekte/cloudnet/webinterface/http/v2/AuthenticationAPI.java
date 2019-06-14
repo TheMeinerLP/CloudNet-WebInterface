@@ -57,6 +57,7 @@ public final class AuthenticationAPI extends MethodWebHandlerAdapter {
         document.append("response", userinfos);
         return ResponseUtil.success(fullHttpResponse,true,document);
     }
+
     @Override
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {

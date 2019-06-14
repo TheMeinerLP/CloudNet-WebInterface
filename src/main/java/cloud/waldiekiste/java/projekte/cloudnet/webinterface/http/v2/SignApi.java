@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public final class SignApi extends MethodWebHandlerAdapter {
+
     private final Path path;
     private final ProjectMain projectMain;
 
@@ -32,6 +33,7 @@ public final class SignApi extends MethodWebHandlerAdapter {
         this.path = Paths.get("local/signLayout.json");
         this.projectMain = projectMain;
     }
+
     @SuppressWarnings("deprecation")
     @Override
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
@@ -131,13 +133,11 @@ public final class SignApi extends MethodWebHandlerAdapter {
                 return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
             }
         }
-
-
     }
+
     @Override
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {
         return ResponseUtil.cross(httpRequest);
     }
-
 }

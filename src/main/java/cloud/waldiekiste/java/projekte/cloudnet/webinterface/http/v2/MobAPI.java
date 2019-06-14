@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class MobAPI extends MethodWebHandlerAdapter {
+
     private final Path path;
     private final ProjectMain projectMain;
 
@@ -35,6 +36,7 @@ public final class MobAPI extends MethodWebHandlerAdapter {
         this.path = Paths.get("local/servermob_config.json");
         this.projectMain = projectMain;
     }
+
     @SuppressWarnings("deprecation")
     @Override
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
@@ -122,9 +124,8 @@ public final class MobAPI extends MethodWebHandlerAdapter {
                 return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
             }
         }
-
-
     }
+
     @Override
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {
