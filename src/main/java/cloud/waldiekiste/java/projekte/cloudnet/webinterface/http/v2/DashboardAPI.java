@@ -11,7 +11,6 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.HttpUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
 import de.dytanic.cloudnet.web.server.util.PathProvider;
@@ -24,8 +23,10 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 public final class DashboardAPI extends MethodWebHandlerAdapter {
+
     private final ProjectMain projectMain;
 
     public DashboardAPI(CloudNet cloudNet, ProjectMain projectMain) {
@@ -33,6 +34,7 @@ public final class DashboardAPI extends MethodWebHandlerAdapter {
         cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
         this.projectMain = projectMain;
     }
+
     @SuppressWarnings( "deprecation" )
     @Override
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
@@ -40,28 +42,24 @@ public final class DashboardAPI extends MethodWebHandlerAdapter {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(),
                 HttpResponseStatus.OK);
         fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse,httpRequest);
+        Document document = new Document();
         switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
             case "players":{
-                Document document = new Document();
-                AtomicInteger integer = new AtomicInteger();
-                getProjectMain().getCloud().getServerGroups().keySet().forEach(t-> integer.getAndAdd(
-                        getProjectMain().getCloud().getOnlineCount(t)));
-                document.append("response",integer.get());
+                IntStream stream = projectMain.getCloud().getServerGroups().keySet().stream()
+                        .mapToInt(server -> projectMain.getCloud().getOnlineCount(server));
+                document.append("response",stream.sum());
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
             case "servers":{
-                Document document = new Document();
-                document.append("response",getProjectMain().getCloud().getServers().size());
+                document.append("response",projectMain.getCloud().getServers().size());
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
             case "proxys":{
-                Document document = new Document();
-                document.append("response",getProjectMain().getCloud().getProxys().size());
+                document.append("response",projectMain.getCloud().getProxys().size());
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
             case "groups":{
-                Document document = new Document();
-                document.append("response",getProjectMain().getCloud().getServerGroups().size());
+                document.append("response",projectMain.getCloud().getServerGroups().size());
                 return ResponseUtil.success(fullHttpResponse,true,document);
             }
             default:{
@@ -73,9 +71,5 @@ public final class DashboardAPI extends MethodWebHandlerAdapter {
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {
         return ResponseUtil.cross(httpRequest);
-    }
-
-    private ProjectMain getProjectMain() {
-        return projectMain;
     }
 }

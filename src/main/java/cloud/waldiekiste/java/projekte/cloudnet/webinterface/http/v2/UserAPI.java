@@ -24,14 +24,13 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Optional;
 
 @SuppressWarnings("ALL")
 public final class UserAPI extends MethodWebHandlerAdapter {
+
     private final ProjectMain projectMain;
 
     public UserAPI(CloudNet cloudNet, ProjectMain projectMain) {
@@ -77,56 +76,52 @@ public final class UserAPI extends MethodWebHandlerAdapter {
         switch (RequestUtil.getHeaderValue(httpRequest,"-Xmessage").toLowerCase()){
             case "save":{
                 final String jsonuser = RequestUtil.getContent(httpRequest);
-
                 if(jsonuser.isEmpty() || jsonuser == null){
                     return ResponseUtil.success(fullHttpResponse, false, new Document());
                 }
                 User saveduser = JsonUtil.getGson().fromJson(jsonuser,User.class);
                 if(!UserUtil.hasPermission(user,"*","cloudnet.web.user.save.*",
-                        "cloudnet.web.user.save."+saveduser.getName())){
+                        "cloudnet.web.user.save." + saveduser.getName())) {
                     return ResponseUtil.permissionDenied(fullHttpResponse);
                 }else {
-                    ArrayList<User> users = new ArrayList<>(getProjectMain().getCloud().getUsers());
-                    AtomicReference<User> olduser = new AtomicReference<>();
-                    users.forEach(t->{
-                        if (t.getName().equals(saveduser.getName())) {
-                            olduser.set(t);
-                        }
-                    });
-                    users.remove(olduser.get());
-                    getProjectMain().getCloud().getUsers().clear();
-                    users.add(saveduser);
-                    getProjectMain().getCloud().getUsers().addAll(users);
-                    this.projectMain.getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
-                    Document resp = new Document();
-                    return ResponseUtil.success(fullHttpResponse, true, resp);
+                    ArrayList<User> users = new ArrayList<>(projectMain.getCloud().getUsers());
+                    Optional<User> oldUser = users.stream().filter(u -> u.getName().equals(saveduser.getName())).findAny();
+                    if (oldUser.isPresent()) {
+                        users.remove(oldUser.get());
+                        projectMain.getCloud().getUsers().clear();
+                        users.add(saveduser);
+                        projectMain.getCloud().getUsers().addAll(users);
+                        this.projectMain.getCloud().getConfig().save(projectMain.getCloud().getUsers());
+                        return ResponseUtil.success(fullHttpResponse, true, new Document());
+                    } else {
+                        return ResponseUtil.success(fullHttpResponse, false, new Document());
+                    }
                 }
             }
             case "reseth":{
                 final String jsonuser = RequestUtil.getContent(httpRequest);
                 Document usern = Document.load(jsonuser);
-                User basUser = getProjectMain().getCloud().getUser(usern.get("username").getAsString());
+                User editUser = projectMain.getCloud().getUser(usern.get("username").getAsString());
                 if(!UserUtil.hasPermission(user,"*","cloudnet.web.user.restepassword.*",
-                        "cloudnet.web.user.restepassword."+basUser.getName())){
+                        "cloudnet.web.user.restepassword."+editUser.getName())){
                     return ResponseUtil.permissionDenied(fullHttpResponse);
-                }else {
-                    User basicUser = new User(basUser.getName(),basUser.getUniqueId(),basUser.getApiToken(),
+                } else {
+                    User newUser = new User(editUser.getName(),editUser.getUniqueId(),editUser.getApiToken(),
                             DyHash.hashString(new String(Base64.getDecoder().decode(usern.get("password").
-                                    getAsString()))),basUser.getPermissions(),basUser.getMetaData());
-                    ArrayList<User> users = new ArrayList<>(getProjectMain().getCloud().getUsers());
-                    AtomicReference<User> olduser = new AtomicReference<>();
-                    users.forEach(t->{
-                        if (t.getName().equals(basicUser.getName())) {
-                            olduser.set(t);
-                        }
-                    });
-                    users.remove(olduser.get());
-                    getProjectMain().getCloud().getUsers().clear();
-                    users.add(basicUser);
-                    getProjectMain().getCloud().getUsers().addAll(users);
-                    this.projectMain.getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
-                    Document resp = new Document();
-                    return ResponseUtil.success(fullHttpResponse, true, resp);
+                                    getAsString()))),editUser.getPermissions(),editUser.getMetaData());
+                    ArrayList<User> users = new ArrayList<>(projectMain.getCloud().getUsers());
+                    Optional<User> oldUser = users.stream().filter(u -> u.getName().equals(newUser.getName())).findAny();
+
+                    if (oldUser.isPresent()) {
+                        users.remove(oldUser.get());
+                        projectMain.getCloud().getUsers().clear();
+                        users.add(newUser);
+                        projectMain.getCloud().getUsers().addAll(users);
+                        this.projectMain.getCloud().getConfig().save(projectMain.getCloud().getUsers());
+                        return ResponseUtil.success(fullHttpResponse, true, new Document());
+                    } else {
+                        return ResponseUtil.success(fullHttpResponse, false, new Document());
+                    }
                 }
             }
             case "add":{
@@ -140,21 +135,16 @@ public final class UserAPI extends MethodWebHandlerAdapter {
                     Document usern = Document.load(jsonuser);
                     BasicUser basicUser = new BasicUser(usern.get("username").getAsString(),new String(Base64.
                             getDecoder().decode(usern.get("password").getAsString())),new ArrayList<>());
-                    ArrayList<User> users = new ArrayList<>(getProjectMain().getCloud().getUsers());
-                    AtomicBoolean exsist = new AtomicBoolean();
-                    users.forEach(t->{
-                        if (t.getName().equals(basicUser.getName())) {
-                            exsist.set(true);
-                        }
-                    });
-                    if(exsist.get()){
+                    ArrayList<User> users = new ArrayList<>(projectMain.getCloud().getUsers());
+                    if (users.stream().noneMatch(u -> u.getName().equals(basicUser.getName()))) {
+                        users.add(basicUser);
+                        projectMain.getCloud().getUsers().clear();
+                        projectMain.getCloud().getUsers().addAll(users);
+                        this.projectMain.getCloud().getConfig().save(projectMain.getCloud().getUsers());
+                        return ResponseUtil.success(fullHttpResponse, true, new Document());
+                    } else {
                         return ResponseUtil.success(fullHttpResponse, false, new Document());
                     }
-                    users.add(basicUser);
-                    getProjectMain().getCloud().getUsers().clear();
-                    getProjectMain().getCloud().getUsers().addAll(users);
-                    this.projectMain.getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
-                    return ResponseUtil.success(fullHttpResponse, true, new Document());
                 }
             }
             case "delete":{
@@ -164,21 +154,20 @@ public final class UserAPI extends MethodWebHandlerAdapter {
                             "cloudnet.web.user.delete."+username1)) {
                         return ResponseUtil.permissionDenied(fullHttpResponse);
                     }
-                    ArrayList<User> users = new ArrayList<>(getProjectMain().getCloud().getUsers());
+                    ArrayList<User> users = new ArrayList<>(projectMain.getCloud().getUsers());
 
-                    AtomicReference<User> olduser = new AtomicReference<>();
-                    users.forEach(t->{
-                        if (t.getName().equals(username1)) {
-                            olduser.set(t);
-                        }
-                    });
-                    users.remove(olduser.get());
-                    getProjectMain().getCloud().getUsers().clear();
-                    getProjectMain().getCloud().getUsers().addAll(users);
-                    this.projectMain.getCloud().getConfig().save(getProjectMain().getCloud().getUsers());
-                    Document document = new Document();
-                    return ResponseUtil.success(fullHttpResponse,true,document);
-                }else{
+                    Optional<User> oldUser = users.stream().filter(u -> u.getName().equals(username1)).findAny();
+
+                    if (oldUser.isPresent()) {
+                        users.remove(oldUser.get());
+                        projectMain.getCloud().getUsers().clear();
+                        projectMain.getCloud().getUsers().addAll(users);
+                        this.projectMain.getCloud().getConfig().save(projectMain.getCloud().getUsers());
+                        return ResponseUtil.success(fullHttpResponse, true, new Document());
+                    } else {
+                        return ResponseUtil.success(fullHttpResponse, false, new Document());
+                    }
+                } else {
                     return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
                 }
             }
@@ -192,9 +181,5 @@ public final class UserAPI extends MethodWebHandlerAdapter {
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {
         return ResponseUtil.cross(httpRequest);
-    }
-
-    private ProjectMain getProjectMain() {
-        return projectMain;
     }
 }
