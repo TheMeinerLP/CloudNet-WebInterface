@@ -3,7 +3,6 @@ package cloud.waldiekiste.java.projekte.cloudnet.webinterface.services;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.JsonUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils.UpdateData;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils.VersionType;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -16,13 +15,13 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
 public final class UpdateService {
-    public void checkUpdate(Module module){
+
+    public void checkUpdate(Module module) {
         try {
             Document document = CloudNet.getInstance().getDbHandlers().getUpdateConfigurationDatabase().get();
             if (document.contains("mdwi.updateChannel")) {
@@ -30,25 +29,29 @@ public final class UpdateService {
                 ModuleConfig config = module.getModuleConfig();
                 Long oldVersion = Long.valueOf(config.getVersion());
                 UpdateData data = getUpdateData(type);
-                if(data == null){
+                if (data == null){
                     return;
                 }
-                Long newVersion = data.getVersion();
-                if(newVersion > oldVersion){
+
+                long newVersion = data.getVersion();
+                if (newVersion > oldVersion) {
                     module.onShutdown();
                     CloudNet.getInstance().getModuleManager().disableModule(module);
                     File f = config.getFile();
                     f.delete();
                     update(data);
                     CloudNet.getInstance().reload();
-                }else{
+                } else {
                     System.out.println("[Updater] No Update available!");
                 }
-            }else{
+            } else {
                 System.err.println("CloudNet-Web");
             }
-        } catch (Exception e) {e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
     public void update(UpdateData data) {
         try {
             System.out.println(data.getFilePath());
@@ -74,8 +77,8 @@ public final class UpdateService {
         } catch (IOException var18) {
             var18.printStackTrace();
         }
-
     }
+
     private UpdateData getUpdateData(VersionType branch) throws IOException {
         String url = String.format("https://api.madfix.me/v1/download.php?BRANCH=%s&ENVIRONMENT=CLOUDNET",branch.getType());
         URL adress;
@@ -112,6 +115,7 @@ public final class UpdateService {
         connection.disconnect();
         return data;
     }
+
     public ArrayList<UpdateData> getUpdates(VersionType branch) throws Exception {
         String url = String.format("https://api.madfix.me/v1/download.php?BRANCH=%s&ENVIRONMENT=CLOUDNET",branch.getType());
         URL adress = new URL( url);
