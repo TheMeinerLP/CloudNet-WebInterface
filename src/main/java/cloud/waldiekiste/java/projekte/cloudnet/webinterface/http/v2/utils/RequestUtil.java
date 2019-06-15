@@ -26,8 +26,8 @@ public final class RequestUtil {
     public static String getHeaderValue(HttpRequest request,String header) {
         if(hasHeader(request,header.toLowerCase())) {
             return request.headers().get(header.toLowerCase());
-        }else {
-            throw new NullPointerException("Header Field " + header + " not found!");
+        } else {
+            throw new NullPointerException("Header-Field " + header + " not found!");
         }
     }
 
@@ -39,7 +39,7 @@ public final class RequestUtil {
             buf.readBytes(bytes);
             return new String(bytes);
         }else {
-            throw new NullPointerException("No Content found found!");
+            throw new NullPointerException("No content found!");
         }
     }
 
