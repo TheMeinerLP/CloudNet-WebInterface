@@ -138,9 +138,9 @@ public final class ProjectMain extends CoreModule {
         if (!getCloud().getDbHandlers().getUpdateConfigurationDatabase().get()
             .contains("mdwi.updateChannel")) {
           this.updateChannelSetup.start(CloudNet.getLogger().getReader());
-          this.updateService.checkUpdate(this);
+          //this.updateService.checkUpdate(this);
         } else {
-          this.updateService.checkUpdate(this);
+          //this.updateService.checkUpdate(this);
         }
       }
     } else {

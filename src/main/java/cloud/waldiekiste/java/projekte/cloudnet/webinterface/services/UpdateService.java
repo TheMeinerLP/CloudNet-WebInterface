@@ -58,7 +58,6 @@ public final class UpdateService {
 
   private void update(UpdateData data) {
     try {
-      System.out.println(data.getFilePath());
       HttpURLConnection httpURLConnection = (HttpURLConnection) (new URL(data.getFilePath()))
           .openConnection();
       httpURLConnection.setRequestProperty("User-Agent",
