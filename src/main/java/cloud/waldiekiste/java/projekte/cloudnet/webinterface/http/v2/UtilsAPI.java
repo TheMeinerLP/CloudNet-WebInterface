@@ -25,55 +25,61 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 public final class UtilsAPI extends MethodWebHandlerAdapter {
 
-    private final ProjectMain projectMain;
+  private final ProjectMain projectMain;
 
-    public UtilsAPI(CloudNet cloudNet, ProjectMain projectMain) {
-            super("/cloudnet/api/v2/utils");
-        cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
-        this.projectMain = projectMain;
+  public UtilsAPI(CloudNet cloudNet, ProjectMain projectMain) {
+    super("/cloudnet/api/v2/utils");
+    cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
+    this.projectMain = projectMain;
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  public FullHttpResponse get(ChannelHandlerContext channelHandlerContext,
+      QueryDecoder queryDecoder,
+      PathProvider pathProvider, HttpRequest httpRequest) {
+    FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(
+        httpRequest.getProtocolVersion(),
+        HttpResponseStatus.OK);
+    fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
+    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+      case "version": {
+        Document document = new Document();
+        document.append("response", projectMain.getModuleConfig().getVersion());
+        return ResponseUtil.success(fullHttpResponse, true, document);
+      }
+      case "cloudversion": {
+        Document document = new Document();
+        document.append("response", NetworkUtils.class.getPackage().getImplementationVersion());
+        return ResponseUtil.success(fullHttpResponse, true, document);
+      }
+      case "badges": {
+        Document document = new Document();
+        Document infos = new Document();
+        infos.append("proxy_groups", CloudNet.getInstance().getProxyGroups().size());
+        infos.append("server_groups", CloudNet.getInstance().getServerGroups().size());
+        infos.append("proxies", CloudNet.getInstance().getProxys().size());
+        infos.append("servers", CloudNet.getInstance().getServers().size());
+        infos.append("wrappers", CloudNet.getInstance().getWrappers().size());
+        document.append("response", infos);
+        return ResponseUtil.success(fullHttpResponse, true, document);
+      }
+      case "cloudstats": {
+        Document document = new Document();
+        document.append("response",
+            CloudNet.getInstance().getDbHandlers().getStatisticManager().getStatistics());
+        return ResponseUtil.success(fullHttpResponse, true, document);
+      }
+      default: {
+        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+      }
     }
-    @SuppressWarnings( "deprecation" )
-    @Override
-    public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
-                                PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(),
-                HttpResponseStatus.OK);
-        fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse,httpRequest);
-        switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
-            case "version":{
-                Document document = new Document();
-                document.append("response", projectMain.getModuleConfig().getVersion());
-                return ResponseUtil.success(fullHttpResponse,true,document);
-            }
-            case "cloudversion":{
-                Document document = new Document();
-                document.append("response",NetworkUtils.class.getPackage().getImplementationVersion());
-                return ResponseUtil.success(fullHttpResponse,true,document);
-            }
-            case "badges":{
-                Document document = new Document();
-                Document infos = new Document();
-                infos.append("proxy_groups", CloudNet.getInstance().getProxyGroups().size());
-                infos.append("server_groups", CloudNet.getInstance().getServerGroups().size());
-                infos.append("proxies", CloudNet.getInstance().getProxys().size());
-                infos.append("servers", CloudNet.getInstance().getServers().size());
-                infos.append("wrappers", CloudNet.getInstance().getWrappers().size());
-                document.append("response",infos);
-                return ResponseUtil.success(fullHttpResponse,true,document);
-            }
-            case "cloudstats":{
-                Document document = new Document();
-                document.append("response",CloudNet.getInstance().getDbHandlers().getStatisticManager().getStatistics());
-                return ResponseUtil.success(fullHttpResponse,true,document);
-            }
-            default:{
-                return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
-            }
-        }
-    }
-    @Override
-    public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
-                                    PathProvider pathProvider, HttpRequest httpRequest) {
-        return ResponseUtil.cross(httpRequest);
-    }
+  }
+
+  @Override
+  public FullHttpResponse options(ChannelHandlerContext channelHandlerContext,
+      QueryDecoder queryDecoder,
+      PathProvider pathProvider, HttpRequest httpRequest) {
+    return ResponseUtil.cross(httpRequest);
+  }
 }

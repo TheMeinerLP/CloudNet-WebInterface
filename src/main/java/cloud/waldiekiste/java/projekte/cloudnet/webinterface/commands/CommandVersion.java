@@ -12,16 +12,16 @@ import de.dytanic.cloudnet.command.CommandSender;
 
 public final class CommandVersion extends Command {
 
-    private final String version;
+  private final String version;
 
-    public CommandVersion(String version) {
-        super("versionI", "cloudnet.webinterface.version", "vI");
-        this.description = "Show you the Module Version of the Material Design Web Interface";
-        this.version = version;
-    }
+  public CommandVersion(String version) {
+    super("versionI", "cloudnet.webinterface.version", "vI");
+    this.description = "Show you the Module Version of the Material Design Web Interface";
+    this.version = version;
+  }
 
-    @Override
-    public void onExecuteCommand(CommandSender commandSender, String[] strings) {
-        commandSender.sendMessage("Your current extension Version: " + version);
-    }
+  @Override
+  public void onExecuteCommand(CommandSender commandSender, String[] strings) {
+    commandSender.sendMessage("Your current extension Version: " + version);
+  }
 }

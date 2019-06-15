@@ -28,147 +28,142 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 public final class MasterAPI extends MethodWebHandlerAdapter {
 
-    private final ProjectMain projectMain;
+  private final ProjectMain projectMain;
 
-    public MasterAPI(CloudNet cloudNet, ProjectMain projectMain) {
-        super("/cloudnet/api/v2/master");
-        cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
-        this.projectMain = projectMain;
+  public MasterAPI(CloudNet cloudNet, ProjectMain projectMain) {
+    super("/cloudnet/api/v2/master");
+    cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
+    this.projectMain = projectMain;
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  public FullHttpResponse get(ChannelHandlerContext channelHandlerContext,
+      QueryDecoder queryDecoder,
+      PathProvider pathProvider, HttpRequest httpRequest) {
+    FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(
+        httpRequest.getProtocolVersion(),
+        HttpResponseStatus.OK);
+    fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
+    Document document = new Document();
+    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+      case "corelog":
+        document.append("response", projectMain.getConsoleLines());
+        return ResponseUtil.success(fullHttpResponse, true, document);
+
+      case "commands":
+        document.append("response", projectMain.getCloud().getCommandManager().getCommands());
+        return ResponseUtil.success(fullHttpResponse, true, document);
+
+      default:
+        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+
     }
+  }
 
-    @SuppressWarnings( "deprecation" )
-    @Override
-    public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
-                                PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(),
-                HttpResponseStatus.OK);
-        fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse,httpRequest);
-        switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
-            case "corelog":{
-                Document document = new Document();
-                document.append("response",projectMain.getConsoleLines());
-                return ResponseUtil.success(fullHttpResponse,true,document);
-            }
-            case "commands":{
-                Document document = new Document();
-                document.append("response",projectMain.getCloud().getCommandManager().getCommands());
-                return ResponseUtil.success(fullHttpResponse,true,document);
-            }
-            default:{
-                return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
-            }
+  @SuppressWarnings("deprecation")
+  @Override
+  public FullHttpResponse post(ChannelHandlerContext channelHandlerContext,
+      QueryDecoder queryDecoder,
+      PathProvider pathProvider, HttpRequest httpRequest) throws Exception {
+    FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(
+        httpRequest.getProtocolVersion(),
+        HttpResponseStatus.OK);
+    fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
+    User user = HttpUtil.getUser(httpRequest);
+    Document document = new Document();
+    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+      case "reloadall":
+        if (!UserUtil.hasPermission(user, "cloudnet.web.master.reload.all", "*",
+            "cloudnet.web.master.reload.*")) {
+          return ResponseUtil.permissionDenied(fullHttpResponse);
         }
-    }
+        CloudNet.getInstance().reload();
+        return ResponseUtil.success(fullHttpResponse, true, document);
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public FullHttpResponse post(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
-                                 PathProvider pathProvider, HttpRequest httpRequest) throws Exception {
-        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(),
-                HttpResponseStatus.OK);
-        fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse,httpRequest);
-        User user = HttpUtil.getUser(httpRequest);
-        switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
-            case "reloadall":{
-                if(!UserUtil.hasPermission(user,"cloudnet.web.master.reload.all","*",
-                        "cloudnet.web.master.reload.*")) {
-                    return ResponseUtil.permissionDenied(fullHttpResponse);
-                }
-                CloudNet.getInstance().reload();
-                Document document = new Document();
-                return ResponseUtil.success(fullHttpResponse,true,document);
-            }
-            case "reloadconfig":{
-                if(!UserUtil.hasPermission(user,"cloudnet.web.master.reload.config","*",
-                        "cloudnet.web.master.reload.*")) {
-                    return ResponseUtil.permissionDenied(fullHttpResponse);
-                }
-                try {
-                    CloudNet.getInstance().getConfig().load();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                CloudNet.getInstance().getServerGroups().clear();
-                CloudNet.getInstance().getProxyGroups().clear();
-                CloudNet.getInstance().getUsers().clear();
-                CloudNet.getInstance().getUsers().addAll(CloudNet.getInstance().getConfig().getUsers());
-
-                NetworkUtils.addAll(CloudNet.getInstance().getServerGroups(),
-                        CloudNet.getInstance().getConfig().getServerGroups(), value -> {
-                    System.out.println("Loading ServerGroup: " + value.getName());
-                    CloudNet.getInstance().setupGroup(value);
-                    return true;
-                });
-
-                NetworkUtils.addAll(CloudNet.getInstance().getProxyGroups(),
-                        CloudNet.getInstance().getConfig().getProxyGroups(), value -> {
-                    System.out.println("Loading ProxyGroup: " + value.getName());
-                    CloudNet.getInstance().setupProxy(value);
-                    return true;
-                });
-
-                CloudNet.getInstance().getNetworkManager().reload();
-                CloudNet.getInstance().getNetworkManager().updateAll();
-                CloudNet.getInstance().getWrappers().values().forEach(Wrapper::updateWrapper);
-                Document document = new Document();
-                return ResponseUtil.success(fullHttpResponse,true,document);
-            }
-            case "reloadwrapper":{
-                if(!UserUtil.hasPermission(user,"cloudnet.web.master.reload.wrapper","*",
-                        "cloudnet.web.master.reload.*")) {
-                    return ResponseUtil.permissionDenied(fullHttpResponse);
-                }
-                for (Wrapper wrapper : CloudNet.getInstance().getWrappers().values()) {
-                    if (wrapper.getChannel() != null) wrapper.writeCommand("reload");
-                }
-                Document document = new Document();
-                return ResponseUtil.success(fullHttpResponse,true,document);
-            }
-            case "clearcache":{
-                if(!UserUtil.hasPermission(user,"cloudnet.web.master.clearcache","*")) {
-                    return ResponseUtil.permissionDenied(fullHttpResponse);
-                }
-                CloudNet.getInstance().getWrappers().values().forEach(wrapper -> {
-                    if (wrapper.getChannel() != null)
-                    {
-                        wrapper.sendCommand("clearcache");
-                    }
-                });
-                Document document = new Document();
-                return ResponseUtil.success(fullHttpResponse,true,document);
-            }
-
-            case "stop":{
-                if(!UserUtil.hasPermission(user,"cloudnet.web.master.stop","*")) {
-                    return ResponseUtil.permissionDenied(fullHttpResponse);
-                }
-                CloudNet.getInstance().shutdown();
-                Document document = new Document();
-                return ResponseUtil.success(fullHttpResponse,true,document);
-            }
-            case "command":{
-                if(RequestUtil.hasHeader(httpRequest,"-Xvalue")){
-                    final String command = RequestUtil.getHeaderValue(httpRequest,"-Xvalue");
-                    if(!UserUtil.hasPermission(user,"cloudnet.web.master.command.*","*",
-                            "cloudnet.web.master.command."+command)) {
-                        return ResponseUtil.permissionDenied(fullHttpResponse);
-                    }
-                    projectMain.getCloud().getCommandManager().dispatchCommand(command);
-                    Document document = new Document();
-                    return ResponseUtil.success(fullHttpResponse,true,document);
-                }else{
-                    return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
-                }
-            }
-            default:{
-                return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
-            }
+      case "reloadconfig":
+        if (!UserUtil.hasPermission(user, "cloudnet.web.master.reload.config", "*",
+            "cloudnet.web.master.reload.*")) {
+          return ResponseUtil.permissionDenied(fullHttpResponse);
         }
-    }
+        try {
+          CloudNet.getInstance().getConfig().load();
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+        CloudNet.getInstance().getServerGroups().clear();
+        CloudNet.getInstance().getProxyGroups().clear();
+        CloudNet.getInstance().getUsers().clear();
+        CloudNet.getInstance().getUsers().addAll(CloudNet.getInstance().getConfig().getUsers());
 
-    @Override
-    public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
-                                    PathProvider pathProvider, HttpRequest httpRequest) {
-        return ResponseUtil.cross(httpRequest);
+        NetworkUtils.addAll(CloudNet.getInstance().getServerGroups(),
+            CloudNet.getInstance().getConfig().getServerGroups(), value -> {
+              System.out.println("Loading ServerGroup: " + value.getName());
+              CloudNet.getInstance().setupGroup(value);
+              return true;
+            });
+
+        NetworkUtils.addAll(CloudNet.getInstance().getProxyGroups(),
+            CloudNet.getInstance().getConfig().getProxyGroups(), value -> {
+              System.out.println("Loading ProxyGroup: " + value.getName());
+              CloudNet.getInstance().setupProxy(value);
+              return true;
+            });
+
+        CloudNet.getInstance().getNetworkManager().reload();
+        CloudNet.getInstance().getNetworkManager().updateAll();
+        CloudNet.getInstance().getWrappers().values().forEach(Wrapper::updateWrapper);
+        return ResponseUtil.success(fullHttpResponse, true, document);
+
+      case "reloadwrapper":
+        if (!UserUtil.hasPermission(user, "cloudnet.web.master.reload.wrapper", "*",
+            "cloudnet.web.master.reload.*")) {
+          return ResponseUtil.permissionDenied(fullHttpResponse);
+        }
+        CloudNet.getInstance().getWrappers().values().stream().filter(wrapper ->
+            wrapper.getChannel() != null).forEach(wrapper ->
+            wrapper.sendCommand("reload"));
+        return ResponseUtil.success(fullHttpResponse, true, document);
+
+      case "clearcache":
+        if (!UserUtil.hasPermission(user, "cloudnet.web.master.clearcache", "*")) {
+          return ResponseUtil.permissionDenied(fullHttpResponse);
+        }
+        CloudNet.getInstance().getWrappers().values().stream().filter(wrapper ->
+            wrapper.getChannel() != null).forEach(wrapper ->
+            wrapper.sendCommand("clearcache"));
+        return ResponseUtil.success(fullHttpResponse, true, document);
+
+      case "stop":
+        if (!UserUtil.hasPermission(user, "cloudnet.web.master.stop", "*")) {
+          return ResponseUtil.permissionDenied(fullHttpResponse);
+        }
+        CloudNet.getInstance().shutdown();
+        return ResponseUtil.success(fullHttpResponse, true, document);
+
+      case "command":
+        if (RequestUtil.hasHeader(httpRequest, "-Xvalue")) {
+          final String command = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
+          if (!UserUtil.hasPermission(user, "cloudnet.web.master.command.*", "*",
+              "cloudnet.web.master.command." + command)) {
+            return ResponseUtil.permissionDenied(fullHttpResponse);
+          }
+          projectMain.getCloud().getCommandManager().dispatchCommand(command);
+          return ResponseUtil.success(fullHttpResponse, true, document);
+        } else {
+          return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+        }
+
+      default:
+        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+
     }
+  }
+
+  @Override
+  public FullHttpResponse options(ChannelHandlerContext channelHandlerContext,
+      QueryDecoder queryDecoder,
+      PathProvider pathProvider, HttpRequest httpRequest) {
+    return ResponseUtil.cross(httpRequest);
+  }
 }

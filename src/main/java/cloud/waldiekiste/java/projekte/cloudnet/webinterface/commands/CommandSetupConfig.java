@@ -14,16 +14,16 @@ import de.dytanic.cloudnetcore.CloudNet;
 
 public final class CommandSetupConfig extends Command {
 
-    private final ProjectMain projectMain;
+  private final ProjectMain projectMain;
 
-    public CommandSetupConfig(ProjectMain projectMain) {
-        super("setupI", "cloudnet.webinterface.setup", "sI");
-        this.description = "Setup the CloudNet Material Design Interface";
-        this.projectMain = projectMain;
-    }
+  public CommandSetupConfig(ProjectMain projectMain) {
+    super("setupI", "cloudnet.webinterface.setup", "sI");
+    this.description = "Setup the CloudNet Material Design Interface";
+    this.projectMain = projectMain;
+  }
 
-    @Override
-    public void onExecuteCommand(CommandSender commandSender, String[] strings) {
-        this.projectMain.getConfigSetup().start(CloudNet.getLogger().getReader());
-    }
+  @Override
+  public void onExecuteCommand(CommandSender commandSender, String[] strings) {
+    this.projectMain.getConfigSetup().start(CloudNet.getLogger().getReader());
+  }
 }

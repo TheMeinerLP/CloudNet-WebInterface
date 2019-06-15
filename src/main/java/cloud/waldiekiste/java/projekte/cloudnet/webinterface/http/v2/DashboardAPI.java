@@ -21,53 +21,55 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
-
 import java.util.stream.IntStream;
 
 public final class DashboardAPI extends MethodWebHandlerAdapter {
 
-    private final ProjectMain projectMain;
+  private final ProjectMain projectMain;
 
-    public DashboardAPI(CloudNet cloudNet, ProjectMain projectMain) {
-        super("/cloudnet/api/v2/dashboard");
-        cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
-        this.projectMain = projectMain;
+  public DashboardAPI(CloudNet cloudNet, ProjectMain projectMain) {
+    super("/cloudnet/api/v2/dashboard");
+    cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
+    this.projectMain = projectMain;
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  public FullHttpResponse get(ChannelHandlerContext channelHandlerContext,
+      QueryDecoder queryDecoder,
+      PathProvider pathProvider, HttpRequest httpRequest) {
+    FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(
+        httpRequest.getProtocolVersion(),
+        HttpResponseStatus.OK);
+    fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
+
+    Document document = new Document();
+
+    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+      case "players":
+        IntStream stream = projectMain.getCloud().getServerGroups().keySet().stream()
+            .mapToInt(server -> projectMain.getCloud().getOnlineCount(server));
+        document.append("response", stream.sum());
+        return ResponseUtil.success(fullHttpResponse, true, document);
+      case "servers":
+        document.append("response", projectMain.getCloud().getServers().size());
+        return ResponseUtil.success(fullHttpResponse, true, document);
+
+      case "proxys":
+        document.append("response", projectMain.getCloud().getProxys().size());
+        return ResponseUtil.success(fullHttpResponse, true, document);
+      case "groups":
+        document.append("response", projectMain.getCloud().getServerGroups().size());
+        return ResponseUtil.success(fullHttpResponse, true, document);
+      default:
+        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
     }
+  }
 
-    @SuppressWarnings( "deprecation" )
-    @Override
-    public FullHttpResponse get(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
-                                PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.getProtocolVersion(),
-                HttpResponseStatus.OK);
-        fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse,httpRequest);
-
-        Document document = new Document();
-
-        switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
-            case "players":
-                IntStream stream = projectMain.getCloud().getServerGroups().keySet().stream()
-                        .mapToInt(server -> projectMain.getCloud().getOnlineCount(server));
-                document.append("response",stream.sum());
-                return ResponseUtil.success(fullHttpResponse,true,document);
-            case "servers":
-                document.append("response",projectMain.getCloud().getServers().size());
-                return ResponseUtil.success(fullHttpResponse,true,document);
-
-            case "proxys":
-                document.append("response",projectMain.getCloud().getProxys().size());
-                return ResponseUtil.success(fullHttpResponse,true,document);
-            case "groups":
-                document.append("response",projectMain.getCloud().getServerGroups().size());
-                return ResponseUtil.success(fullHttpResponse,true,document);
-            default:
-                return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
-        }
-    }
-
-    @Override
-    public FullHttpResponse options(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder,
-                                    PathProvider pathProvider, HttpRequest httpRequest) {
-        return ResponseUtil.cross(httpRequest);
-    }
+  @Override
+  public FullHttpResponse options(ChannelHandlerContext channelHandlerContext,
+      QueryDecoder queryDecoder,
+      PathProvider pathProvider, HttpRequest httpRequest) {
+    return ResponseUtil.cross(httpRequest);
+  }
 }

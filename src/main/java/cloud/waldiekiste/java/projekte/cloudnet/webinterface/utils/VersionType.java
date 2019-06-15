@@ -9,17 +9,17 @@ package cloud.waldiekiste.java.projekte.cloudnet.webinterface.utils;
 
 public enum VersionType {
 
-    BETA("Beta"),
-    SNAPSHOT("Snapshot"),
-    RELEASE("Release");
+  BETA("Beta"),
+  SNAPSHOT("Snapshot"),
+  RELEASE("Release");
 
-    private String type;
+  private String type;
 
-    VersionType(String type) {
-        this.type = type;
-    }
+  VersionType(String type) {
+    this.type = type;
+  }
 
-    public String getType() {
-        return type;
-    }
+  public String getType() {
+    return type;
+  }
 }
