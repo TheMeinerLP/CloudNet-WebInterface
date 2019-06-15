@@ -29,6 +29,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("ALL")
 public final class UserAPI extends MethodWebHandlerAdapter {
@@ -58,7 +59,7 @@ public final class UserAPI extends MethodWebHandlerAdapter {
           return ResponseUtil.permissionDenied(fullHttpResponse);
         } else {
           resp.append("response", CloudNet.getInstance().getUsers().stream()
-              .map(user1 -> JsonUtil.getGson().toJson(user1)));
+              .map(user1 -> JsonUtil.getGson().toJson(user1)).collect(Collectors.toList()));
           return ResponseUtil.success(fullHttpResponse, true, resp);
         }
 
