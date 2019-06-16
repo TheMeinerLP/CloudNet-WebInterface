@@ -60,7 +60,8 @@ public final class UtilsAPI extends MethodWebHandlerAdapter {
         infos.append("server_groups", CloudNet.getInstance().getServerGroups().size());
         infos.append("proxies", CloudNet.getInstance().getProxys().size());
         infos.append("servers", CloudNet.getInstance().getServers().size());
-        infos.append("wrappers", CloudNet.getInstance().getWrappers().values().stream().filter(wrapper -> wrapper.isReady()).count());
+        infos.append("wrappers", CloudNet.getInstance().getWrappers().values().stream()
+            .filter(wrapper -> wrapper.isReady()).count());
         document.append("response", infos);
         return ResponseUtil.success(fullHttpResponse, true, document);
       }

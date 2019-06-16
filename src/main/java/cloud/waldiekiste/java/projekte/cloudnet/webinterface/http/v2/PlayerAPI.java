@@ -39,13 +39,13 @@ public final class PlayerAPI extends MethodWebHandlerAdapter {
     FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(
         httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
     ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json; charset=utf-8");
-      if (!RequestUtil
-          .hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message")) {
-          return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
-      }
-      if (!RequestUtil.checkAuth(httpRequest)) {
-          return UserUtil.failedAuthorization(fullHttpResponse);
-      }
+    if (!RequestUtil
+        .hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message")) {
+      return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
+    }
+    if (!RequestUtil.checkAuth(httpRequest)) {
+      return UserUtil.failedAuthorization(fullHttpResponse);
+    }
     User user = CloudNet.getInstance()
         .getUser(RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-user"));
     Document document = new Document();

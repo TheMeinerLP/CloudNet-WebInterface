@@ -54,7 +54,8 @@ public final class WrapperAPI extends MethodWebHandlerAdapter {
         } else {
           Document resp = new Document();
           resp.append("response",
-              CloudNet.getInstance().getWrappers().values().stream().filter(wrapper -> wrapper.isReady())
+              CloudNet.getInstance().getWrappers().values().stream()
+                  .filter(wrapper -> wrapper.isReady())
                   .map(wrapper -> JsonUtil.getGson().toJson(wrapper)).collect(Collectors.toList()));
           return ResponseUtil.success(fullHttpResponse, true, resp);
         }

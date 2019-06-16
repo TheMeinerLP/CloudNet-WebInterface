@@ -113,9 +113,9 @@ public final class ProjectMain extends CoreModule {
     new PlayerAPI(getCloud(), this);
     new SignApi(this);
     new MobAPI(this);
-      if (this.configPermission.isEnabled()) {
-          new CPermsApi(this);
-      }
+    if (this.configPermission.isEnabled()) {
+      new CPermsApi(this);
+    }
   }
 
   /**
@@ -155,7 +155,8 @@ public final class ProjectMain extends CoreModule {
     /*
      * Checking CloudNet Version and sending Error-Message if its lower than the version 2.1.8
      */
-    if (Integer.parseInt(NetworkUtils.class.getPackage().getImplementationVersion().replace(".", ""))
+    if (Integer
+        .parseInt(NetworkUtils.class.getPackage().getImplementationVersion().replace(".", ""))
         < 218) {
       System.err.println("This Module is not compatible with this CloudNet Version");
     }
