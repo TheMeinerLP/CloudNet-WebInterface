@@ -69,8 +69,8 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
         return ResponseUtil.success(fullHttpResponse, true, resp);
 
       case "group":
-        if (RequestUtil.hasHeader(httpRequest, "-Xvalue") &&
-            projectMain.getCloud().getProxyGroups()
+        if (RequestUtil.hasHeader(httpRequest, "-Xvalue")
+            && projectMain.getCloud().getProxyGroups()
                 .containsKey(RequestUtil.getHeaderValue(httpRequest,
                     "-Xvalue"))) {
           String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
@@ -95,8 +95,8 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
         }
 
       case "screen":
-        if (RequestUtil.hasHeader(httpRequest, "-Xvalue") &&
-            projectMain.getCloud().getProxys().containsKey(RequestUtil.getHeaderValue(httpRequest,
+        if (RequestUtil.hasHeader(httpRequest, "-Xvalue")
+            && projectMain.getCloud().getProxys().containsKey(RequestUtil.getHeaderValue(httpRequest,
                 "-Xvalue"))) {
           final String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
           ProxyServer server = projectMain.getCloud().getProxy(group);
@@ -109,8 +109,8 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
             server.getWrapper().enableScreen(server.getProxyInfo());
           }
           if (projectMain.getScreenInfos().containsKey(server.getServiceId().getServerId())) {
-            resp.append("response", projectMain.
-                getScreenInfos().get(server.getServiceId().getServerId()));
+            resp.append("response", projectMain
+                .getScreenInfos().get(server.getServiceId().getServerId()));
           }
           return ResponseUtil.success(fullHttpResponse, true, resp);
         } else {
@@ -118,8 +118,8 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
         }
 
       case "proxys":
-        if (RequestUtil.hasHeader(httpRequest, "-Xvalue") &&
-            projectMain.getCloud().getProxyGroups()
+        if (RequestUtil.hasHeader(httpRequest, "-Xvalue")
+            && projectMain.getCloud().getProxyGroups()
                 .containsKey(RequestUtil.getHeaderValue(httpRequest,
                     "-Xvalue"))) {
           String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
@@ -153,7 +153,7 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
     fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
     User user = HttpUtil.getUser(httpRequest);
     Document document = new Document();
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "command":
         if (RequestUtil.hasHeader(httpRequest, "-Xvalue") && RequestUtil.hasHeader(httpRequest,
             "-Xcount")) {
@@ -171,8 +171,8 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
         }
 
       case "stopscreen":
-        if (RequestUtil.hasHeader(httpRequest, "-Xvalue") &&
-            projectMain.getCloud().getScreenProvider().getScreens().containsKey(
+        if (RequestUtil.hasHeader(httpRequest, "-Xvalue")
+            && projectMain.getCloud().getScreenProvider().getScreens().containsKey(
                 RequestUtil.getHeaderValue(httpRequest, "-Xvalue"))) {
           String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
           ProxyServer server = projectMain.getCloud().getProxy(group);
@@ -196,8 +196,8 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
         }
 
       case "stop":
-        if (RequestUtil.hasHeader(httpRequest, "-Xvalue") &&
-            projectMain.getCloud().getProxyGroups().containsKey(
+        if (RequestUtil.hasHeader(httpRequest, "-Xvalue")
+            && projectMain.getCloud().getProxyGroups().containsKey(
                 RequestUtil.getHeaderValue(httpRequest, "-Xvalue"))) {
           String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
           if (!UserUtil.hasPermission(user, "cloudnet.web.group.proxy.stop.*", "*",
@@ -213,8 +213,8 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
         }
 
       case "delete":
-        if (RequestUtil.hasHeader(httpRequest, "-Xvalue") &&
-            projectMain.getCloud().getProxyGroups().containsKey(
+        if (RequestUtil.hasHeader(httpRequest, "-Xvalue")
+            && projectMain.getCloud().getProxyGroups().containsKey(
                 RequestUtil.getHeaderValue(httpRequest, "-Xvalue"))) {
           String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
           if (!UserUtil.hasPermission(user, "cloudnet.web.group.proxy.delete.*",
@@ -260,7 +260,7 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
                 .containsKey(RequestUtil.getHeaderValue(httpRequest,
                     "-Xvalue"))) {
           String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
-          int count = Integer.valueOf(RequestUtil.getHeaderValue(httpRequest, "-Xcount"));
+          int count = Integer.parseInt(RequestUtil.getHeaderValue(httpRequest, "-Xcount"));
           if (!UserUtil.hasPermission(user, "cloudnet.web.group.proxy.start.*", "*",
               "cloudnet.web.group.proxy.start." + group)) {
             return ResponseUtil.permissionDenied(fullHttpResponse);

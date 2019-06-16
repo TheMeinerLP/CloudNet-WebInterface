@@ -42,7 +42,13 @@ public final class UpdateService {
         module.onShutdown();
         CloudNet.getInstance().getModuleManager().disableModule(module);
         File f = config.getFile();
-        f.delete();
+        if (!f.delete()) {
+          try {
+            throw new IOException("Cannot file delete");
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
         update(data);
         try {
           CloudNet.getInstance().reload();
@@ -59,16 +65,17 @@ public final class UpdateService {
 
   private void update(UpdateData data) {
     try {
-      HttpURLConnection httpURLConnection = (HttpURLConnection) (new URL(data.getFilePath()))
+      HttpURLConnection httpUrlConnection = (HttpURLConnection) (new URL(data.getFilePath()))
           .openConnection();
-      httpURLConnection.setRequestProperty("User-Agent",
-          "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-      httpURLConnection.setUseCaches(false);
-      httpURLConnection.setConnectTimeout(10000);
-      httpURLConnection.connect();
+      httpUrlConnection.setRequestProperty("User-Agent",
+          "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko)"
+              + " Chrome/23.0.1271.95 Safari/537.11");
+      httpUrlConnection.setUseCaches(false);
+      httpUrlConnection.setConnectTimeout(10000);
+      httpUrlConnection.connect();
       System.out.println("Downloading update...");
-      InputStream inputStream = httpURLConnection.getInputStream();
-      if (inputStream == null) {
+      InputStream inputStream = httpUrlConnection.getInputStream();
+      if (inputStream.available() > 0) {
         System.out.println("[Updater] No Update available!");
         return;
       }
@@ -78,7 +85,7 @@ public final class UpdateService {
       } catch (Exception e) {
         e.printStackTrace();
       }
-      httpURLConnection.disconnect();
+      httpUrlConnection.disconnect();
       System.out.println("Download complete!");
     } catch (IOException var18) {
       var18.printStackTrace();
@@ -104,7 +111,8 @@ public final class UpdateService {
       return null;
     }
     connection.setRequestProperty("User-Agent",
-        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko)"
+            + " Chrome/23.0.1271.95 Safari/537.11");
     connection.setConnectTimeout(2000);
     connection.setDoOutput(false);
     connection.setDoInput(true);
@@ -127,9 +135,8 @@ public final class UpdateService {
       e.printStackTrace();
     }
     String result = null;
-    try {
-      result = new BufferedReader(new InputStreamReader(connection.getInputStream()))
-          .readLine();
+    try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+      result = reader.readLine();
     } catch (IOException e) {
       e.printStackTrace();
     }
