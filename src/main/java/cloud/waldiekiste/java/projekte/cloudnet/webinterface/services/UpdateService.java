@@ -25,34 +25,35 @@ import java.util.ArrayList;
 public final class UpdateService {
 
   public void checkUpdate(Module module) {
-    try {
-      Document document = CloudNet.getInstance().getDbHandlers().getUpdateConfigurationDatabase()
-          .get();
-      if (document.contains("mdwi.updateChannel")) {
-        VersionType type = VersionType.valueOf(document.get("mdwi.updateChannel").getAsString());
-        ModuleConfig config = module.getModuleConfig();
-        Long oldVersion = Long.valueOf(config.getVersion());
-        UpdateData data = getUpdateData(type);
-        if (data == null) {
-          return;
-        }
 
-        long newVersion = data.getVersion();
-        if (newVersion > oldVersion) {
-          module.onShutdown();
-          CloudNet.getInstance().getModuleManager().disableModule(module);
-          File f = config.getFile();
-          f.delete();
-          update(data);
+    Document document = CloudNet.getInstance().getDbHandlers().getUpdateConfigurationDatabase()
+        .get();
+    if (document.contains("mdwi.updateChannel")) {
+      VersionType type = VersionType.valueOf(document.get("mdwi.updateChannel").getAsString());
+      ModuleConfig config = module.getModuleConfig();
+      Long oldVersion = Long.valueOf(config.getVersion());
+      UpdateData data = getUpdateData(type);
+      if (data == null) {
+        return;
+      }
+
+      long newVersion = data.getVersion();
+      if (newVersion > oldVersion) {
+        module.onShutdown();
+        CloudNet.getInstance().getModuleManager().disableModule(module);
+        File f = config.getFile();
+        f.delete();
+        update(data);
+        try {
           CloudNet.getInstance().reload();
-        } else {
-          System.out.println("[Updater] No Update available!");
+        } catch (Exception e) {
+          e.printStackTrace();
         }
       } else {
-        System.err.println("CloudNet-Web");
+        System.out.println("[Updater] No Update available!");
       }
-    } catch (Exception e) {
-      e.printStackTrace();
+    } else {
+      System.err.println("CloudNet-Web");
     }
   }
 
@@ -84,7 +85,7 @@ public final class UpdateService {
     }
   }
 
-  private UpdateData getUpdateData(VersionType branch) throws IOException {
+  private UpdateData getUpdateData(VersionType branch) {
     String url = String
         .format("https://api.madfix.me/v1/download.php?BRANCH=%s&ENVIRONMENT=CLOUDNET",
             branch.getType());
@@ -108,17 +109,30 @@ public final class UpdateService {
     connection.setDoOutput(false);
     connection.setDoInput(true);
 
-    if (connection.getResponseCode() == 403) {
-      System.err.println("[Updater] Der Master kann nicht auf die API zugreifen! (403)");
-      return null;
+    try {
+      if (connection.getResponseCode() == 403) {
+        System.err.println("[Updater] Der Master kann nicht auf die API zugreifen! (403)");
+        return null;
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
     }
 
-    if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-      System.out.println("Fehler bei der Anfrage");
-      return null;
+    try {
+      if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+        System.out.println("Fehler bei der Anfrage");
+        return null;
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
     }
-    String result = new BufferedReader(new InputStreamReader(connection.getInputStream()))
-        .readLine();
+    String result = null;
+    try {
+      result = new BufferedReader(new InputStreamReader(connection.getInputStream()))
+          .readLine();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     JsonObject jsonObject = new JsonParser().parse(result).getAsJsonObject();
     UpdateData data = JsonUtil.getGson()
         .fromJson(jsonObject.get("versions").getAsJsonArray().get(0), UpdateData.class);
