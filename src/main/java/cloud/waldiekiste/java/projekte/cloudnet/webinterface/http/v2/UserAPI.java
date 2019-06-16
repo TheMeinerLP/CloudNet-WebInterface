@@ -21,6 +21,7 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -46,19 +47,16 @@ public final class UserAPI extends MethodWebHandlerAdapter {
     fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
     User user = HttpUtil.getUser(httpRequest);
     Document resp = new Document();
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
-      case "users":
-        if (!UserUtil.hasPermission(user, "*", "cloudnet.web.user.item.*")) {
-          return ResponseUtil.permissionDenied(fullHttpResponse);
-        } else {
-          resp.append("response", CloudNet.getInstance().getUsers().stream()
-              .map(user1 -> JsonUtil.getGson().toJson(user1)).collect(Collectors.toList()));
-          return ResponseUtil.success(fullHttpResponse, true, resp);
-        }
-
-      default:
-        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
-
+    if(RequestUtil.getHeaderValue(httpRequest, "-Xmessage").equalsIgnoreCase("users")){
+      if (!UserUtil.hasPermission(user, "*", "cloudnet.web.user.item.*")) {
+        return ResponseUtil.permissionDenied(fullHttpResponse);
+      } else {
+        resp.append("response", CloudNet.getInstance().getUsers().stream()
+            .map(user1 -> JsonUtil.getGson().toJson(user1)).collect(Collectors.toList()));
+        return ResponseUtil.success(fullHttpResponse, true, resp);
+      }
+    }else{
+      return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
     }
   }
 
@@ -73,9 +71,9 @@ public final class UserAPI extends MethodWebHandlerAdapter {
     fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
     User user = HttpUtil.getUser(httpRequest);
     String jsonuser = RequestUtil.getContent(httpRequest);
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "save":
-        if (jsonuser.isEmpty() || jsonuser == null) {
+        if (jsonuser.length() < 1) {
           return ResponseUtil.success(fullHttpResponse, false, new Document());
         }
         User saveduser = JsonUtil.getGson().fromJson(jsonuser, User.class);

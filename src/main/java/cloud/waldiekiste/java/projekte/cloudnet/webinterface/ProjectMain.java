@@ -9,7 +9,7 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.DashboardAP
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.MasterAPI;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.MobAPI;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.PlayerAPI;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.ProxyAPI;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.ProxyApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.ServerAPI;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.SignApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.UserAPI;
@@ -72,7 +72,7 @@ public final class ProjectMain extends CoreModule {
    * @see ConfigPermissions
    * @see MasterAPI
    * @see AuthenticationAPI
-   * @see ProxyAPI
+   * @see ProxyApi
    * @see UserAPI
    * @see DashboardAPI
    * @see ServerAPI
@@ -97,7 +97,7 @@ public final class ProjectMain extends CoreModule {
     getCloud().getEventManager().registerListener(this, new ScreenSessionListener(this));
     new MasterAPI(getCloud(), this);
     new AuthenticationAPI();
-    new ProxyAPI(getCloud(), this);
+    new ProxyApi(getCloud(), this);
     new UserAPI(getCloud(), this);
     new DashboardAPI(getCloud(), this);
     new ServerAPI(getCloud(), this);

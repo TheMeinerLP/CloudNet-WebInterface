@@ -15,6 +15,7 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import java.util.Locale;
 
 public final class UtilsAPI extends MethodWebHandlerAdapter {
 
@@ -35,7 +36,7 @@ public final class UtilsAPI extends MethodWebHandlerAdapter {
         httpRequest.getProtocolVersion(),
         HttpResponseStatus.OK);
     fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "version": {
         Document document = new Document();
         document.append("response", projectMain.getModuleConfig().getVersion());

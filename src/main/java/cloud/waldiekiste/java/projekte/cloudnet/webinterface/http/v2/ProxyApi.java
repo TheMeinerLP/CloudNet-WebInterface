@@ -22,13 +22,14 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
-public final class ProxyAPI extends MethodWebHandlerAdapter {
+public final class ProxyApi extends MethodWebHandlerAdapter {
 
   private final ProjectMain projectMain;
 
-  public ProxyAPI(CloudNet cloudNet, ProjectMain projectMain) {
+  public ProxyApi(CloudNet cloudNet, ProjectMain projectMain) {
     super("/cloudnet/api/v2/proxygroup");
     cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
     this.projectMain = projectMain;
@@ -45,7 +46,7 @@ public final class ProxyAPI extends MethodWebHandlerAdapter {
     fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
     User user = HttpUtil.getUser(httpRequest);
     Document resp = new Document();
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "groups":
         if (!UserUtil.hasPermission(user, "cloudnet.web.group.proxys", "*")) {
           return ResponseUtil.permissionDenied(fullHttpResponse);
