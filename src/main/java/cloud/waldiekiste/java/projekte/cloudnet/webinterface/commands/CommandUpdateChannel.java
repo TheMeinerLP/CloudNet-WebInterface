@@ -24,7 +24,7 @@ public final class CommandUpdateChannel extends Command {
     if (strings.length > 0) {
       String subCommand = strings[0];
       switch (subCommand.toLowerCase(Locale.ENGLISH)) {
-        case "manual": {
+        case "manual":
           Document document = CloudNet.getInstance().getDbHandlers()
               .getUpdateConfigurationDatabase().get();
           VersionType type = VersionType.valueOf(document.get("mdwi.updateChannel").getAsString());
@@ -40,12 +40,11 @@ public final class CommandUpdateChannel extends Command {
             }
           }
           return;
-        }
-        case "channel": {
+        case "channel":
           if (strings.length > 1) {
             String channel = strings[1];
-            VersionType type = VersionType.valueOf(channel.toUpperCase());
-            Document document = CloudNet.getInstance().getDbHandlers()
+            type = VersionType.valueOf(channel.toUpperCase());
+            document = CloudNet.getInstance().getDbHandlers()
                 .getUpdateConfigurationDatabase().get();
             document.append("mdwi.updateChannel", type.getType().toUpperCase());
             CloudNet.getInstance().getDbHandlers().getUpdateConfigurationDatabase().set(document);
@@ -53,7 +52,9 @@ public final class CommandUpdateChannel extends Command {
           } else {
             System.out.println("[Updater] Please insert a Update Channel(BETA,RELEASE,SNAPSHOT)");
           }
-        }
+          return;
+          default:
+            return;
       }
     } else {
       this.projectMain.getUpdateService().checkUpdate(this.projectMain);

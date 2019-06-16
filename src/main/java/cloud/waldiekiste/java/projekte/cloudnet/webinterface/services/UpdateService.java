@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -135,7 +136,8 @@ public final class UpdateService {
       e.printStackTrace();
     }
     String result = null;
-    try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+    try(BufferedReader reader = new BufferedReader(
+        new InputStreamReader(connection.getInputStream(),StandardCharsets.UTF_8))) {
       result = reader.readLine();
     } catch (IOException e) {
       e.printStackTrace();
@@ -154,7 +156,8 @@ public final class UpdateService {
     URL adress = new URL(url);
     HttpURLConnection connection = (HttpURLConnection) adress.openConnection();
     connection.setRequestProperty("User-Agent",
-        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko)"
+            + " Chrome/23.0.1271.95 Safari/537.11");
     connection.setConnectTimeout(2000);
     connection.setDoOutput(false);
     connection.setDoInput(true);
@@ -168,7 +171,8 @@ public final class UpdateService {
       System.out.println("Fehler bei der Anfrage");
       return null;
     }
-    String result = new BufferedReader(new InputStreamReader(connection.getInputStream()))
+    String result = new BufferedReader(new InputStreamReader(connection.getInputStream(),
+        StandardCharsets.UTF_8))
         .readLine();
     JsonElement jsonObject = new JsonParser().parse(result);
     ArrayList<UpdateData> datas = new ArrayList<>();
