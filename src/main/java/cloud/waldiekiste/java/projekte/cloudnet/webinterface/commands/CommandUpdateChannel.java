@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2018.
- * Creative Commons Lizenzvertrag
- * CloudNet-Service-WebSocket-Extension von Phillipp Glanz ist lizenziert unter einer Creative Commons
- *  Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz.
- */
-
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
@@ -13,6 +6,7 @@ import de.dytanic.cloudnet.command.Command;
 import de.dytanic.cloudnet.command.CommandSender;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnetcore.CloudNet;
+import java.util.Locale;
 import java.util.Objects;
 
 public final class CommandUpdateChannel extends Command {
@@ -29,7 +23,7 @@ public final class CommandUpdateChannel extends Command {
   public void onExecuteCommand(CommandSender commandSender, String[] strings) {
     if (strings.length > 0) {
       String subCommand = strings[0];
-      switch (subCommand.toLowerCase()) {
+      switch (subCommand.toLowerCase(Locale.ENGLISH)) {
         case "manual": {
           Document document = CloudNet.getInstance().getDbHandlers()
               .getUpdateConfigurationDatabase().get();

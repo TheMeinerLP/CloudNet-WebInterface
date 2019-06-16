@@ -25,6 +25,7 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -57,7 +58,7 @@ public final class CPermsApi extends MethodWebHandlerAdapter {
     User user = CloudNet.getInstance()
         .getUser(RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-user"));
     Document document = new Document();
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "group":
         if (RequestUtil.hasHeader(httpRequest, "-Xvalue")) {
           String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
@@ -98,25 +99,25 @@ public final class CPermsApi extends MethodWebHandlerAdapter {
 
       case "user":
         if (RequestUtil.hasHeader(httpRequest, "-Xvalue")) {
-          String userUUID = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
+          String userUuid = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
           if (!UserUtil.hasPermission(user, "cloudnet.web.cperms.info.user.*", "*",
-              "cloudnet.web.cperms.info.user." + userUUID)) {
+              "cloudnet.web.cperms.info.user." + userUuid)) {
             return ResponseUtil.permissionDenied(fullHttpResponse);
           } else {
             if (!pool.isAvailable()) {
               return ResponseUtil.success(fullHttpResponse, false, document);
             }
-            if (!CloudNet.getInstance().getDbHandlers().getNameToUUIDDatabase().getDatabase().
-                contains(userUUID)) {
+            if (!CloudNet.getInstance().getDbHandlers().getNameToUUIDDatabase().getDatabase()
+                .contains(userUuid)) {
               return ResponseUtil.success(fullHttpResponse, false, document);
             }
-            if (userUUID.matches(
+            if (userUuid.matches(
                 "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")) {
-              document.append("response", JsonUtil.getGson().toJson(this.projectMain.getCloud().
-                  getDbHandlers().getPlayerDatabase().getPlayer(UUID.fromString(userUUID))));
+              document.append("response", JsonUtil.getGson().toJson(this.projectMain.getCloud()
+                  .getDbHandlers().getPlayerDatabase().getPlayer(UUID.fromString(userUuid))));
             } else {
               UUID id = CloudNet.getInstance().getDbHandlers().getNameToUUIDDatabase()
-                  .get(userUUID);
+                  .get(userUuid);
               document.append("response", JsonUtil.getGson().toJson(this.projectMain.getCloud().
                   getDbHandlers().getPlayerDatabase().getPlayer(id)));
             }
@@ -159,7 +160,7 @@ public final class CPermsApi extends MethodWebHandlerAdapter {
     User user = CloudNet.getInstance()
         .getUser(RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-user"));
     Document document = new Document();
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "group":
         String servergroup = RequestUtil.getContent(httpRequest);
         if (servergroup.isEmpty()) {
@@ -205,20 +206,20 @@ public final class CPermsApi extends MethodWebHandlerAdapter {
           return ResponseUtil.permissionDenied(fullHttpResponse);
         }
         CloudNet.getInstance().getDbHandlers().getPlayerDatabase()
-            .updatePermissionEntity(offlinePlayer.
-                getUniqueId(), offlinePlayer.getPermissionEntity());
+            .updatePermissionEntity(offlinePlayer
+                .getUniqueId(), offlinePlayer.getPermissionEntity());
 
         CloudNet.getInstance().getNetworkManager()
-            .sendAllUpdate(new PacketOutUpdateOfflinePlayer(CloudNet.
-                getInstance().getDbHandlers().getPlayerDatabase()
+            .sendAllUpdate(new PacketOutUpdateOfflinePlayer(CloudNet
+                .getInstance().getDbHandlers().getPlayerDatabase()
                 .getPlayer(offlinePlayer.getUniqueId())));
 
-        CloudPlayer onlinePlayer = CloudNet.getInstance().getNetworkManager().
-            getOnlinePlayer(offlinePlayer.getUniqueId());
+        CloudPlayer onlinePlayer = CloudNet.getInstance().getNetworkManager()
+            .getOnlinePlayer(offlinePlayer.getUniqueId());
         if (onlinePlayer != null) {
           onlinePlayer.setPermissionEntity(offlinePlayer.getPermissionEntity());
-          CloudNet.getInstance().getNetworkManager().
-              sendAllUpdate(new PacketOutUpdatePlayer(onlinePlayer));
+          CloudNet.getInstance().getNetworkManager()
+              . sendAllUpdate(new PacketOutUpdatePlayer(onlinePlayer));
         }
         CloudNet.getInstance().getNetworkManager().updateAll();
         return ResponseUtil.success(fullHttpResponse, true, document);

@@ -24,6 +24,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -55,7 +56,7 @@ public final class SignApi extends MethodWebHandlerAdapter {
       return ResponseUtil.success(fullHttpResponse, false, new Document());
     }
     Document resp = new Document();
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "check":
         resp.append("response", !CloudNet.getInstance().getConfig().getDisabledModules()
             .contains("CloudNet-Service-SignsModule"));
@@ -98,7 +99,7 @@ public final class SignApi extends MethodWebHandlerAdapter {
         HttpResponseStatus.OK);
     fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
     User user = HttpUtil.getUser(httpRequest);
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "save": {
         String content = RequestUtil.getContent(httpRequest);
         if (content.isEmpty()) {

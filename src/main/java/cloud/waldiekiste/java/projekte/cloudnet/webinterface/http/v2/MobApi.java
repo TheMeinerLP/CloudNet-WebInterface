@@ -22,14 +22,15 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
-public final class MobAPI extends MethodWebHandlerAdapter {
+public final class MobApi extends MethodWebHandlerAdapter {
 
   private final Path path;
   private final ProjectMain projectMain;
 
-  public MobAPI(ProjectMain projectMain) {
+  public MobApi(ProjectMain projectMain) {
     super("/cloudnet/api/v2/mob");
     CloudNet.getInstance().getWebServer().getWebServerProvider().registerHandler(this);
     this.path = Paths.get("local/servermob_config.json");
@@ -51,7 +52,7 @@ public final class MobAPI extends MethodWebHandlerAdapter {
     if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.mob.load")) {
       return ResponseUtil.success(fullHttpResponse, false, new Document());
     }
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
 
       case "check": {
         resp.append("response", !CloudNet.getInstance().getConfig().getDisabledModules()
@@ -89,7 +90,7 @@ public final class MobAPI extends MethodWebHandlerAdapter {
     fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
     User user = HttpUtil.getUser(httpRequest);
     String content = RequestUtil.getContent(httpRequest);
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "save":
         if (content.isEmpty()) {
           return ResponseUtil.success(fullHttpResponse, false, new Document());

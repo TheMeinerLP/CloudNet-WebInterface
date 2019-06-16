@@ -7,10 +7,10 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.Authenticat
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.CPermsApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.DashboardAPI;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.MasterAPI;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.MobAPI;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.MobApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.PlayerAPI;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.ProxyApi;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.ServerAPI;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.ServerApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.SignApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.UserAPI;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.UtilsAPI;
@@ -75,7 +75,7 @@ public final class ProjectMain extends CoreModule {
    * @see ProxyApi
    * @see UserAPI
    * @see DashboardAPI
-   * @see ServerAPI
+   * @see ServerApi
    * @see WrapperAPI
    * @see UtilsAPI
    */
@@ -100,12 +100,12 @@ public final class ProjectMain extends CoreModule {
     new ProxyApi(getCloud(), this);
     new UserAPI(getCloud(), this);
     new DashboardAPI(getCloud(), this);
-    new ServerAPI(getCloud(), this);
+    new ServerApi(getCloud(), this);
     new WrapperAPI(getCloud());
     new UtilsAPI(getCloud(), this);
     new PlayerAPI(getCloud(), this);
     new SignApi(this);
-    new MobAPI(this);
+    new MobApi(this);
     if (this.configPermission.isEnabled()) {
       new CPermsApi(this);
     }
