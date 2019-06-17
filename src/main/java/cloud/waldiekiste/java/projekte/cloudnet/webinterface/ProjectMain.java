@@ -142,7 +142,6 @@ public final class ProjectMain extends CoreModule {
             System.out.println("Certs folder successfully created!");
           }
         }
-        Field webServer = cloudNetClass.getDeclaredField("webServer");
         WebServer server = new WebServer(false,
             getCloud().getDbHandlers().getUpdateConfigurationDatabase().get()
                 .getString("mdwi.domain"),
@@ -157,6 +156,7 @@ public final class ProjectMain extends CoreModule {
         kmf.init(keyStore,TEMPORARY_KEY_PASSWORD.toCharArray());
         SslContext context = SslContextBuilder.forServer(kmf).build();
         sslContext.set(server, context);
+        Field webServer = cloudNetClass.getDeclaredField("webServer");
         webServer.setAccessible(true);
         webServer.set(getCloud(),server);
         getCloud().getWebServer().bind();
