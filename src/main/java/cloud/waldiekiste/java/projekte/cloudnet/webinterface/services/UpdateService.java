@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public final class UpdateService {
 
   /**
-   * Check for some update of the module
+   * Check for some update of the module.
    * @param module passes the main class of the module
    */
   public void checkUpdate(Module module) {
@@ -68,7 +68,7 @@ public final class UpdateService {
   }
 
   /**
-   * Download the update and replace the old jar
+   * Download the update and replace the old jar.
    * @param data the date of the new update
    */
   private void update(UpdateData data) {
@@ -157,7 +157,7 @@ public final class UpdateService {
   }
 
   /**
-   * Get the update from branch
+   * Get the update from branch.
    * @param branch The branch they are pull
    * @return The versions as list
    */
@@ -170,6 +170,9 @@ public final class UpdateService {
       address = new URL(url);
     } catch (MalformedURLException e) {
       e.printStackTrace();
+    }
+    if(address == null){
+      throw new NullPointerException("Url is null");
     }
     try {
       HttpURLConnection connection = (HttpURLConnection) address.openConnection();

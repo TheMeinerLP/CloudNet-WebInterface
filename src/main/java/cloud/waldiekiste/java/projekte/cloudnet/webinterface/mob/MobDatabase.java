@@ -11,7 +11,11 @@ import java.util.UUID;
 
 public final class MobDatabase extends DatabaseUsable {
 
-  public MobDatabase(final Database database) {
+  /**
+   * Initiated mob database
+   * @param database the basic database
+   */
+  public MobDatabase(Database database) {
     super(database);
     Document document = database.getDocument("server_selector_mobs");
     if (document == null) {
@@ -20,38 +24,40 @@ public final class MobDatabase extends DatabaseUsable {
     database.insert(document);
   }
 
-  public void append(final ServerMob serverMob) {
-    final Document document = this.database.getDocument("server_selector_mobs").getDocument("mobs")
+  /**
+   * Add a server mob to the database
+   * @param serverMob
+   */
+  public void append(ServerMob serverMob) {
+    Document document = this.database.getDocument("server_selector_mobs").getDocument("mobs")
         .append(serverMob.getUniqueId().toString(), Document.GSON.toJsonTree(serverMob));
     this.database.insert(document);
   }
 
-  public void remove(final ServerMob serverMob) {
-    final Document document = this.database.getDocument("server_selector_mobs").getDocument("mobs")
+  /**
+   * Remove serverMob from the database
+   * @param serverMob the mob to remove from the database
+   */
+  public void remove(ServerMob serverMob) {
+    Document document = this.database.getDocument("server_selector_mobs").getDocument("mobs")
         .remove(serverMob.getUniqueId().toString());
     this.database.insert(document);
   }
 
+  /**
+   * Load all mobs from the database
+   * @return get a map of mobs with uuids
+   */
   public Map<UUID, ServerMob> loadAll() {
-    boolean injectable = false;
-    final Map<UUID, ServerMob> mobMap = this.database.getDocument("server_selector_mobs")
-        .getObject("mobs", new TypeToken<Map<UUID, ServerMob>>() {
-        }.getType());
-    for (final ServerMob serverMob : mobMap.values()) {
-      if (serverMob.getItemId() == null) {
-        serverMob.setItemId(138);
-        injectable = true;
-      }
-      if (serverMob.getAutoJoin() == null) {
-        serverMob.setAutoJoin(false);
-        injectable = true;
-      }
-    }
-    if (injectable) {
-      final Document document = this.database.getDocument("server_selector_mobs");
-      document.append("mobs", Document.GSON.toJsonTree(mobMap));
-      this.database.insert(document);
-    }
+    Map<UUID, ServerMob> mobMap = this.database.getDocument("server_selector_mobs")
+    .getObject("mobs", new TypeToken<Map<UUID, ServerMob>>() {}.getType());
+    mobMap.values().stream().filter(serverMob -> serverMob.getItemId() == null)
+        .forEach(serverMob -> serverMob.setItemId(138));
+    mobMap.values().stream().filter(serverMob -> serverMob.getAutoJoin() == null)
+        .forEach(serverMob -> serverMob.setAutoJoin(false));
+    Document document = this.database.getDocument("server_selector_mobs");
+    document.append("mobs", Document.GSON.toJsonTree(mobMap));
+    this.database.insert(document);
     return mobMap;
   }
 }
