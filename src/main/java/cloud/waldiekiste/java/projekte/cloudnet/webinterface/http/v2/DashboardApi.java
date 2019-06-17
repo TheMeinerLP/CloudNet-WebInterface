@@ -22,7 +22,7 @@ public final class DashboardApi extends MethodWebHandlerAdapter {
   private final ProjectMain projectMain;
 
   /**
-   * Initiated the class
+   * Initiated the class.
    * @param cloudNet the CloudNet class
    * @param projectMain the main class of the project
    */

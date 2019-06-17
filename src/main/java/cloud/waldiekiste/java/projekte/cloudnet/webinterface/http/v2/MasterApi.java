@@ -24,6 +24,11 @@ public final class MasterApi extends MethodWebHandlerAdapter {
 
   private final ProjectMain projectMain;
 
+  /**
+   * Manage request about master.
+   * @param cloudNet The main class of cloudnet
+   * @param projectMain The main class of the project
+   */
   public MasterApi(CloudNet cloudNet, ProjectMain projectMain) {
     super("/cloudnet/api/v2/master");
     cloudNet.getWebServer().getWebServerProvider().registerHandler(this);

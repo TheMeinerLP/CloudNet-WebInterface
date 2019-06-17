@@ -21,6 +21,11 @@ public final class UtilsApi extends MethodWebHandlerAdapter {
 
   private final ProjectMain projectMain;
 
+  /**
+   * Manage general request they a not categories have
+   * @param cloudNet The main class from cloudnet
+   * @param projectMain The main class of the project
+   */
   public UtilsApi(CloudNet cloudNet, ProjectMain projectMain) {
     super("/cloudnet/api/v2/utils");
     cloudNet.getWebServer().getWebServerProvider().registerHandler(this);

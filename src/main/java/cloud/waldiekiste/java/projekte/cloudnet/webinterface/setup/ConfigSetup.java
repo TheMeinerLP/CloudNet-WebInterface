@@ -26,7 +26,7 @@ public final class ConfigSetup extends Setup {
   private boolean defaultConsole = false;
 
   /**
-   * Setup the config for the web interface
+   * Setup the config for the web interface.
    */
   public ConfigSetup() {
     setupComplete(t -> {

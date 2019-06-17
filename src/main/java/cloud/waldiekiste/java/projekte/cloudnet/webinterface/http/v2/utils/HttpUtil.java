@@ -7,6 +7,12 @@ import io.netty.handler.codec.http.HttpRequest;
 
 public final class HttpUtil {
 
+  /**
+   * Do the simple check of a http response and check if the user authorized.
+   * @param fullHttpResponse The response to check
+   * @param httpRequest The request to check
+   * @return The edited response for the web server
+   */
   public static FullHttpResponse simpleCheck(FullHttpResponse fullHttpResponse,
       HttpRequest httpRequest) {
     ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json; charset=utf-8");

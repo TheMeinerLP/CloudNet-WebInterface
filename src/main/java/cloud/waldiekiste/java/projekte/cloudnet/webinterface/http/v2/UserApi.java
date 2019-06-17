@@ -133,8 +133,8 @@ public final class UserApi extends MethodWebHandlerAdapter {
           usern = Document.load(jsonuser);
           BasicUser basicUser = new BasicUser(usern.get("username").getAsString(),
               new String(Base64
-                  .getDecoder().decode(usern.get("password").getAsString()), StandardCharsets.UTF_8),
-              new ArrayList<>());
+                  .getDecoder().decode(usern.get("password").getAsString()),
+                  StandardCharsets.UTF_8), new ArrayList<>());
           if (CloudNet.getInstance().getUsers().stream()
               .noneMatch(u -> u.getName().equals(basicUser.getName()))) {
             CloudNet.getInstance().getUsers().add(basicUser);

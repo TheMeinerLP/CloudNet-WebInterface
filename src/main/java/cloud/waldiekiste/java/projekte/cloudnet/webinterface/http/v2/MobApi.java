@@ -30,7 +30,7 @@ public final class MobApi extends MethodWebHandlerAdapter {
   private final ProjectMain projectMain;
 
   /**
-   *
+   * Manage the requests about the mob system of cloudnet.
    * @param projectMain The main class of the project
    */
   public MobApi(ProjectMain projectMain) {

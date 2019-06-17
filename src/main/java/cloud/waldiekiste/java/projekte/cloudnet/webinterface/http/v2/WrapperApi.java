@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public final class WrapperApi extends MethodWebHandlerAdapter {
 
   /**
-   * Initiated the class
+   * Initiated the class.
    * @param cloudNet the main class of cloudnet
    */
   public WrapperApi(CloudNet cloudNet) {

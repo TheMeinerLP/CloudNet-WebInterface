@@ -8,6 +8,14 @@ public final class UpdateData {
   private long version;
   private String extension;
 
+  /**
+   * A model of datas for the update service.
+   * @param filePath The web path to the file
+   * @param fileName The name of the file
+   * @param name The update name
+   * @param version The version of the update
+   * @param extension The file extension
+   */
   public UpdateData(String filePath, String fileName, String name, long version, String extension) {
     this.filePath = filePath;
     this.fileName = fileName;

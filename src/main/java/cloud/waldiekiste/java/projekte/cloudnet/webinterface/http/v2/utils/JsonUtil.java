@@ -94,7 +94,7 @@ import de.dytanic.cloudnetcore.network.components.WrapperMeta;
 public final class JsonUtil {
 
   /**
-   * Build all adapters to gson class
+   * Build all adapters to gson class.
    * @return Return a gson class with all json adapters
    */
   public static Gson getGson() {

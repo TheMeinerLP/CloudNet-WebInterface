@@ -22,10 +22,10 @@ public class WrapperInfoAdpater implements JsonDeserializer<WrapperInfo>,
     boolean ready = object.get("ready").getAsBoolean();
     int availableProcessors = object.get("availableProcessors").getAsInt();
     int startPort = object.get("startPort").getAsInt();
-    int process_queue_size = object.get("process_queue_size").getAsInt();
+    int processQueueSize = object.get("process_queue_size").getAsInt();
     int memory = object.get("memory").getAsInt();
     return new WrapperInfo(serverId, hostName, ready, availableProcessors, startPort,
-        process_queue_size, memory);
+        processQueueSize, memory);
   }
 
   @Override

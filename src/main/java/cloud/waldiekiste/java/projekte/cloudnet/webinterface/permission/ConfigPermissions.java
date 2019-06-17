@@ -29,7 +29,7 @@ public final class ConfigPermissions {
   }
 
   /**
-   * Write the update of the permission group into the file
+   * Write the update of the permission group into the file.
    * @param permissionGroup The permission group to update
    */
   public void updatePermissionGroup(PermissionGroup permissionGroup) {
