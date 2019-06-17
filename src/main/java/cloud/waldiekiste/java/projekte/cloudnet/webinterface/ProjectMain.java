@@ -66,7 +66,7 @@ public final class ProjectMain extends CoreModule {
   }
 
   /**
-   * Iniatilising API'S and checking version and counting the time between startup and end of the
+   * Iniatilising API'S and checking version and counting the time between startup and end of the.
    * startup. Errorservice is still under development.
    *
    * @see ConfigPermissions
@@ -112,7 +112,7 @@ public final class ProjectMain extends CoreModule {
   }
 
   /**
-   * - Clearing consoleLines & screenInfos for RAM "boost" -
+   * Clearing consoleLines & screenInfos for RAM "boost".
    */
   @Override
   public void onShutdown() {
@@ -121,7 +121,7 @@ public final class ProjectMain extends CoreModule {
   }
 
   /**
-   * Checking Version + Checking functionality with the Cloudnet Version
+   * Checking Version + Checking functionality with the Cloudnet Version.
    */
   private void versionCheck() {
     if (!getCloud().getDbHandlers().getUpdateConfigurationDatabase().get()
@@ -156,7 +156,7 @@ public final class ProjectMain extends CoreModule {
   }
 
   /**
-   * Here its getting the Updateservice and it is returning that service
+   * Here its getting the Updateservice and it is returning that service.
    *
    * @see UpdateService
    */
@@ -165,7 +165,7 @@ public final class ProjectMain extends CoreModule {
   }
 
   /**
-   * Here its getting the Configsetup and it is returning that setup
+   * Here its getting the Configsetup and it is returning that setup.
    *
    * @see ConfigSetup
    */
@@ -174,7 +174,7 @@ public final class ProjectMain extends CoreModule {
   }
 
   /**
-   * Here its getting the ConfigPermission and its returning them
+   * Here its getting the ConfigPermission and its returning them.
    *
    * @see ConfigPermissions
    */
@@ -183,7 +183,7 @@ public final class ProjectMain extends CoreModule {
   }
 
   /**
-   * Here its getting the ConsoleLines List and its returning the list
+   * Here its getting the ConsoleLines List and its returning the list.
    */
   public List<String> getConsoleLines() {
     return consoleLines;
@@ -191,7 +191,7 @@ public final class ProjectMain extends CoreModule {
 
   /**
    * Here its getting a String, a List wich contains a String and the ScreenInfo Map, its returning
-   * the map
+   * the map.
    */
   public Map<String, List<String>> getScreenInfos() {
     return screenInfos;
