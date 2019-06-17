@@ -4,8 +4,8 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Http;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.JsonUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Request;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Response;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.HttpUser;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Response;
 import de.dytanic.cloudnet.lib.serverselectors.mob.MobConfig;
 import de.dytanic.cloudnet.lib.serverselectors.mob.ServerMob;
 import de.dytanic.cloudnet.lib.user.User;
@@ -15,10 +15,8 @@ import de.dytanic.cloudnet.web.server.util.PathProvider;
 import de.dytanic.cloudnet.web.server.util.QueryDecoder;
 import de.dytanic.cloudnetcore.CloudNet;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
@@ -45,7 +43,7 @@ public final class MobApi extends MethodWebHandlerAdapter {
   public FullHttpResponse get(ChannelHandlerContext channelHandlerContext,
       QueryDecoder queryDecoder,
       PathProvider pathProvider, HttpRequest httpRequest) {
-    FullHttpResponse fullHttpResponse = Http.simpleCheck( httpRequest);
+    FullHttpResponse fullHttpResponse = Http.simpleCheck(httpRequest);
     User user = Http.getUser(httpRequest);
 
     Document resp = new Document();

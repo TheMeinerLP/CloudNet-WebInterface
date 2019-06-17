@@ -3,7 +3,6 @@ package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Http;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Request;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Response;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.HttpUser;
 import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;

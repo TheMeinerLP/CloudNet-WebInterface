@@ -99,7 +99,7 @@ public final class JsonUtil {
    * Build all adapters to gson class.
    * @return Return a gson class with all json adapters
    */
-  public static Gson getGson() {
+   public synchronized static Gson getGson() {
     if (instance == null) {
       GsonBuilder builder = new GsonBuilder();
       builder.registerTypeAdapter(AutoSlot.class, new AutoSlotJsonAdapter());

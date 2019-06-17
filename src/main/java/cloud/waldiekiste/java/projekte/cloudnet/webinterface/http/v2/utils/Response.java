@@ -53,7 +53,8 @@ public final class Response {
     dataDocument.append("success", false);
     dataDocument.append("reason", "Bad request");
     response.setStatus(HttpResponseStatus.BAD_REQUEST);
-    response.content().writeBytes(dataDocument.convertToJsonString().getBytes(StandardCharsets.UTF_8));
+    response.content().writeBytes(dataDocument.convertToJsonString()
+        .getBytes(StandardCharsets.UTF_8));
     return response;
   }
 

@@ -10,10 +10,8 @@ import de.dytanic.cloudnet.web.server.util.PathProvider;
 import de.dytanic.cloudnet.web.server.util.QueryDecoder;
 import de.dytanic.cloudnetcore.CloudNet;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import java.util.Locale;
 import java.util.stream.IntStream;
 
@@ -37,7 +35,7 @@ public final class DashboardApi extends MethodWebHandlerAdapter {
   public FullHttpResponse get(ChannelHandlerContext channelHandlerContext,
       QueryDecoder queryDecoder,
       PathProvider pathProvider, HttpRequest httpRequest) {
-    FullHttpResponse fullHttpResponse = Http.simpleCheck( httpRequest);
+    FullHttpResponse fullHttpResponse = Http.simpleCheck(httpRequest);
     Document document = new Document();
     switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "players":
