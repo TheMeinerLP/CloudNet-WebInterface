@@ -30,6 +30,10 @@ public final class MobApi extends MethodWebHandlerAdapter {
   private final Path path;
   private final ProjectMain projectMain;
 
+  /**
+   *
+   * @param projectMain The main class of the project
+   */
   public MobApi(ProjectMain projectMain) {
     super("/cloudnet/api/v2/mob");
     CloudNet.getInstance().getWebServer().getWebServerProvider().registerHandler(this);
@@ -60,9 +64,8 @@ public final class MobApi extends MethodWebHandlerAdapter {
         return ResponseUtil.success(fullHttpResponse, true, resp);
       }
       case "config": {
-        MobConfig config = Document.loadDocument(this.path)
-            .getObject("mobConfig", new TypeToken<MobConfig>() {
-            }.getType());
+        MobConfig config = JsonUtil.getGson().fromJson(Document.loadDocument(this.path)
+            .get("mobConfig"),MobConfig.class);
         resp.append("response", JsonUtil.getGson().toJson(config));
         return ResponseUtil.success(fullHttpResponse, true, resp);
       }

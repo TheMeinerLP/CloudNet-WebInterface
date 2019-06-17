@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2018.
- * Creative Commons Lizenzvertrag
- * CloudNet-Service-WebSocket-Extension von Phillipp Glanz ist lizenziert unter einer Creative Commons
- *  Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz.
- */
-
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter;
 
 import com.google.gson.JsonDeserializationContext;
@@ -17,6 +10,7 @@ import com.google.gson.JsonSerializer;
 import de.dytanic.cloudnet.lib.service.plugin.PluginResourceType;
 import de.dytanic.cloudnet.lib.service.plugin.ServerInstallablePlugin;
 import java.lang.reflect.Type;
+import java.util.Locale;
 
 public class ServerInstallablePluginJsonAdapter implements JsonSerializer<ServerInstallablePlugin>,
     JsonDeserializer<ServerInstallablePlugin> {
@@ -38,7 +32,7 @@ public class ServerInstallablePluginJsonAdapter implements JsonSerializer<Server
     JsonObject object = new JsonObject();
     object.addProperty("name", serverInstallablePlugin.getName());
     object.addProperty("pluginResourceType",
-        serverInstallablePlugin.getPluginResourceType().name().toUpperCase());
+        serverInstallablePlugin.getPluginResourceType().name().toUpperCase(Locale.ENGLISH));
     object.addProperty("url", serverInstallablePlugin.getUrl());
     return object;
   }

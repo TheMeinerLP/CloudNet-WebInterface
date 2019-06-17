@@ -62,10 +62,9 @@ public final class SignApi extends MethodWebHandlerAdapter {
             .contains("CloudNet-Service-SignsModule"));
         return ResponseUtil.success(fullHttpResponse, true, resp);
       case "config":
-        final Document document = Document.loadDocument(this.path);
-        final SignLayoutConfig signLayoutConfig = document
-            .getObject("layout_config", new TypeToken<SignLayoutConfig>() {
-            }.getType());
+        Document document = Document.loadDocument(this.path);
+        SignLayoutConfig signLayoutConfig = JsonUtil.getGson().
+            fromJson(document.get("layout_config"),SignLayoutConfig.class);
         resp.append("response", JsonUtil.getGson().toJson(signLayoutConfig));
         return ResponseUtil.success(fullHttpResponse, true, resp);
       case "random":

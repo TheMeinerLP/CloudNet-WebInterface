@@ -9,7 +9,7 @@ package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter.AdvanceServerConfigJsonAdapter;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter.AutoSlotJsonAdapter;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter.CloudServeJsonAdapter;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter.CloudServerJsonAdapter;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter.CloudServerMetaJsonAdapter;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter.DynamicFallbackJsonAdapter;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter.GroupEntityJsonAdapter;
@@ -136,7 +136,7 @@ public final class JsonUtil {
     builder.registerTypeAdapter(NetworkInfo.class, new NetworkInfoJsonAdapter());
     builder.registerTypeAdapter(MinecraftServer.class, new MinecraftServerJsonAdapter());
     builder.registerTypeAdapter(CloudServerMeta.class, new CloudServerMetaJsonAdapter());
-    builder.registerTypeAdapter(CloudServer.class, new CloudServeJsonAdapter());
+    builder.registerTypeAdapter(CloudServer.class, new CloudServerJsonAdapter());
     builder.registerTypeAdapter(SignLayout.class, new SignLayoutAdapter());
     builder.registerTypeAdapter(SearchingAnimation.class, new SearchingAnimationAdapter());
     builder.registerTypeAdapter(SignGroupLayouts.class, new SignGroupLayoutsAdapter());

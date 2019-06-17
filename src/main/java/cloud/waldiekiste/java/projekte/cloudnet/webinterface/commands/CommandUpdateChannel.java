@@ -13,6 +13,10 @@ public final class CommandUpdateChannel extends Command {
 
   private final ProjectMain projectMain;
 
+  /**
+   * Initiated the
+   * @param projectMain the main class of the project
+   */
   public CommandUpdateChannel(ProjectMain projectMain) {
     super("updateI", "cloudnet.webinterface.update", "UI");
     this.description = "Help you to Update the Material Design Web Interface Module";
@@ -43,7 +47,7 @@ public final class CommandUpdateChannel extends Command {
         case "channel":
           if (strings.length > 1) {
             String channel = strings[1];
-            type = VersionType.valueOf(channel.toUpperCase());
+            type = VersionType.valueOf(channel.toUpperCase(Locale.ENGLISH));
             document = CloudNet.getInstance().getDbHandlers()
                 .getUpdateConfigurationDatabase().get();
             document.append("mdwi.updateChannel", type.getType().toUpperCase());
@@ -53,8 +57,8 @@ public final class CommandUpdateChannel extends Command {
             System.out.println("[Updater] Please insert a Update Channel(BETA,RELEASE,SNAPSHOT)");
           }
           return;
-          default:
-            return;
+        default:
+          return;
       }
     } else {
       this.projectMain.getUpdateService().checkUpdate(this.projectMain);

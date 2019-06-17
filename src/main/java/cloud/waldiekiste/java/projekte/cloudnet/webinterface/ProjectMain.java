@@ -5,16 +5,16 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandUpd
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandVersion;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.AuthenticationAPI;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.CPermsApi;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.DashboardAPI;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.DashboardApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.MasterApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.MobApi;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.PlayerAPI;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.PlayerApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.ProxyApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.ServerApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.SignApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.UserAPI;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.UtilsAPI;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.WrapperAPI;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.WrapperApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.listener.ScreenSessionListener;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.mob.MobDatabase;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.permission.ConfigPermissions;
@@ -74,9 +74,9 @@ public final class ProjectMain extends CoreModule {
    * @see AuthenticationAPI
    * @see ProxyApi
    * @see UserAPI
-   * @see DashboardAPI
+   * @see DashboardApi
    * @see ServerApi
-   * @see WrapperAPI
+   * @see WrapperApi
    * @see UtilsAPI
    */
   @Override
@@ -99,11 +99,11 @@ public final class ProjectMain extends CoreModule {
     new AuthenticationAPI();
     new ProxyApi(getCloud(), this);
     new UserAPI(getCloud(), this);
-    new DashboardAPI(getCloud(), this);
+    new DashboardApi(getCloud(), this);
     new ServerApi(getCloud(), this);
-    new WrapperAPI(getCloud());
+    new WrapperApi(getCloud());
     new UtilsAPI(getCloud(), this);
-    new PlayerAPI(getCloud(), this);
+    new PlayerApi(getCloud(), this);
     new SignApi(this);
     new MobApi(this);
     if (this.configPermission.isEnabled()) {

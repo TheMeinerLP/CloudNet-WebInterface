@@ -14,13 +14,19 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import java.util.Locale;
 import java.util.stream.IntStream;
 
-public final class DashboardAPI extends MethodWebHandlerAdapter {
+public final class DashboardApi extends MethodWebHandlerAdapter {
 
   private final ProjectMain projectMain;
 
-  public DashboardAPI(CloudNet cloudNet, ProjectMain projectMain) {
+  /**
+   * Initiated the class
+   * @param cloudNet the CloudNet class
+   * @param projectMain the main class of the project
+   */
+  public DashboardApi(CloudNet cloudNet, ProjectMain projectMain) {
     super("/cloudnet/api/v2/dashboard");
     cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
     this.projectMain = projectMain;
@@ -38,7 +44,7 @@ public final class DashboardAPI extends MethodWebHandlerAdapter {
 
     Document document = new Document();
 
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "players":
         IntStream stream = projectMain.getCloud().getServerGroups().keySet().stream()
             .mapToInt(server -> projectMain.getCloud().getOnlineCount(server));

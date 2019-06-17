@@ -16,11 +16,16 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
-public final class WrapperAPI extends MethodWebHandlerAdapter {
+public final class WrapperApi extends MethodWebHandlerAdapter {
 
-  public WrapperAPI(CloudNet cloudNet) {
+  /**
+   * Initiated the class
+   * @param cloudNet the main class of cloudnet
+   */
+  public WrapperApi(CloudNet cloudNet) {
     super("/cloudnet/api/v2/wrapper");
     cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
   }
@@ -35,7 +40,7 @@ public final class WrapperAPI extends MethodWebHandlerAdapter {
         HttpResponseStatus.OK);
     fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
     User user = HttpUtil.getUser(httpRequest);
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "wrappers": {
         Document document = new Document();
         document.append("response", CloudNet.getInstance().getWrappers().keySet());

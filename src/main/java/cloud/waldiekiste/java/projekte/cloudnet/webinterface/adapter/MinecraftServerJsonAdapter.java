@@ -6,6 +6,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import de.dytanic.cloudnetcore.network.components.MinecraftServer;
 import java.lang.reflect.Type;
+import java.util.Locale;
 
 public class MinecraftServerJsonAdapter implements JsonSerializer<MinecraftServer> {
 
@@ -15,7 +16,8 @@ public class MinecraftServerJsonAdapter implements JsonSerializer<MinecraftServe
     JsonObject object = new JsonObject();
     object.add("serviceId", jsonSerializationContext.serialize(minecraftServer.getServiceId()));
     object.add("processMeta", jsonSerializationContext.serialize(minecraftServer.getProcessMeta()));
-    object.addProperty("groupMode", minecraftServer.getGroupMode().name().toUpperCase());
+    object.addProperty("groupMode",
+        minecraftServer.getGroupMode().name().toUpperCase(Locale.ENGLISH));
     object
         .add("serverInfo", jsonSerializationContext.serialize(minecraftServer.getLastServerInfo()));
     return object;

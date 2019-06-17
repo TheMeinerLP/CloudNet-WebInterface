@@ -7,6 +7,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import de.dytanic.cloudnet.lib.cloudserver.CloudServerMeta;
 import java.lang.reflect.Type;
+import java.util.Locale;
 
 public class CloudServerMetaJsonAdapter implements JsonSerializer<CloudServerMeta> {
 
@@ -31,7 +32,8 @@ public class CloudServerMetaJsonAdapter implements JsonSerializer<CloudServerMet
     object.addProperty("port", cloudServerMeta.getPort());
     object.addProperty("templateName", cloudServerMeta.getTemplateName());
     object
-        .addProperty("serverGroupType", cloudServerMeta.getServerGroupType().name().toUpperCase());
+        .addProperty("serverGroupType", cloudServerMeta.getServerGroupType().name()
+            .toUpperCase(Locale.ENGLISH));
     object.add("template", jsonSerializationContext.serialize(cloudServerMeta.getTemplate()));
     return object;
   }
