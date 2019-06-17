@@ -147,14 +147,14 @@ public final class ProjectMain extends CoreModule {
                 .getString("mdwi.domain"),
             CloudNet.getInstance().getConfig().getWebServerConfig().getPort());
 
-        Field sslContext = server.getClass().getDeclaredField("sslContext");
-        sslContext.setAccessible(true);
         KeyStore keyStore = getKeyStore(new File(certs, "certFile.pem"),
             new File(certs, "keyFile.pem"), new File(certs, "caFile.pem"));
         KeyManagerFactory kmf = KeyManagerFactory
             .getInstance(Security.getProperty("ssl.KeyManagerFactory.algorithm"));
         kmf.init(keyStore,TEMPORARY_KEY_PASSWORD.toCharArray());
         SslContext context = SslContextBuilder.forServer(kmf).build();
+        Field sslContext = server.getClass().getDeclaredField("sslContext");
+        sslContext.setAccessible(true);
         sslContext.set(server, context);
         Field webServer = cloudNetClass.getDeclaredField("webServer");
         webServer.setAccessible(true);
