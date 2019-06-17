@@ -8,7 +8,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-public final class ResponseUtil {
+public final class Response {
 
   /**
    * Send a permission denied message.
@@ -16,7 +16,8 @@ public final class ResponseUtil {
    * @return The response to send to the web server
    */
   public static FullHttpResponse permissionDenied(FullHttpResponse response) {
-    Document dataDocument = new Document("success", false).append("reason", new ArrayList<>())
+    Document dataDocument = new Document("success", false)
+        .append("reason", new ArrayList<>())
         .append("response", new Document());
     dataDocument.append("reason", "permission denied!");
     response.content()
@@ -28,23 +29,34 @@ public final class ResponseUtil {
   /**
    * Send the response to web.
    * @param response The response from web server to manipulate
-   * @param success The boolean to says it the request right
    * @param dataDocument The content of the response
    * @return The response to send to the web server
    */
-  public static FullHttpResponse success(FullHttpResponse response, boolean success,
+  public static FullHttpResponse success(FullHttpResponse response,
       Document dataDocument) {
-    dataDocument.append("success", success);
+    dataDocument.append("success", true);
     dataDocument.append("reason", new ArrayList<>());
-    if (success) {
-      response.setStatus(HttpResponseStatus.OK);
-    } else {
-      response.setStatus(HttpResponseStatus.BAD_REQUEST);
-    }
+    response.setStatus(HttpResponseStatus.OK);
+
     response.content()
         .writeBytes(dataDocument.convertToJsonString().getBytes(StandardCharsets.UTF_8));
     return response;
   }
+
+  /**
+   * Send the bad response to web.
+   * @param response The response from web server to edit
+   * @param dataDocument The content of the response
+   * @return The edited response
+   */
+  public static FullHttpResponse badRequest(FullHttpResponse response, Document dataDocument) {
+    dataDocument.append("success", false);
+    dataDocument.append("reason", "Bad request");
+    response.setStatus(HttpResponseStatus.BAD_REQUEST);
+    response.content().writeBytes(dataDocument.convertToJsonString().getBytes(StandardCharsets.UTF_8));
+    return response;
+  }
+
 
   public static void setHeader(FullHttpResponse response, String field, String value) {
     response.headers().set(field, value);
@@ -114,9 +126,8 @@ public final class ResponseUtil {
    * @param request The response from web server to manipulate
    * @return The response to send to the web server
    */
-  @SuppressWarnings("deprecation")
   public static FullHttpResponse cross(HttpRequest request) {
-    FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(request.getProtocolVersion(),
+    FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(request.protocolVersion(),
         HttpResponseStatus.OK);
     fullHttpResponse.headers().set("Content-Type", "application/json");
     fullHttpResponse.headers().set("Access-Control-Allow-Credentials", "true");

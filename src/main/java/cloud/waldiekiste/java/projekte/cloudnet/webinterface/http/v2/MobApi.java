@@ -1,11 +1,11 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.HttpUtil;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Http;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.JsonUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Request;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Response;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.HttpUser;
 import de.dytanic.cloudnet.lib.serverselectors.mob.MobConfig;
 import de.dytanic.cloudnet.lib.serverselectors.mob.ServerMob;
 import de.dytanic.cloudnet.lib.user.User;
@@ -45,38 +45,35 @@ public final class MobApi extends MethodWebHandlerAdapter {
   public FullHttpResponse get(ChannelHandlerContext channelHandlerContext,
       QueryDecoder queryDecoder,
       PathProvider pathProvider, HttpRequest httpRequest) {
-    FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(
-        httpRequest.getProtocolVersion(),
-        HttpResponseStatus.OK);
-    fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
-    User user = HttpUtil.getUser(httpRequest);
+    FullHttpResponse fullHttpResponse = Http.simpleCheck( httpRequest);
+    User user = Http.getUser(httpRequest);
 
     Document resp = new Document();
-    if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.mob.load")) {
-      return ResponseUtil.success(fullHttpResponse, false, new Document());
+    if (!HttpUser.hasPermission(user, "*", "cloudnet.web.module.mob.load")) {
+      return Response.permissionDenied(fullHttpResponse);
     }
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
+    switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
 
       case "check": {
         resp.append("response", !CloudNet.getInstance().getConfig().getDisabledModules()
             .contains("CloudNet-Service-MobModule"));
-        return ResponseUtil.success(fullHttpResponse, true, resp);
+        return Response.success(fullHttpResponse, resp);
       }
       case "config": {
         MobConfig config = JsonUtil.getGson().fromJson(Document.loadDocument(this.path)
             .get("mobConfig"),MobConfig.class);
         resp.append("response", JsonUtil.getGson().toJson(config));
-        return ResponseUtil.success(fullHttpResponse, true, resp);
+        return Response.success(fullHttpResponse, resp);
       }
       case "db": {
         resp.append("response", projectMain.getMobDatabase().loadAll().values().stream()
             .map(serverMob -> JsonUtil.getGson().toJson(serverMob)).collect(
                 Collectors.toList()));
-        return ResponseUtil.success(fullHttpResponse, true, resp);
+        return Response.success(fullHttpResponse, resp);
 
       }
       default: {
-        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
+        return Response.messageFieldNotFound(fullHttpResponse);
       }
     }
   }
@@ -86,47 +83,44 @@ public final class MobApi extends MethodWebHandlerAdapter {
   public FullHttpResponse post(ChannelHandlerContext channelHandlerContext,
       QueryDecoder queryDecoder,
       PathProvider pathProvider, HttpRequest httpRequest) {
-    FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(
-        httpRequest.getProtocolVersion(),
-        HttpResponseStatus.OK);
-    fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
-    User user = HttpUtil.getUser(httpRequest);
-    String content = RequestUtil.getContent(httpRequest);
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
+    FullHttpResponse fullHttpResponse = Http.simpleCheck(httpRequest);
+    User user = Http.getUser(httpRequest);
+    String content = Request.content(httpRequest);
+    switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "save":
         if (content.isEmpty()) {
-          return ResponseUtil.success(fullHttpResponse, false, new Document());
+          return Response.badRequest(fullHttpResponse, new Document());
         }
-        if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.mob.save")) {
-          return ResponseUtil.success(fullHttpResponse, false, new Document());
+        if (!HttpUser.hasPermission(user, "*", "cloudnet.web.module.mob.save")) {
+          return Response.permissionDenied(fullHttpResponse);
         }
         MobConfig signLayoutConfig = JsonUtil.getGson().fromJson(content, MobConfig.class);
         Document document = Document.loadDocument(this.path);
         document.append("mobConfig", signLayoutConfig);
         document.saveAsConfig(this.path);
         CloudNet.getInstance().getNetworkManager().updateAll();
-        return ResponseUtil.success(fullHttpResponse, true, new Document());
+        return Response.success(fullHttpResponse, new Document());
 
       case "delete":
         ServerMob mob = JsonUtil.getGson().fromJson(content, ServerMob.class);
-        if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.mob.delete")) {
-          return ResponseUtil.success(fullHttpResponse, false, new Document());
+        if (!HttpUser.hasPermission(user, "*", "cloudnet.web.module.mob.delete")) {
+          return Response.permissionDenied(fullHttpResponse);
         }
         projectMain.getMobDatabase().remove(mob);
         CloudNet.getInstance().getNetworkManager().updateAll();
-        return ResponseUtil.success(fullHttpResponse, true, new Document());
+        return Response.success(fullHttpResponse, new Document());
 
       case "add":
         mob = JsonUtil.getGson().fromJson(content, ServerMob.class);
-        if (!UserUtil.hasPermission(user, "*", "cloudnet.web.module.mob.add")) {
-          return ResponseUtil.success(fullHttpResponse, false, new Document());
+        if (!HttpUser.hasPermission(user, "*", "cloudnet.web.module.mob.add")) {
+          return Response.permissionDenied(fullHttpResponse);
         }
         projectMain.getMobDatabase().append(mob);
         CloudNet.getInstance().getNetworkManager().updateAll();
-        return ResponseUtil.success(fullHttpResponse, true, new Document());
+        return Response.success(fullHttpResponse, new Document());
 
       default:
-        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
+        return Response.messageFieldNotFound(fullHttpResponse);
 
     }
   }
@@ -135,6 +129,6 @@ public final class MobApi extends MethodWebHandlerAdapter {
   public FullHttpResponse options(ChannelHandlerContext channelHandlerContext,
       QueryDecoder queryDecoder,
       PathProvider pathProvider, HttpRequest httpRequest) {
-    return ResponseUtil.cross(httpRequest);
+    return Response.cross(httpRequest);
   }
 }

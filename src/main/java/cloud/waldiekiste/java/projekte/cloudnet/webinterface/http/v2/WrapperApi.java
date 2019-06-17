@@ -1,10 +1,10 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2;
 
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.HttpUtil;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Http;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.JsonUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Request;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Response;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.HttpUser;
 import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
@@ -35,31 +35,28 @@ public final class WrapperApi extends MethodWebHandlerAdapter {
   public FullHttpResponse get(ChannelHandlerContext channelHandlerContext,
       QueryDecoder queryDecoder,
       PathProvider pathProvider, HttpRequest httpRequest) {
-    FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(
-        httpRequest.getProtocolVersion(),
-        HttpResponseStatus.OK);
-    fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
-    User user = HttpUtil.getUser(httpRequest);
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
+    FullHttpResponse fullHttpResponse = Http.simpleCheck(httpRequest);
+    User user = Http.getUser(httpRequest);
+    switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "wrappers": {
         Document document = new Document();
         document.append("response", CloudNet.getInstance().getWrappers().keySet());
-        return ResponseUtil.success(fullHttpResponse, true, document);
+        return Response.success(fullHttpResponse, document);
       }
       case "warpperinfos": {
-        if (!UserUtil.hasPermission(user, "*", "cloudnet.web.wrapper.item.*")) {
-          return ResponseUtil.permissionDenied(fullHttpResponse);
+        if (!HttpUser.hasPermission(user, "*", "cloudnet.web.wrapper.item.*")) {
+          return Response.permissionDenied(fullHttpResponse);
         } else {
           Document resp = new Document();
           resp.append("response",
               CloudNet.getInstance().getWrappers().values().stream()
                   .filter(wrapper -> wrapper.isReady())
                   .map(wrapper -> JsonUtil.getGson().toJson(wrapper)).collect(Collectors.toList()));
-          return ResponseUtil.success(fullHttpResponse, true, resp);
+          return Response.success(fullHttpResponse, resp);
         }
       }
       default: {
-        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
+        return Response.messageFieldNotFound(fullHttpResponse);
       }
     }
   }
@@ -68,6 +65,6 @@ public final class WrapperApi extends MethodWebHandlerAdapter {
   public FullHttpResponse options(ChannelHandlerContext channelHandlerContext,
       QueryDecoder queryDecoder,
       PathProvider pathProvider, HttpRequest httpRequest) {
-    return ResponseUtil.cross(httpRequest);
+    return Response.cross(httpRequest);
   }
 }

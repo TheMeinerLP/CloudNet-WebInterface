@@ -1,9 +1,9 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.HttpUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Http;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Request;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Response;
 import de.dytanic.cloudnet.lib.NetworkUtils;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
@@ -37,19 +37,16 @@ public final class UtilsApi extends MethodWebHandlerAdapter {
   public FullHttpResponse get(ChannelHandlerContext channelHandlerContext,
       QueryDecoder queryDecoder,
       PathProvider pathProvider, HttpRequest httpRequest) {
-    FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(
-        httpRequest.getProtocolVersion(),
-        HttpResponseStatus.OK);
-    fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
+    FullHttpResponse fullHttpResponse = Http.simpleCheck(httpRequest);
     Document document = new Document();
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
+    switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "version":
         document.append("response", projectMain.getModuleConfig().getVersion());
-        return ResponseUtil.success(fullHttpResponse, true, document);
+        return Response.success(fullHttpResponse, document);
 
       case "cloudversion":
         document.append("response", NetworkUtils.class.getPackage().getImplementationVersion());
-        return ResponseUtil.success(fullHttpResponse, true, document);
+        return Response.success(fullHttpResponse, document);
       case "badges":
         Document infos = new Document();
         infos.append("proxy_groups", CloudNet.getInstance().getProxyGroups().size());
@@ -59,14 +56,14 @@ public final class UtilsApi extends MethodWebHandlerAdapter {
         infos.append("wrappers", CloudNet.getInstance().getWrappers().values().stream()
             .filter(wrapper -> wrapper.isReady()).count());
         document.append("response", infos);
-        return ResponseUtil.success(fullHttpResponse, true, document);
+        return Response.success(fullHttpResponse, document);
 
       case "cloudstats":
         document.append("response",
             CloudNet.getInstance().getDbHandlers().getStatisticManager().getStatistics());
-        return ResponseUtil.success(fullHttpResponse, true, document);
+        return Response.success(fullHttpResponse, document);
       default:
-        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
+        return Response.messageFieldNotFound(fullHttpResponse);
 
     }
   }
@@ -75,6 +72,6 @@ public final class UtilsApi extends MethodWebHandlerAdapter {
   public FullHttpResponse options(ChannelHandlerContext channelHandlerContext,
       QueryDecoder queryDecoder,
       PathProvider pathProvider, HttpRequest httpRequest) {
-    return ResponseUtil.cross(httpRequest);
+    return Response.cross(httpRequest);
   }
 }

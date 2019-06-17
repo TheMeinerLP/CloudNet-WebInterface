@@ -1,9 +1,10 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Http;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Request;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Response;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.HttpUser;
 import de.dytanic.cloudnet.lib.player.CloudPlayer;
 import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
@@ -38,27 +39,18 @@ public final class PlayerApi extends MethodWebHandlerAdapter {
   @Override
   public FullHttpResponse post(ChannelHandlerContext channelHandlerContext,
       QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
-    FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(
-        httpRequest.getProtocolVersion(), HttpResponseStatus.OK);
-    ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json; charset=utf-8");
-    if (!RequestUtil
-        .hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message")) {
-      return ResponseUtil.cloudFieldNotFound(fullHttpResponse);
-    }
-    if (!RequestUtil.checkAuth(httpRequest)) {
-      return UserUtil.failedAuthorization(fullHttpResponse);
-    }
+    FullHttpResponse fullHttpResponse = Http.simpleCheck(httpRequest);
     User user = CloudNet.getInstance()
-        .getUser(RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-user"));
+        .getUser(Request.headerValue(httpRequest, "-xcloudnet-user"));
     Document document = new Document();
-    if ("send".equals(RequestUtil.getHeaderValue(httpRequest, "-Xmessage")
+    if ("send".equals(Request.headerValue(httpRequest, "-Xmessage")
         .toLowerCase(Locale.ENGLISH))) {
-      if (RequestUtil.hasHeader(httpRequest, "-Xvalue", "-Xcount")) {
-        String player = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
-        String server = RequestUtil.getHeaderValue(httpRequest, "-Xcount");
-        if (!UserUtil.hasPermission(user, "cloudnet.web.player.send", "*",
+      if (Request.hasHeader(httpRequest, "-Xvalue", "-Xcount")) {
+        String player = Request.headerValue(httpRequest, "-Xvalue");
+        String server = Request.headerValue(httpRequest, "-Xcount");
+        if (!HttpUser.hasPermission(user, "cloudnet.web.player.send", "*",
             "cloudnet.web.player.*", "cloudnet.web.player.send." + player)) {
-          return ResponseUtil.permissionDenied(fullHttpResponse);
+          return Response.permissionDenied(fullHttpResponse);
         }
         if (player.matches(
             "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")) {
@@ -69,30 +61,30 @@ public final class PlayerApi extends MethodWebHandlerAdapter {
           if (player.equalsIgnoreCase("*")) {
             this.projectMain.getCloud().getNetworkManager().getOnlinePlayers().values()
                 .forEach(t -> CorePlayerExecutor.INSTANCE.sendPlayer(t, server));
-            return ResponseUtil.success(fullHttpResponse, true, document);
+            return Response.success(fullHttpResponse, document);
           } else {
             UUID uuid = CloudNet.getInstance().getDbHandlers().getNameToUUIDDatabase()
                 .get(player);
             if (uuid == null) {
               document.append("code", 404);
-              return ResponseUtil.success(fullHttpResponse, false, document);
+              return Response.badRequest(fullHttpResponse, document);
             }
             CloudPlayer cloudPlayer = CloudNet.getInstance().getNetworkManager()
                 .getOnlinePlayer(uuid);
             CorePlayerExecutor.INSTANCE.sendPlayer(cloudPlayer, server);
-            return ResponseUtil.success(fullHttpResponse, true, document);
+            return Response.success(fullHttpResponse, document);
           }
         }
-        return ResponseUtil.success(fullHttpResponse, true, document);
+        return Response.success(fullHttpResponse, document);
       }
     }
-    return ResponseUtil.messageFieldNotFound(fullHttpResponse);
+    return Response.messageFieldNotFound(fullHttpResponse);
   }
 
   @Override
   public FullHttpResponse options(ChannelHandlerContext channelHandlerContext,
       QueryDecoder queryDecoder,
       PathProvider pathProvider, HttpRequest httpRequest) {
-    return ResponseUtil.cross(httpRequest);
+    return Response.cross(httpRequest);
   }
 }

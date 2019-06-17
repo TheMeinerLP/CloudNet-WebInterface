@@ -6,7 +6,7 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import java.nio.charset.StandardCharsets;
 
-public final class UserUtil {
+public final class HttpUser {
 
   /**
    * Check have the user the permission.
@@ -24,18 +24,4 @@ public final class UserUtil {
     return false;
   }
 
-  /**
-   * Send a fail authorization.
-   * @param response The response to edit
-   * @return Return the response they are edited
-   */
-  public static FullHttpResponse failedAuthorization(FullHttpResponse response) {
-    Document dataDocument = new Document("success", false);
-    dataDocument.append("reason", "failed authorization!");
-    dataDocument.append("response", new Document());
-    response.setStatus(HttpResponseStatus.UNAUTHORIZED);
-    response.content()
-        .writeBytes(dataDocument.convertToJsonString().getBytes(StandardCharsets.UTF_8));
-    return response;
-  }
 }

@@ -5,10 +5,9 @@ import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Locale;
 
-public final class RequestUtil {
+public final class Request {
 
   /**
    * Check has header set.
@@ -31,7 +30,7 @@ public final class RequestUtil {
    * @param header The header to get the value
    * @return The value of the header
    */
-  public static String getHeaderValue(HttpRequest request, String header) {
+  public static String headerValue(HttpRequest request, String header) {
     if (hasHeader(request, header.toLowerCase(Locale.ENGLISH))) {
       return request.headers().get(header.toLowerCase(Locale.ENGLISH));
     } else {
@@ -44,7 +43,7 @@ public final class RequestUtil {
    * @param request The request to get content
    * @return The content of the request
    */
-  public static String getContent(HttpRequest request) {
+  public static String content(HttpRequest request) {
     FullHttpRequest fullHttpRequest = (FullHttpRequest) request;
     if (fullHttpRequest.content().readableBytes() != 0) {
       ByteBuf buf = fullHttpRequest.content();
@@ -62,8 +61,8 @@ public final class RequestUtil {
    * @return Return true if user authorized
    */
   public static boolean checkAuth(HttpRequest httpRequest) {
-    String username = RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-user");
-    String token = RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-token");
+    String username = Request.headerValue(httpRequest, "-xcloudnet-user");
+    String token = Request.headerValue(httpRequest, "-xcloudnet-token");
     return CloudNet.getInstance().authorization(username, token);
   }
 }

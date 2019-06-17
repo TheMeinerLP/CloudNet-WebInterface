@@ -1,11 +1,11 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.HttpUtil;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Http;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.JsonUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Request;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.Response;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.HttpUser;
 import de.dytanic.cloudnet.lib.server.ServerGroup;
 import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
@@ -45,30 +45,26 @@ public final class ServerApi extends MethodWebHandlerAdapter {
   public FullHttpResponse get(ChannelHandlerContext channelHandlerContext,
       QueryDecoder queryDecoder,
       PathProvider pathProvider, HttpRequest httpRequest) {
-    FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(
-        httpRequest.getProtocolVersion(),
-        HttpResponseStatus.OK);
-    ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json;charset=utf-8");
-    fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
-    User user = HttpUtil.getUser(httpRequest);
+    FullHttpResponse fullHttpResponse = Http.simpleCheck(httpRequest);
+    User user = Http.getUser(httpRequest);
     Document resp = new Document();
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
+    switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "groups":
-        if (!UserUtil.hasPermission(user, "cloudnet.web.group.servers", "*")) {
-          return ResponseUtil.permissionDenied(fullHttpResponse);
+        if (!HttpUser.hasPermission(user, "cloudnet.web.group.servers", "*")) {
+          return Response.permissionDenied(fullHttpResponse);
         }
         resp.append("response", new ArrayList<>(CloudNet.getInstance().getServerGroups().keySet()));
-        return ResponseUtil.success(fullHttpResponse, true, resp);
+        return Response.success(fullHttpResponse, resp);
 
       case "screen":
-        if (RequestUtil.hasHeader(httpRequest, "-Xvalue")
-            && CloudNet.getInstance().getServers().containsKey(RequestUtil
-            .getHeaderValue(httpRequest, "-Xvalue"))) {
-          String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
+        if (Request.hasHeader(httpRequest, "-Xvalue")
+            && CloudNet.getInstance().getServers().containsKey(Request
+            .headerValue(httpRequest, "-Xvalue"))) {
+          String group = Request.headerValue(httpRequest, "-Xvalue");
           MinecraftServer server = CloudNet.getInstance().getServer(group);
-          if (!UserUtil.hasPermission(user, "cloudnet.web.screen.servers.info.*", "*",
+          if (!HttpUser.hasPermission(user, "cloudnet.web.screen.servers.info.*", "*",
               "cloudnet.web.screen.servers.info.group." + server.getServiceId().getGroup())) {
-            return ResponseUtil.permissionDenied(fullHttpResponse);
+            return Response.permissionDenied(fullHttpResponse);
           }
           if (!CloudNet.getInstance().getScreenProvider().getScreens()
               .containsKey(server.getServiceId().getServerId())) {
@@ -78,64 +74,64 @@ public final class ServerApi extends MethodWebHandlerAdapter {
             resp.append("response", projectMain.getScreenInfos().get(
                 server.getServiceId().getServerId()));
           }
-          return ResponseUtil.success(fullHttpResponse, true, resp);
+          return Response.success(fullHttpResponse, resp);
         } else {
-          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
+          return Response.valueFieldNotFound(fullHttpResponse);
         }
 
       case "servers":
-        if (RequestUtil.hasHeader(httpRequest, "-Xvalue")
-            && CloudNet.getInstance().getServerGroups().containsKey(RequestUtil.getHeaderValue(
+        if (Request.hasHeader(httpRequest, "-Xvalue")
+            && CloudNet.getInstance().getServerGroups().containsKey(Request.headerValue(
                 httpRequest, "-Xvalue"))) {
-          String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
-          if (!UserUtil.hasPermission(user, "cloudnet.web.group.servers.info.*", "*",
+          String group = Request.headerValue(httpRequest, "-Xvalue");
+          if (!HttpUser.hasPermission(user, "cloudnet.web.group.servers.info.*", "*",
               "cloudnet.web.group.servers.info." + group)) {
-            return ResponseUtil.permissionDenied(fullHttpResponse);
+            return Response.permissionDenied(fullHttpResponse);
           }
           resp.append("response",
               CloudNet.getInstance().getServers(group).stream().map(minecraftServer ->
                   JsonUtil.getGson().toJson(minecraftServer.getLastServerInfo()))
                   .collect(Collectors.toList()));
-          return ResponseUtil.success(fullHttpResponse, true, resp);
+          return Response.success(fullHttpResponse, resp);
         } else {
-          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
+          return Response.valueFieldNotFound(fullHttpResponse);
         }
 
       case "allservers":
-        if (!UserUtil.hasPermission(user, "cloudnet.web.group.allservers.info.*", "*")) {
-          return ResponseUtil.permissionDenied(fullHttpResponse);
+        if (!HttpUser.hasPermission(user, "cloudnet.web.group.allservers.info.*", "*")) {
+          return Response.permissionDenied(fullHttpResponse);
         }
         resp.append("response",
             CloudNet.getInstance().getServers().values().stream().map(minecraftServer ->
                 JsonUtil.getGson().toJson(minecraftServer.getLastServerInfo().toSimple()))
                 .collect(Collectors.toList()));
-        return ResponseUtil.success(fullHttpResponse, true, resp);
+        return Response.success(fullHttpResponse, resp);
 
       case "group":
-        if (RequestUtil.hasHeader(httpRequest, "-Xvalue")
+        if (Request.hasHeader(httpRequest, "-Xvalue")
             && CloudNet.getInstance().getServerGroups().containsKey(
-                RequestUtil.getHeaderValue(httpRequest, "-Xvalue"))) {
-          String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
-          if (!UserUtil.hasPermission(user, "cloudnet.web.group.server.info.*", "*",
+                Request.headerValue(httpRequest, "-Xvalue"))) {
+          String group = Request.headerValue(httpRequest, "-Xvalue");
+          if (!HttpUser.hasPermission(user, "cloudnet.web.group.server.info.*", "*",
               "cloudnet.web.group.server.info." + group)) {
-            return ResponseUtil.permissionDenied(fullHttpResponse);
+            return Response.permissionDenied(fullHttpResponse);
           }
           Document data = new Document();
           data.append(group,
               JsonUtil.getGson().toJson(CloudNet.getInstance().getServerGroup(group)));
           resp.append("response", data);
-          return ResponseUtil.success(fullHttpResponse, true, resp);
+          return Response.success(fullHttpResponse, resp);
         } else {
           resp.append("response",
               CloudNet.getInstance().getServerGroups().values().stream().filter(serverGroup ->
-                  UserUtil.hasPermission(user, "*", "cloudnet.web.group.server.item.*",
+                  HttpUser.hasPermission(user, "*", "cloudnet.web.group.server.item.*",
                       "cloudnet.web.proxy.group.server.item." + serverGroup.getName()))
                   .map(serverGroup ->
                       JsonUtil.getGson().toJson(serverGroup)).collect(Collectors.toList()));
-          return ResponseUtil.success(fullHttpResponse, true, resp);
+          return Response.success(fullHttpResponse, resp);
         }
       default:
-        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
+        return Response.messageFieldNotFound(fullHttpResponse);
 
     }
   }
@@ -145,67 +141,64 @@ public final class ServerApi extends MethodWebHandlerAdapter {
   public FullHttpResponse post(ChannelHandlerContext channelHandlerContext,
       QueryDecoder queryDecoder,
       PathProvider pathProvider, HttpRequest httpRequest) {
-    FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(
-        httpRequest.getProtocolVersion(),
-        HttpResponseStatus.OK);
-    fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
-    User user = HttpUtil.getUser(httpRequest);
+    FullHttpResponse fullHttpResponse = Http.simpleCheck(httpRequest);
+    User user = Http.getUser(httpRequest);
     Document document = new Document();
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
+    switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "stop":
-        if (RequestUtil.hasHeader(httpRequest, "-Xvalue")
+        if (Request.hasHeader(httpRequest, "-Xvalue")
             && CloudNet.getInstance().getProxyGroups()
-                .containsKey(RequestUtil.getHeaderValue(httpRequest,
+                .containsKey(Request.headerValue(httpRequest,
                     "-Xvalue"))) {
-          String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
-          if (!UserUtil.hasPermission(user, "cloudnet.web.group.server.stop.*", "*",
+          String group = Request.headerValue(httpRequest, "-Xvalue");
+          if (!HttpUser.hasPermission(user, "cloudnet.web.group.server.stop.*", "*",
               "cloudnet.web.group.server.stop." + group)) {
-            return ResponseUtil.permissionDenied(fullHttpResponse);
+            return Response.permissionDenied(fullHttpResponse);
           }
           CloudNet.getInstance().getServers(group).forEach(t ->
               CloudNet.getInstance().stopServer(t.getName()));
-          return ResponseUtil.success(fullHttpResponse, true, document);
+          return Response.success(fullHttpResponse, document);
         } else {
-          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
+          return Response.valueFieldNotFound(fullHttpResponse);
         }
 
       case "command":
-        if (RequestUtil.hasHeader(httpRequest, "-Xvalue")
-            && RequestUtil.hasHeader(httpRequest,
+        if (Request.hasHeader(httpRequest, "-Xvalue")
+            && Request.hasHeader(httpRequest,
             "-Xcount")) {
-          String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
-          String command = RequestUtil.getHeaderValue(httpRequest, "-Xcount");
-          if (!UserUtil.hasPermission(user, "cloudnet.web.screen.server.command.*", "*",
+          String group = Request.headerValue(httpRequest, "-Xvalue");
+          String command = Request.headerValue(httpRequest, "-Xcount");
+          if (!HttpUser.hasPermission(user, "cloudnet.web.screen.server.command.*", "*",
               "cloudnet.web.screen.server.command." + command.split(" ")[0])) {
-            return ResponseUtil.permissionDenied(fullHttpResponse);
+            return Response.permissionDenied(fullHttpResponse);
           }
           MinecraftServer server = CloudNet.getInstance().getServer(group);
           server.getWrapper().writeServerCommand(command, server.getServerInfo());
-          return ResponseUtil.success(fullHttpResponse, true, document);
+          return Response.success(fullHttpResponse, document);
         } else {
-          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
+          return Response.valueFieldNotFound(fullHttpResponse);
         }
 
       case "stopscreen":
-        if (RequestUtil.hasHeader(httpRequest, "-Xvalue")
+        if (Request.hasHeader(httpRequest, "-Xvalue")
             && CloudNet.getInstance().getScreenProvider().getScreens().containsKey(
-                RequestUtil.getHeaderValue(httpRequest, "-Xvalue"))) {
-          String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
+                Request.headerValue(httpRequest, "-Xvalue"))) {
+          String group = Request.headerValue(httpRequest, "-Xvalue");
           MinecraftServer server = CloudNet.getInstance().getServer(group);
           server.getWrapper().disableScreen(server.getServerInfo());
-          return ResponseUtil.success(fullHttpResponse, true, document);
+          return Response.success(fullHttpResponse, document);
         } else {
-          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
+          return Response.valueFieldNotFound(fullHttpResponse);
         }
 
       case "delete":
-        if (RequestUtil.hasHeader(httpRequest, "-Xvalue")
+        if (Request.hasHeader(httpRequest, "-Xvalue")
             && CloudNet.getInstance().getServerGroups().containsKey(
-                RequestUtil.getHeaderValue(httpRequest, "-Xvalue"))) {
-          String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
-          if (!UserUtil.hasPermission(user, "cloudnet.web.group.server.delete.*", "*",
+                Request.headerValue(httpRequest, "-Xvalue"))) {
+          String group = Request.headerValue(httpRequest, "-Xvalue");
+          if (!HttpUser.hasPermission(user, "cloudnet.web.group.server.delete.*", "*",
               "cloudnet.web.group.server.delete." + group)) {
-            return ResponseUtil.permissionDenied(fullHttpResponse);
+            return Response.permissionDenied(fullHttpResponse);
           }
           CloudNet.getInstance().getServers(group).forEach(t ->
               CloudNet.getInstance().stopServer(t.getName()));
@@ -214,20 +207,20 @@ public final class ServerApi extends MethodWebHandlerAdapter {
           Collection<String> wrappers = serverGroup.getWrapper();
           CloudNet.getInstance().getConfig().deleteGroup(serverGroup);
           CloudNet.getInstance().toWrapperInstances(wrappers).forEach(Wrapper::updateWrapper);
-          return ResponseUtil.success(fullHttpResponse, true, document);
+          return Response.success(fullHttpResponse, document);
         } else {
-          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
+          return Response.valueFieldNotFound(fullHttpResponse);
         }
 
       case "save":
-        String servergroup = RequestUtil.getContent(httpRequest);
+        String servergroup = Request.content(httpRequest);
         if (servergroup.isEmpty()) {
-          return ResponseUtil.success(fullHttpResponse, false, new Document());
+          return Response.badRequest(fullHttpResponse, new Document());
         }
         ServerGroup serverGroup = JsonUtil.getGson().fromJson(servergroup, ServerGroup.class);
-        if (!UserUtil.hasPermission(user, "cloudnet.web.group.server.save.*", "*",
+        if (!HttpUser.hasPermission(user, "cloudnet.web.group.server.save.*", "*",
             "cloudnet.web.group.server.save." + serverGroup.getName())) {
-          return ResponseUtil.permissionDenied(fullHttpResponse);
+          return Response.permissionDenied(fullHttpResponse);
         }
         CloudNet.getInstance().getConfig().deleteGroup(serverGroup);
         CloudNet.getInstance().getConfig().createGroup(serverGroup);
@@ -239,30 +232,30 @@ public final class ServerApi extends MethodWebHandlerAdapter {
         CloudNet.getInstance().setupGroup(serverGroup);
         CloudNet.getInstance().toWrapperInstances(serverGroup.getWrapper())
             .forEach(Wrapper::updateWrapper);
-        return ResponseUtil.success(fullHttpResponse, true, document);
+        return Response.success(fullHttpResponse, document);
 
       case "start":
-        if (RequestUtil.hasHeader(httpRequest, "-Xvalue", "-Xcount")
+        if (Request.hasHeader(httpRequest, "-Xvalue", "-Xcount")
             && CloudNet.getInstance().getServerGroups()
-                .containsKey(RequestUtil.getHeaderValue(httpRequest,
+                .containsKey(Request.headerValue(httpRequest,
                     "-Xvalue"))) {
-          String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
-          int count = Integer.parseInt(RequestUtil.getHeaderValue(httpRequest, "-Xcount"));
-          if (!UserUtil.hasPermission(user, "cloudnet.web.group.server.start.*", "*",
+          String group = Request.headerValue(httpRequest, "-Xvalue");
+          int count = Integer.parseInt(Request.headerValue(httpRequest, "-Xcount"));
+          if (!HttpUser.hasPermission(user, "cloudnet.web.group.server.start.*", "*",
               "cloudnet.web.group.server.start." + group)) {
-            return ResponseUtil.permissionDenied(fullHttpResponse);
+            return Response.permissionDenied(fullHttpResponse);
           }
           for (int i = 0; i < count; i++) {
             CloudNet.getInstance().startGameServer(CloudNet.getInstance().getServerGroup(group));
           }
-          return ResponseUtil.success(fullHttpResponse, true, document);
+          return Response.success(fullHttpResponse, document);
         } else {
-          return ResponseUtil.fieldNotFound(fullHttpResponse,
+          return Response.fieldNotFound(fullHttpResponse,
               "No available -Xvalue,-Xcount command found!");
         }
 
       default:
-        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
+        return Response.messageFieldNotFound(fullHttpResponse);
 
     }
   }
@@ -271,6 +264,6 @@ public final class ServerApi extends MethodWebHandlerAdapter {
   public FullHttpResponse options(ChannelHandlerContext channelHandlerContext,
       QueryDecoder queryDecoder,
       PathProvider pathProvider, HttpRequest httpRequest) {
-    return ResponseUtil.cross(httpRequest);
+    return Response.cross(httpRequest);
   }
 }
