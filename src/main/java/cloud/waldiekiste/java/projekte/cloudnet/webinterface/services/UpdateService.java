@@ -144,7 +144,7 @@ public final class UpdateService {
       e.printStackTrace();
     }
     String result = null;
-    try (BufferedReader reader = new BufferedReader (
+    try (BufferedReader reader = new BufferedReader(
         new InputStreamReader(connection.getInputStream(),StandardCharsets.UTF_8))) {
       result = reader.readLine();
     } catch (IOException e) {
@@ -172,44 +172,44 @@ public final class UpdateService {
     } catch (MalformedURLException e) {
       e.printStackTrace();
     }
-    if (address == null) {
-      throw new NullPointerException("Url is null");
-    }
-    try {
-      HttpURLConnection connection = (HttpURLConnection) address.openConnection();
-      connection.setRequestProperty("User-Agent",
-          "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko)"
-              + " Chrome/23.0.1271.95 Safari/537.11");
-      connection.setConnectTimeout(2000);
-      connection.setDoOutput(false);
-      connection.setDoInput(true);
+    if (address != null) {
+      try {
+        HttpURLConnection connection = (HttpURLConnection) address.openConnection();
+        connection.setRequestProperty("User-Agent",
+            "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko)"
+                + " Chrome/23.0.1271.95 Safari/537.11");
+        connection.setConnectTimeout(2000);
+        connection.setDoOutput(false);
+        connection.setDoInput(true);
 
-      if (connection.getResponseCode() == 403) {
-        System.err.println("[Updater] Der Master kann nicht auf die API zugreifen! (403)");
-        return null;
-      }
+        if (connection.getResponseCode() == 403) {
+          System.err.println("[Updater] Der Master kann nicht auf die API zugreifen! (403)");
+          return null;
+        }
 
-      if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-        System.out.println("Fehler bei der Anfrage");
-        return null;
-      }
+        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+          System.out.println("Fehler bei der Anfrage");
+          return null;
+        }
 
-      String result = null;
-      try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
-          connection.getInputStream(), StandardCharsets.UTF_8))) {
-        result = bufferedReader.readLine();
+        String result = null;
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
+            connection.getInputStream(), StandardCharsets.UTF_8))) {
+          result = bufferedReader.readLine();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+        JsonElement jsonObject = new JsonParser().parse(result);
+        ArrayList<UpdateData> datas = new ArrayList<>();
+        jsonObject.getAsJsonObject().get("versions").getAsJsonArray().forEach(
+            t -> datas.add(JsonUtil.getGson().fromJson(t.getAsJsonObject(), UpdateData.class)));
+        connection.disconnect();
+        return datas;
       } catch (IOException e) {
         e.printStackTrace();
       }
-      JsonElement jsonObject = new JsonParser().parse(result);
-      ArrayList<UpdateData> datas = new ArrayList<>();
-      jsonObject.getAsJsonObject().get("versions").getAsJsonArray().forEach(
-          t -> datas.add(JsonUtil.getGson().fromJson(t.getAsJsonObject(), UpdateData.class)));
-      connection.disconnect();
-      return datas;
-    } catch (IOException e) {
-      e.printStackTrace();
     }
+
     return new ArrayList<>();
   }
 }
