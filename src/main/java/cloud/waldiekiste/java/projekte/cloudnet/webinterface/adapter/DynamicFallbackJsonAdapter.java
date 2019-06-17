@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2018.
- * Creative Commons Lizenzvertrag
- * CloudNet-Service-WebSocket-Extension von Phillipp Glanz ist lizenziert unter einer Creative Commons
- *  Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz.
- */
-
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter;
 
 import com.google.gson.JsonArray;
@@ -22,13 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Translate the DynamicFallback into json and back
+ * Translate the DynamicFallback into json and back.
  */
 public class DynamicFallbackJsonAdapter implements JsonSerializer<DynamicFallback>,
     JsonDeserializer<DynamicFallback> {
 
   /**
-   * Translate the json object into java class
+   * Translate the json object into java class.
    *
    * @param jsonElement the json object
    * @param type the type of the json object
@@ -48,7 +41,7 @@ public class DynamicFallbackJsonAdapter implements JsonSerializer<DynamicFallbac
   }
 
   /**
-   * Translate the java class into json object
+   * Translate the java class into json object.
    *
    * @param dynamicFallback the java class with values
    * @param type the type of the java class

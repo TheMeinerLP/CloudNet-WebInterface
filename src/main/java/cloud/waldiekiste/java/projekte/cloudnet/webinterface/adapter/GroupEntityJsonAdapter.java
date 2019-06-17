@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2018.
- * Creative Commons Lizenzvertrag
- * CloudNet-Service-WebSocket-Extension von Phillipp Glanz ist lizenziert unter einer Creative Commons
- *  Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz.
- */
-
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter;
 
 import com.google.gson.JsonDeserializationContext;
@@ -18,13 +11,13 @@ import de.dytanic.cloudnet.lib.player.permission.GroupEntityData;
 import java.lang.reflect.Type;
 
 /**
- * Translate the group entity into json and back
+ * Translate the group entity into json and back.
  */
 public class GroupEntityJsonAdapter implements JsonSerializer<GroupEntityData>,
     JsonDeserializer<GroupEntityData> {
 
   /**
-   * Translate the json into java class
+   * Translate the json into java class.
    *
    * @param jsonElement The json object with values for the java class
    * @param type the json type
@@ -42,7 +35,7 @@ public class GroupEntityJsonAdapter implements JsonSerializer<GroupEntityData>,
   }
 
   /**
-   * Translate the java class into json object
+   * Translate the java class into json object.
    *
    * @param groupEntityData The java class with all values
    * @param type the type of the class

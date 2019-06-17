@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2018.
- * Creative Commons Lizenzvertrag
- * CloudNet-Service-WebSocket-Extension von Phillipp Glanz ist lizenziert unter einer Creative Commons
- *  Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz.
- */
-
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter;
 
 import com.google.gson.JsonDeserializationContext;
@@ -18,12 +11,12 @@ import de.dytanic.cloudnet.lib.proxylayout.AutoSlot;
 import java.lang.reflect.Type;
 
 /**
- * Translate the Autoslot class into json and back
+ * Translate the Autoslot class into json and back.
  */
 public class AutoSlotJsonAdapter implements JsonSerializer<AutoSlot>, JsonDeserializer<AutoSlot> {
 
   /**
-   * Translate the json string into JavaClass object
+   * Translate the json string into JavaClass object.
    *
    * @param jsonElement The string as JsonOpject
    * @param type The type of the json object
@@ -41,7 +34,7 @@ public class AutoSlotJsonAdapter implements JsonSerializer<AutoSlot>, JsonDeseri
   }
 
   /**
-   * Translate the java class into json object
+   * Translate the java class into json object.
    *
    * @param autoSlot The class to translate into json
    * @param type The type og the class

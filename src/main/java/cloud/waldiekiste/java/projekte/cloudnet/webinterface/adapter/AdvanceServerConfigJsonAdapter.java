@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2018.
- * Creative Commons Lizenzvertrag
- * CloudNet-Service-WebSocket-Extension von Phillipp Glanz ist lizenziert unter einer Creative Commons
- *  Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz.
- */
-
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter;
 
 import com.google.gson.JsonDeserializationContext;
@@ -18,13 +11,13 @@ import de.dytanic.cloudnet.lib.server.advanced.AdvancedServerConfig;
 import java.lang.reflect.Type;
 
 /**
- * Translate the the AdvancedServerConfig into a Json String and back
+ * Translate the the AdvancedServerConfig into a Json String and back.
  */
 public class AdvanceServerConfigJsonAdapter implements JsonSerializer<AdvancedServerConfig>,
     JsonDeserializer<AdvancedServerConfig> {
 
   /**
-   * Translate into Class from Json String
+   * Translate into Class from Json String.
    *
    * @param jsonElement The input json to translate
    * @param type The type of the translate class
@@ -47,7 +40,7 @@ public class AdvanceServerConfigJsonAdapter implements JsonSerializer<AdvancedSe
   }
 
   /**
-   * Translate Java class into Json String
+   * Translate Java class into Json String.
    *
    * @param advancedServerConfig The input class to translate into Json
    * @param type The type of the translate class

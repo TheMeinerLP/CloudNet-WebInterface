@@ -118,13 +118,14 @@ public final class CPermsApi extends MethodWebHandlerAdapter {
             } else {
               UUID id = CloudNet.getInstance().getDbHandlers().getNameToUUIDDatabase()
                   .get(userUuid);
-              document.append("response", JsonUtil.getGson().toJson(this.projectMain.getCloud().
-                  getDbHandlers().getPlayerDatabase().getPlayer(id)));
+              document.append("response", JsonUtil.getGson().toJson(this.projectMain.getCloud()
+                  .getDbHandlers().getPlayerDatabase().getPlayer(id)));
             }
             return ResponseUtil.success(fullHttpResponse, true, document);
           }
+        }else{
+          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
         }
-
       case "check":
         if (!UserUtil.hasPermission(user, "cloudnet.web.cperms.check", "*")) {
           return ResponseUtil.permissionDenied(fullHttpResponse);
@@ -193,6 +194,8 @@ public final class CPermsApi extends MethodWebHandlerAdapter {
           CloudNet.getInstance().getNetworkManager().updateAll();
           return ResponseUtil.success(fullHttpResponse, true, document);
 
+        }else{
+          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
         }
       case "user":
         final String userString = RequestUtil.getContent(httpRequest);
@@ -228,7 +231,6 @@ public final class CPermsApi extends MethodWebHandlerAdapter {
         return ResponseUtil.messageFieldNotFound(fullHttpResponse);
 
     }
-
 
   }
 

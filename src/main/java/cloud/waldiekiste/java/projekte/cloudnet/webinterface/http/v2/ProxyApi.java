@@ -64,13 +64,13 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
             projectMain.getCloud().getProxyGroups().keySet().stream().filter(s ->
                 UserUtil.hasPermission(user, "*", "cloudnet.web.group.proxy.item.*",
                     "cloudnet.web.proxy.group.proxy.item." + s)).map(s -> {
-                ProxyGroup group = CloudNet.getInstance().getProxyGroup(s);
-                Document document = new Document();
-                document.append("name", group.getName());
-                document.append("version", group.getProxyVersion().name());
-                document.append("status", group.getProxyConfig().isEnabled());
-                return document.convertToJson();
-        }).collect(Collectors.toList()));
+                    ProxyGroup group = CloudNet.getInstance().getProxyGroup(s);
+                    Document document = new Document();
+                    document.append("name", group.getName());
+                    document.append("version", group.getProxyVersion().name());
+                    document.append("status", group.getProxyConfig().isEnabled());
+                    return document.convertToJson();
+                    }).collect(Collectors.toList()));
         return ResponseUtil.success(fullHttpResponse, true, resp);
 
       case "group":
