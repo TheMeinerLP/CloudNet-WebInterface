@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2018.
- * Creative Commons Lizenzvertrag
- * CloudNet-Service-WebSocket-Extension von Phillipp Glanz ist lizenziert unter einer Creative Commons
- *  Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz.
- */
-
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter;
 
 import com.google.gson.JsonArray;
@@ -36,8 +29,8 @@ public class ProxyConfigJsonAdapter implements JsonSerializer<ProxyConfig>,
     final boolean maintenance = object.get("maintenance").getAsBoolean();
     final List<Motd> motdsLayouts = new ArrayList<>();
     object.get("motdsLayouts").getAsJsonArray()
-        .forEach(t -> motdsLayouts.add(jsonDeserializationContext.
-            deserialize(t, Motd.class)));
+        .forEach(t -> motdsLayouts.add(jsonDeserializationContext
+            .deserialize(t, Motd.class)));
     final Motd maintenanceMotdLayout = jsonDeserializationContext
         .deserialize(object.get("maintenanceMotdLayout"),
             Motd.class);
@@ -72,8 +65,8 @@ public class ProxyConfigJsonAdapter implements JsonSerializer<ProxyConfig>,
     proxyConfig.getMotdsLayouts()
         .forEach(t -> motdsLayouts.add(jsonSerializationContext.serialize(t)));
     object.add("motdsLayouts", motdsLayouts);
-    object.add("maintenanceMotdLayout", jsonSerializationContext.
-        serialize(proxyConfig.getMaintenanceMotdLayout()));
+    object.add("maintenanceMotdLayout", jsonSerializationContext
+        .serialize(proxyConfig.getMaintenanceMotdLayout()));
     object.addProperty("maintenaceProtocol", proxyConfig.getMaintenaceProtocol());
     object.addProperty("maxPlayers", proxyConfig.getMaxPlayers());
     object.addProperty("fastConnect", proxyConfig.isFastConnect());

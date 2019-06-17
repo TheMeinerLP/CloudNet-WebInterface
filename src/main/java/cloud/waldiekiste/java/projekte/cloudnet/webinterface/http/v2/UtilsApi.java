@@ -17,11 +17,11 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import java.util.Locale;
 
-public final class UtilsAPI extends MethodWebHandlerAdapter {
+public final class UtilsApi extends MethodWebHandlerAdapter {
 
   private final ProjectMain projectMain;
 
-  public UtilsAPI(CloudNet cloudNet, ProjectMain projectMain) {
+  public UtilsApi(CloudNet cloudNet, ProjectMain projectMain) {
     super("/cloudnet/api/v2/utils");
     cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
     this.projectMain = projectMain;
@@ -36,19 +36,16 @@ public final class UtilsAPI extends MethodWebHandlerAdapter {
         httpRequest.getProtocolVersion(),
         HttpResponseStatus.OK);
     fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
+    Document document = new Document();
     switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
-      case "version": {
-        Document document = new Document();
+      case "version":
         document.append("response", projectMain.getModuleConfig().getVersion());
         return ResponseUtil.success(fullHttpResponse, true, document);
-      }
-      case "cloudversion": {
-        Document document = new Document();
+
+      case "cloudversion":
         document.append("response", NetworkUtils.class.getPackage().getImplementationVersion());
         return ResponseUtil.success(fullHttpResponse, true, document);
-      }
-      case "badges": {
-        Document document = new Document();
+      case "badges":
         Document infos = new Document();
         infos.append("proxy_groups", CloudNet.getInstance().getProxyGroups().size());
         infos.append("server_groups", CloudNet.getInstance().getServerGroups().size());
@@ -58,16 +55,14 @@ public final class UtilsAPI extends MethodWebHandlerAdapter {
             .filter(wrapper -> wrapper.isReady()).count());
         document.append("response", infos);
         return ResponseUtil.success(fullHttpResponse, true, document);
-      }
-      case "cloudstats": {
-        Document document = new Document();
+
+      case "cloudstats":
         document.append("response",
             CloudNet.getInstance().getDbHandlers().getStatisticManager().getStatistics());
         return ResponseUtil.success(fullHttpResponse, true, document);
-      }
-      default: {
+      default:
         return ResponseUtil.messageFieldNotFound(fullHttpResponse);
-      }
+
     }
   }
 

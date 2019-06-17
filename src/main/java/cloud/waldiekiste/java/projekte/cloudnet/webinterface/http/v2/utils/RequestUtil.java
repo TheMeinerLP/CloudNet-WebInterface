@@ -5,10 +5,17 @@ import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Locale;
 
 public final class RequestUtil {
 
+  /**
+   * Check has header set.
+   * @param request The request to edit
+   * @param headers The headers to add
+   * @return Return true if the header set
+   */
   public static boolean hasHeader(HttpRequest request, String... headers) {
     for (String header : headers) {
       if (request.headers().contains(header.toLowerCase(Locale.ENGLISH))) {
@@ -18,6 +25,12 @@ public final class RequestUtil {
     return false;
   }
 
+  /**
+   * Check and get the header.
+   * @param request The request to edit
+   * @param header The header to get the value
+   * @return The value of the header
+   */
   public static String getHeaderValue(HttpRequest request, String header) {
     if (hasHeader(request, header.toLowerCase(Locale.ENGLISH))) {
       return request.headers().get(header.toLowerCase(Locale.ENGLISH));
@@ -26,6 +39,11 @@ public final class RequestUtil {
     }
   }
 
+  /**
+   * Get the content of the request
+   * @param request The request to get content
+   * @return The content of the request
+   */
   public static String getContent(HttpRequest request) {
     FullHttpRequest fullHttpRequest = (FullHttpRequest) request;
     if (fullHttpRequest.content().readableBytes() != 0) {
@@ -38,6 +56,11 @@ public final class RequestUtil {
     }
   }
 
+  /**
+   * Check if the user authorized to login
+   * @param httpRequest The request with information's about authorization
+   * @return Return true if user authorized
+   */
   public static boolean checkAuth(HttpRequest httpRequest) {
     String username = RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-user");
     String token = RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-token");

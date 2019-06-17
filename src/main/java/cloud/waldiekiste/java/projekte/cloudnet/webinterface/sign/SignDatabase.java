@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public final class SignDatabase extends DatabaseUsable {
 
   /**
-   * Initiated the sign database
+   * Initiated the sign database.
    * @param database ths basic database
    */
   public SignDatabase(Database database) {
@@ -28,7 +28,7 @@ public final class SignDatabase extends DatabaseUsable {
   }
 
   /**
-   * Add a sign to config
+   * Add a sign to config.
    * @param sign sign layout
    * @return the database with all signs
    */
@@ -41,7 +41,7 @@ public final class SignDatabase extends DatabaseUsable {
   }
 
   /**
-   * Remove a sign via uuid
+   * Remove a sign via uuid.
    * @param uniqueId the id of the sign
    * @return the database with all signs
    */
@@ -54,7 +54,7 @@ public final class SignDatabase extends DatabaseUsable {
   }
 
   /**
-   * Load all signs from the database
+   * Load all signs from the database.
    * @return the map of signs
    */
   public Map<UUID, Sign> loadAll() {

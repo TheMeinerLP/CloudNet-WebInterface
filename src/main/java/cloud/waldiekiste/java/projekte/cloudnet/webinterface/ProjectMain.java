@@ -13,7 +13,7 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.ProxyApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.ServerApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.SignApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.UserApi;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.UtilsAPI;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.UtilsApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.WrapperApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.listener.ScreenSessionListener;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.mob.MobDatabase;
@@ -77,7 +77,7 @@ public final class ProjectMain extends CoreModule {
    * @see DashboardApi
    * @see ServerApi
    * @see WrapperApi
-   * @see UtilsAPI
+   * @see UtilsApi
    */
   @Override
   public void onBootstrap() {
@@ -102,7 +102,7 @@ public final class ProjectMain extends CoreModule {
     new DashboardApi(getCloud(), this);
     new ServerApi(getCloud(), this);
     new WrapperApi(getCloud());
-    new UtilsAPI(getCloud(), this);
+    new UtilsApi(getCloud(), this);
     new PlayerApi(getCloud(), this);
     new SignApi(this);
     new MobApi(this);
@@ -124,7 +124,7 @@ public final class ProjectMain extends CoreModule {
    * Checking Version + Checking functionality with the Cloudnet Version.
    */
   private void versionCheck() {
-    if(this.configSetup == null){
+    if (this.configSetup == null) {
       this.updateChannelSetup = new UpdateChannelSetup();
     }
     if (!getCloud().getDbHandlers().getUpdateConfigurationDatabase().get()

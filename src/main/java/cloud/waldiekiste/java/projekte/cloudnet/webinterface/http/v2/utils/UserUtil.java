@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2018.
- * Creative Commons Lizenzvertrag
- * CloudNet-Service-WebSocket-Extension von Phillipp Glanz ist lizenziert unter einer Creative Commons
- *  Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz.
- */
-
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils;
 
 import de.dytanic.cloudnet.lib.user.User;
@@ -15,6 +8,12 @@ import java.nio.charset.StandardCharsets;
 
 public final class UserUtil {
 
+  /**
+   * Check have the user the permission
+   * @param user The user to check the permissions
+   * @param permissions The permission list to check
+   * @return Return true if the user have the permission
+   */
   public static boolean hasPermission(User user, String... permissions) {
     for (String permission : permissions) {
       //if(permission.matches("^.+?.*([.0-9]\\1$)")){ } Check permission end with number
@@ -25,6 +24,11 @@ public final class UserUtil {
     return false;
   }
 
+  /**
+   * Send a fail authorization
+   * @param response The response to edit
+   * @return Return the response they are edited
+   */
   public static FullHttpResponse failedAuthorization(FullHttpResponse response) {
     Document dataDocument = new Document("success", false);
     dataDocument.append("reason", "failed authorization!");
