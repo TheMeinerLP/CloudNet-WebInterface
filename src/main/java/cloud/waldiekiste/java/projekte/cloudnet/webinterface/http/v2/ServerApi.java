@@ -62,8 +62,8 @@ public final class ServerApi extends MethodWebHandlerAdapter {
 
       case "screen":
         if (RequestUtil.hasHeader(httpRequest, "-Xvalue")
-            && CloudNet.getInstance().getServers().containsKey(RequestUtil.
-            getHeaderValue(httpRequest, "-Xvalue"))) {
+            && CloudNet.getInstance().getServers().containsKey(RequestUtil
+            .getHeaderValue(httpRequest, "-Xvalue"))) {
           String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
           MinecraftServer server = CloudNet.getInstance().getServer(group);
           if (!UserUtil.hasPermission(user, "cloudnet.web.screen.servers.info.*", "*",

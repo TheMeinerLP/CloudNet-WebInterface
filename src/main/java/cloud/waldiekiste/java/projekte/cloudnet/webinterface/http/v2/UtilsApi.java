@@ -22,7 +22,7 @@ public final class UtilsApi extends MethodWebHandlerAdapter {
   private final ProjectMain projectMain;
 
   /**
-   * Manage general request they a not categories have
+   * Manage general request they a not categories have.
    * @param cloudNet The main class from cloudnet
    * @param projectMain The main class of the project
    */
