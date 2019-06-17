@@ -14,7 +14,7 @@ public final class CommandUpdateChannel extends Command {
   private final ProjectMain projectMain;
 
   /**
-   * Initiated the
+   * Initiated the class.
    * @param projectMain the main class of the project
    */
   public CommandUpdateChannel(ProjectMain projectMain) {
@@ -50,7 +50,7 @@ public final class CommandUpdateChannel extends Command {
             type = VersionType.valueOf(channel.toUpperCase(Locale.ENGLISH));
             document = CloudNet.getInstance().getDbHandlers()
                 .getUpdateConfigurationDatabase().get();
-            document.append("mdwi.updateChannel", type.getType().toUpperCase());
+            document.append("mdwi.updateChannel", type.getType().toUpperCase(Locale.ENGLISH));
             CloudNet.getInstance().getDbHandlers().getUpdateConfigurationDatabase().set(document);
             System.out.println("[Updater] Update Channel now " + type.getType());
           } else {
