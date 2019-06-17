@@ -40,12 +40,14 @@ import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.security.AccessController;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.PrivilegedAction;
 import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
@@ -154,7 +156,11 @@ public final class ProjectMain extends CoreModule {
         kmf.init(keyStore,TEMPORARY_KEY_PASSWORD.toCharArray());
         SslContext context = SslContextBuilder.forServer(kmf).build();
         Field sslContext = server.getClass().getDeclaredField("sslContext");
-        sslContext.setAccessible(true);
+        AccessController.doPrivileged((PrivilegedAction) () -> {
+          sslContext.setAccessible(true);
+          return null;
+        });
+
         sslContext.set(server, context);
         Field webServer = cloudNetClass.getDeclaredField("webServer");
         webServer.setAccessible(true);
