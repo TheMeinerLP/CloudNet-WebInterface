@@ -163,7 +163,10 @@ public final class ProjectMain extends CoreModule {
 
         sslContext.set(server, context);
         Field webServer = cloudNetClass.getDeclaredField("webServer");
-        webServer.setAccessible(true);
+        AccessController.doPrivileged((PrivilegedAction) () -> {
+          webServer.setAccessible(true);
+          return null;
+        });
         webServer.set(getCloud(),server);
         getCloud().getWebServer().bind();
       } catch (NoSuchFieldException | IllegalAccessException | SSLException | CertificateException
