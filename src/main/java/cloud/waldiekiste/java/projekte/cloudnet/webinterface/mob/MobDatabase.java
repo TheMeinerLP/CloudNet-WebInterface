@@ -12,7 +12,7 @@ import java.util.UUID;
 public final class MobDatabase extends DatabaseUsable {
 
   /**
-   * Initiated mob database
+   * Initiated mob database.
    * @param database the basic database
    */
   public MobDatabase(Database database) {
@@ -25,8 +25,8 @@ public final class MobDatabase extends DatabaseUsable {
   }
 
   /**
-   * Add a server mob to the database
-   * @param serverMob
+   * Add a server mob to the database.
+   * @param serverMob the mob to add
    */
   public void append(ServerMob serverMob) {
     Document document = this.database.getDocument("server_selector_mobs").getDocument("mobs")
@@ -35,7 +35,7 @@ public final class MobDatabase extends DatabaseUsable {
   }
 
   /**
-   * Remove serverMob from the database
+   * Remove serverMob from the database.
    * @param serverMob the mob to remove from the database
    */
   public void remove(ServerMob serverMob) {
@@ -45,7 +45,7 @@ public final class MobDatabase extends DatabaseUsable {
   }
 
   /**
-   * Load all mobs from the database
+   * Load all mobs from the database.
    * @return get a map of mobs with uuids
    */
   public Map<UUID, ServerMob> loadAll() {
