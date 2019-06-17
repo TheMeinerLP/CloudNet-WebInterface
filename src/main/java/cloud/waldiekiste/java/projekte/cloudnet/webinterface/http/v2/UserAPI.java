@@ -19,6 +19,7 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Locale;
@@ -102,7 +103,7 @@ public final class UserAPI extends MethodWebHandlerAdapter {
           User newUser = new User(editUser.getName(), editUser.getUniqueId(),
               editUser.getApiToken(),
               DyHash.hashString(new String(Base64.getDecoder().decode(usern.get("password").
-                  getAsString()))), editUser.getPermissions(), editUser.getMetaData());
+                  getAsString()), StandardCharsets.UTF_8)), editUser.getPermissions(), editUser.getMetaData());
           Optional<User> oldUser = CloudNet.getInstance().getUsers().stream()
               .filter(u -> u.getName().equals(newUser.getName())).findAny();
 
@@ -126,7 +127,8 @@ public final class UserAPI extends MethodWebHandlerAdapter {
           usern = Document.load(jsonuser);
           BasicUser basicUser = new BasicUser(usern.get("username").getAsString(),
               new String(Base64.
-                  getDecoder().decode(usern.get("password").getAsString())), new ArrayList<>());
+                  getDecoder().decode(usern.get("password").getAsString()), StandardCharsets.UTF_8),
+              new ArrayList<>());
           if (CloudNet.getInstance().getUsers().stream()
               .noneMatch(u -> u.getName().equals(basicUser.getName()))) {
             CloudNet.getInstance().getUsers().add(basicUser);

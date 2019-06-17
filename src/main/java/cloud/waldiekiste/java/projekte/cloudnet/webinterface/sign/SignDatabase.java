@@ -1,5 +1,6 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.sign;
 
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.JsonUtil;
 import com.google.gson.reflect.TypeToken;
 import de.dytanic.cloudnet.database.DatabaseUsable;
 import de.dytanic.cloudnet.lib.database.Database;
@@ -10,42 +11,58 @@ import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public final class SignDatabase extends DatabaseUsable {
 
-  public SignDatabase(final Database database) {
+  /**
+   * Initiated the sign database
+   * @param database ths basic database
+   */
+  public SignDatabase(Database database) {
     super(database);
-    final Document document = database.getDocument("signs");
+    Document document = database.getDocument("signs");
     if (document == null) {
       database.insert(new DatabaseDocument("signs").append("signs", new Document()));
     }
   }
 
-  public SignDatabase appendSign(final Sign sign) {
-    final Document x = this.database.getDocument("signs");
-    final Document document = x.getDocument("signs");
+  /**
+   * Add a sign to config
+   * @param sign sign layout
+   * @return the database with all signs
+   */
+  public SignDatabase appendSign(Sign sign) {
+    Document x = this.database.getDocument("signs");
+    Document document = x.getDocument("signs");
     document.append(sign.getUniqueId().toString(), Document.GSON.toJsonTree(sign));
     this.database.insert(document);
     return this;
   }
 
-  public SignDatabase removeSign(final UUID uniqueId) {
-    final Document x = this.database.getDocument("signs");
-    final Document document = x.getDocument("signs");
+  /**
+   * Remove a sign via uuid
+   * @param uniqueId the id of the sign
+   * @return the database with all signs
+   */
+  public SignDatabase removeSign(UUID uniqueId) {
+    Document x = this.database.getDocument("signs");
+    Document document = x.getDocument("signs");
     document.remove(uniqueId.toString());
     this.database.insert(document);
     return this;
   }
 
+  /**
+   * Load all signs from the database
+   * @return the map of signs
+   */
   public Map<UUID, Sign> loadAll() {
-    final Document x = this.database.getDocument("signs");
-    final Document document = x.getDocument("signs");
-    final Type typeToken = new TypeToken<Sign>() {
-    }.getType();
-    final Map<UUID, Sign> signs = new LinkedHashMap<>();
-    for (final String key : document.keys()) {
-      signs.put(UUID.fromString(key), document.getObject(key, typeToken));
-    }
-    return signs;
+    Document x = this.database.getDocument("signs");
+    Document document = x.getDocument("signs");
+    Map<UUID, Sign> signMap = document.keys().stream().collect(Collectors
+        .toMap(UUID::fromString,
+            s -> JsonUtil.getGson().fromJson(document.get(s), Sign.class)));
+    return signMap;
   }
 }
