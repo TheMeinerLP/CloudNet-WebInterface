@@ -20,15 +20,54 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.mob.MobDatabase;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.permission.ConfigPermissions;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.services.UpdateService;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.setup.ConfigSetup;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.setup.DomainSslSetup;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.setup.UpdateChannelSetup;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.sign.SignDatabase;
 import de.dytanic.cloudnet.lib.NetworkUtils;
+import de.dytanic.cloudnet.web.server.WebServer;
 import de.dytanic.cloudnetcore.CloudNet;
 import de.dytanic.cloudnetcore.api.CoreModule;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.lang.reflect.Field;
+import java.math.BigInteger;
+import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.Security;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.RSAPrivateCrtKeySpec;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import javax.naming.ConfigurationException;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.TrustManager;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemReader;
+import sun.security.util.DerInputStream;
+import sun.security.util.DerValue;
 
 /**
  * This is the class, which is the base of the websocket-extension. At the startup, this class is
@@ -47,6 +86,7 @@ public final class ProjectMain extends CoreModule {
   private UpdateService updateService;
   private SignDatabase signDatabase;
   private MobDatabase mobDatabase;
+  private DomainSslSetup sslSetup;
 
   /**
    * In this method, the trackingservice, the updateservice and the classes are initialised.
@@ -62,6 +102,7 @@ public final class ProjectMain extends CoreModule {
     CloudNet.getLogger().getHandler().add(consoleLines::add);
     this.configSetup = new ConfigSetup();
     this.updateChannelSetup = new UpdateChannelSetup();
+    this.sslSetup = new DomainSslSetup();
 
   }
 
@@ -81,6 +122,46 @@ public final class ProjectMain extends CoreModule {
    */
   @Override
   public void onBootstrap() {
+    boolean ssl = getCloud().getWebServer().isSsl();
+    if (ssl) {
+      System.out.println("You have enabled ssl option! Shutdown normal WebServer!");
+      if (!getCloud().getDbHandlers().getUpdateConfigurationDatabase().get()
+          .contains("mdwi.domain")) {
+        this.sslSetup.start(CloudNet.getLogger().getReader());
+      }
+      getCloud().getWebServer().shutdown();
+      Class<CloudNet> cloudNetClass = CloudNet.class;
+      try {
+        File certs = new File("certs");
+        if (!certs.exists()) {
+          if (certs.mkdirs()) {
+            System.out.println("Certs folder successfully created!");
+          }
+        }
+        Field webServer = cloudNetClass.getDeclaredField("webServer");
+        webServer.setAccessible(true);
+        WebServer server = new WebServer(false,
+            getCloud().getDbHandlers().getUpdateConfigurationDatabase().get()
+                .getString("mdwi.domain"),
+            CloudNet.getInstance().getConfig().getWebServerConfig().getPort());
+
+        Field sslContext = server.getClass().getDeclaredField("sslContext");
+        sslContext.setAccessible(true);
+        KeyStore keyStore = getKeyStore(new File(certs, "certFile.pem"),
+            new File(certs, "keyFile.pem"), new File(certs, "caFile.pem"));
+        KeyManagerFactory kmf = KeyManagerFactory.getInstance(Security.getProperty("ssl.KeyManagerFactory.algorithm"));
+        kmf.init(keyStore,TEMPORARY_KEY_PASSWORD.toCharArray());
+        SslContext context = SslContextBuilder.forServer(kmf).build();
+        sslContext.set(server, context);
+        webServer.set(getCloud(),server);
+        getCloud().getWebServer().bind();
+      } catch (NoSuchFieldException | IllegalAccessException | SSLException | CertificateException
+          | InterruptedException | UnrecoverableKeyException | NoSuchAlgorithmException
+          | KeyStoreException e) {
+        e.printStackTrace();
+      }
+    }
+
     versionCheck();
     try {
       this.configPermission = new ConfigPermissions();
@@ -109,6 +190,7 @@ public final class ProjectMain extends CoreModule {
     if (this.configPermission.isEnabled()) {
       new CPermsApi(this);
     }
+
   }
 
   /**
@@ -206,5 +288,106 @@ public final class ProjectMain extends CoreModule {
 
   public MobDatabase getMobDatabase() {
     return mobDatabase;
+  }
+
+  private static final String TEMPORARY_KEY_PASSWORD = "changeit";
+
+  private String fileToSring(File f){
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)))) {
+      return reader.lines().collect(Collectors.joining("\n"));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  private KeyStore getKeyStore(File certFile,File privateKeyFile, File caFile) {
+    try {
+      Certificate clientCertificate = loadCertificate(fileToSring(certFile));
+      PrivateKey privateKey = loadPrivateKey(fileToSring(privateKeyFile));
+      Certificate caCertificate = loadCertificate(fileToSring(caFile));
+
+      KeyStore keyStore = KeyStore.getInstance("JKS");
+      keyStore.load(null, null);
+      keyStore.setCertificateEntry("ca-cert", caCertificate);
+      keyStore.setCertificateEntry("client-cert", clientCertificate);
+      keyStore.setKeyEntry("client-key", privateKey, TEMPORARY_KEY_PASSWORD.toCharArray(), new Certificate[]{clientCertificate});
+      return keyStore;
+    } catch (GeneralSecurityException | IOException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  private Certificate loadCertificate(String certificatePem) throws IOException, GeneralSecurityException {
+    CertificateFactory certificateFactory = CertificateFactory.getInstance("X509");
+    final byte[] content = readPemContent(certificatePem);
+    return certificateFactory.generateCertificate(new ByteArrayInputStream(content));
+  }
+
+  private PrivateKey loadPrivateKey(String privateKeyPem) throws IOException, GeneralSecurityException {
+    return pemLoadPrivateKeyPkcs1OrPkcs8Encoded(privateKeyPem);
+  }
+
+  private byte[] readPemContent(String pem) throws IOException {
+    final byte[] content;
+    try (PemReader pemReader = new PemReader(new StringReader(pem))) {
+      PemObject pemObject = pemReader.readPemObject();
+      content = pemObject.getContent();
+    }
+    return content;
+  }
+
+  private static PrivateKey pemLoadPrivateKeyPkcs1OrPkcs8Encoded(
+      String privateKeyPem) throws GeneralSecurityException, IOException {
+    // PKCS#8 format
+    final String PEM_PRIVATE_START = "-----BEGIN PRIVATE KEY-----";
+    final String PEM_PRIVATE_END = "-----END PRIVATE KEY-----";
+
+    // PKCS#1 format
+    final String PEM_RSA_PRIVATE_START = "-----BEGIN RSA PRIVATE KEY-----";
+    final String PEM_RSA_PRIVATE_END = "-----END RSA PRIVATE KEY-----";
+
+    if (privateKeyPem.contains(PEM_PRIVATE_START)) { // PKCS#8 format
+      privateKeyPem = privateKeyPem.replace(PEM_PRIVATE_START, "").replace(PEM_PRIVATE_END, "");
+      privateKeyPem = privateKeyPem.replaceAll("\\s", "");
+
+      byte[] pkcs8EncodedKey = Base64.getDecoder().decode(privateKeyPem);
+
+      KeyFactory factory = KeyFactory.getInstance("RSA");
+      return factory.generatePrivate(new PKCS8EncodedKeySpec(pkcs8EncodedKey));
+
+    } else if (privateKeyPem.contains(PEM_RSA_PRIVATE_START)) {  // PKCS#1 format
+
+      privateKeyPem = privateKeyPem.replace(PEM_RSA_PRIVATE_START, "").replace(PEM_RSA_PRIVATE_END, "");
+      privateKeyPem = privateKeyPem.replaceAll("\\s", "");
+
+      DerInputStream derReader = new DerInputStream(Base64.getDecoder().decode(privateKeyPem));
+
+      DerValue[] seq = derReader.getSequence(0);
+
+      if (seq.length < 9) {
+        throw new GeneralSecurityException("Could not parse a PKCS1 private key.");
+      }
+
+      // skip version seq[0];
+      BigInteger modulus = seq[1].getBigInteger();
+      BigInteger publicExp = seq[2].getBigInteger();
+      BigInteger privateExp = seq[3].getBigInteger();
+      BigInteger prime1 = seq[4].getBigInteger();
+      BigInteger prime2 = seq[5].getBigInteger();
+      BigInteger exp1 = seq[6].getBigInteger();
+      BigInteger exp2 = seq[7].getBigInteger();
+      BigInteger crtCoef = seq[8].getBigInteger();
+
+      RSAPrivateCrtKeySpec keySpec = new RSAPrivateCrtKeySpec(modulus, publicExp, privateExp, prime1, prime2,
+          exp1, exp2, crtCoef);
+
+      KeyFactory factory = KeyFactory.getInstance("RSA");
+
+      return factory.generatePrivate(keySpec);
+    }
+
+    throw new GeneralSecurityException("Not supported format of a private key");
   }
 }

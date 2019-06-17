@@ -17,7 +17,7 @@ public final class UpdateChannelSetup extends Setup {
    */
   public UpdateChannelSetup() {
     setupComplete(t -> {
-      final String type = t.get("type").getAsString().toUpperCase();
+      String type = t.get("type").getAsString().toUpperCase();
       Document document = CloudNet.getInstance().getDbHandlers().getUpdateConfigurationDatabase()
           .get();
       document.append("mdwi.updateChannel", VersionType.valueOf(type).getType().toUpperCase());
