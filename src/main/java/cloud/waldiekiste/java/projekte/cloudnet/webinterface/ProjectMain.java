@@ -124,6 +124,9 @@ public final class ProjectMain extends CoreModule {
    * Checking Version + Checking functionality with the Cloudnet Version.
    */
   private void versionCheck() {
+    if(this.configSetup == null){
+      this.updateChannelSetup = new UpdateChannelSetup();
+    }
     if (!getCloud().getDbHandlers().getUpdateConfigurationDatabase().get()
         .contains("mdwi.downgrade")) {
       if (!getCloud().getDbHandlers().getUpdateConfigurationDatabase().get()
@@ -140,9 +143,9 @@ public final class ProjectMain extends CoreModule {
       if (!getCloud().getDbHandlers().getUpdateConfigurationDatabase().get()
           .contains("mdwi.updateChannel")) {
         this.updateChannelSetup.start(CloudNet.getLogger().getReader());
-        this.updateService.checkUpdate(this);
+        //this.updateService.checkUpdate(this);
       } else {
-        this.updateService.checkUpdate(this);
+        //this.updateService.checkUpdate(this);
       }
     }
     /*
