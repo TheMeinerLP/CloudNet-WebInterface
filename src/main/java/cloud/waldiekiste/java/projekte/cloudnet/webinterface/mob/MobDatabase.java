@@ -1,11 +1,12 @@
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.mob;
 
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.Gson;
 import de.dytanic.cloudnet.database.DatabaseUsable;
 import de.dytanic.cloudnet.lib.database.Database;
 import de.dytanic.cloudnet.lib.database.DatabaseDocument;
 import de.dytanic.cloudnet.lib.serverselectors.mob.ServerMob;
 import de.dytanic.cloudnet.lib.utility.document.Document;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -49,8 +50,10 @@ public final class MobDatabase extends DatabaseUsable {
    * @return get a map of mobs with uuids
    */
   public Map<UUID, ServerMob> loadAll() {
-    Map<UUID, ServerMob> mobMap = this.database.getDocument("server_selector_mobs")
-    .getObject("mobs", new TypeToken<Map<UUID, ServerMob>>() {}.getType());
+    Gson gson = new Gson();
+    HashMap<UUID, ServerMob> mobMap = (HashMap<UUID, ServerMob>)
+        gson.fromJson(this.database.getDocument("server_selector_mobs")
+            .get("mobs"), HashMap.class);
     mobMap.values().stream().filter(serverMob -> serverMob.getItemId() == null)
         .forEach(serverMob -> serverMob.setItemId(138));
     mobMap.values().stream().filter(serverMob -> serverMob.getAutoJoin() == null)
