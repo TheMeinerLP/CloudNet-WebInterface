@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
+@Deprecated
 public final class UpdateService {
 
   /**
@@ -143,7 +144,7 @@ public final class UpdateService {
       e.printStackTrace();
     }
     String result = null;
-    try( BufferedReader reader = new BufferedReader(
+    try (BufferedReader reader = new BufferedReader (
         new InputStreamReader(connection.getInputStream(),StandardCharsets.UTF_8))) {
       result = reader.readLine();
     } catch (IOException e) {
@@ -171,7 +172,7 @@ public final class UpdateService {
     } catch (MalformedURLException e) {
       e.printStackTrace();
     }
-    if(address == null){
+    if (address == null) {
       throw new NullPointerException("Url is null");
     }
     try {
@@ -194,10 +195,10 @@ public final class UpdateService {
       }
 
       String result = null;
-      try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
+      try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
           connection.getInputStream(), StandardCharsets.UTF_8))) {
         result = bufferedReader.readLine();
-      }catch (IOException e){
+      } catch (IOException e) {
         e.printStackTrace();
       }
       JsonElement jsonObject = new JsonParser().parse(result);
@@ -206,7 +207,7 @@ public final class UpdateService {
           t -> datas.add(JsonUtil.getGson().fromJson(t.getAsJsonObject(), UpdateData.class)));
       connection.disconnect();
       return datas;
-    }catch (IOException e){
+    } catch (IOException e) {
       e.printStackTrace();
     }
     return new ArrayList<>();
