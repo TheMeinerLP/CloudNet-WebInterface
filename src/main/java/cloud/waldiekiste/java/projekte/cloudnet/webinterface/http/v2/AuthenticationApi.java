@@ -36,7 +36,7 @@ public final class AuthenticationApi extends MethodWebHandlerAdapter {
         HttpResponseStatus.OK);
     ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json");
     if (!RequestUtil.hasHeader(httpRequest, "-xcloudnet-user", "-xcloudnet-password")) {
-      return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
+      return ResponseUtil.cloudFieldNotFound(fullHttpResponse);
     }
     String username = RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-user");
     String userpassword = RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-password");

@@ -62,7 +62,7 @@ public final class UserApi extends MethodWebHandlerAdapter {
         return ResponseUtil.success(fullHttpResponse, true, resp);
       }
     } else {
-      return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+      return ResponseUtil.messageFieldNotFound(fullHttpResponse);
     }
   }
 
@@ -161,11 +161,11 @@ public final class UserApi extends MethodWebHandlerAdapter {
             return ResponseUtil.success(fullHttpResponse, false, new Document());
           }
         } else {
-          return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
         }
 
       default:
-        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
 
     }
   }

@@ -61,7 +61,7 @@ public final class DashboardApi extends MethodWebHandlerAdapter {
         document.append("response", projectMain.getCloud().getServerGroups().size());
         return ResponseUtil.success(fullHttpResponse, true, document);
       default:
-        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
     }
   }
 

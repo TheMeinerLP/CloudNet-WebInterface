@@ -51,11 +51,11 @@ public final class ResponseUtil {
   }
 
   /**
-   * Send to web the cloud field isn't exist
+   * Send to web the cloud field isn't exist.
    * @param response The response from web server to manipulate
    * @return The response to send to the web server
    */
-  public static FullHttpResponse xCloudFieldsNotFound(FullHttpResponse response) {
+  public static FullHttpResponse cloudFieldNotFound(FullHttpResponse response) {
     Document dataDocument = new Document("success", false);
     dataDocument.append("reason", "-xcloudnet-user, -xcloudnet-password or -Xmessage not found!");
     response.content()
@@ -64,11 +64,11 @@ public final class ResponseUtil {
   }
 
   /**
-   * Send to web the value field isn't exist
+   * Send to web the value field isn't exist.
    * @param response The response from web server to manipulate
    * @return The response to send to the web server
    */
-  public static FullHttpResponse xValueFieldNotFound(FullHttpResponse response) {
+  public static FullHttpResponse valueFieldNotFound(FullHttpResponse response) {
     Document dataDocument = new Document();
     dataDocument.append("success", false);
     dataDocument.append("reason", "No available -Xvalue command found!");
@@ -79,11 +79,11 @@ public final class ResponseUtil {
   }
 
   /**
-   * Send to web the message field isn't exist
+   * Send to web the message field isn't exist.
    * @param response The response from web server to manipulate
    * @return The response to send to the web server
    */
-  public static FullHttpResponse xMessageFieldNotFound(FullHttpResponse response) {
+  public static FullHttpResponse messageFieldNotFound(FullHttpResponse response) {
     Document dataDocument = new Document();
     dataDocument.append("success", false);
     dataDocument.append("reason", "No available -Xmessage command found!");
@@ -94,12 +94,12 @@ public final class ResponseUtil {
   }
 
   /**
-   * Send to web the field isn't exist
+   * Send to web the field isn't exist.
    * @param response The response from web server to manipulate
    * @param message The error message/reason message
    * @return The response to send to the web server
    */
-  public static FullHttpResponse xFieldNotFound(FullHttpResponse response, String message) {
+  public static FullHttpResponse fieldNotFound(FullHttpResponse response, String message) {
     Document dataDocument = new Document();
     dataDocument.append("success", false);
     dataDocument.append("reason", message);
@@ -110,7 +110,7 @@ public final class ResponseUtil {
   }
 
   /**
-   * Send the cross to web site
+   * Send the cross to web site.
    * @param request The response from web server to manipulate
    * @return The response to send to the web server
    */

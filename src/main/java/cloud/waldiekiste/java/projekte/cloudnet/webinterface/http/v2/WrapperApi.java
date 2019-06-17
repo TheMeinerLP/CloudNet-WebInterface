@@ -59,7 +59,7 @@ public final class WrapperApi extends MethodWebHandlerAdapter {
         }
       }
       default: {
-        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
       }
     }
   }

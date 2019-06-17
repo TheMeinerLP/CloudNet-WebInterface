@@ -66,7 +66,7 @@ public final class UtilsAPI extends MethodWebHandlerAdapter {
         return ResponseUtil.success(fullHttpResponse, true, document);
       }
       default: {
-        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
       }
     }
   }

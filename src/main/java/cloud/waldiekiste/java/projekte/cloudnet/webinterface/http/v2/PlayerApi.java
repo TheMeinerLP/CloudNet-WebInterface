@@ -43,7 +43,7 @@ public final class PlayerApi extends MethodWebHandlerAdapter {
     ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json; charset=utf-8");
     if (!RequestUtil
         .hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message")) {
-      return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
+      return ResponseUtil.cloudFieldNotFound(fullHttpResponse);
     }
     if (!RequestUtil.checkAuth(httpRequest)) {
       return UserUtil.failedAuthorization(fullHttpResponse);
@@ -85,7 +85,7 @@ public final class PlayerApi extends MethodWebHandlerAdapter {
         return ResponseUtil.success(fullHttpResponse, true, document);
       }
     }
-    return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+    return ResponseUtil.messageFieldNotFound(fullHttpResponse);
   }
 
   @Override

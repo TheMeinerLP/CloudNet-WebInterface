@@ -29,6 +29,11 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
 
   private final ProjectMain projectMain;
 
+  /**
+   * Initiated the class.
+   * @param cloudNet The main class of cloudnet
+   * @param projectMain The main class of the project
+   */
   public ProxyApi(CloudNet cloudNet, ProjectMain projectMain) {
     super("/cloudnet/api/v2/proxygroup");
     cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
@@ -59,13 +64,13 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
             projectMain.getCloud().getProxyGroups().keySet().stream().filter(s ->
                 UserUtil.hasPermission(user, "*", "cloudnet.web.group.proxy.item.*",
                     "cloudnet.web.proxy.group.proxy.item." + s)).map(s -> {
-              ProxyGroup group = CloudNet.getInstance().getProxyGroup(s);
-              Document document = new Document();
-              document.append("name", group.getName());
-              document.append("version", group.getProxyVersion().name());
-              document.append("status", group.getProxyConfig().isEnabled());
-              return document.convertToJson();
-            }).collect(Collectors.toList()));
+                ProxyGroup group = CloudNet.getInstance().getProxyGroup(s);
+                Document document = new Document();
+                document.append("name", group.getName());
+                document.append("version", group.getProxyVersion().name());
+                document.append("status", group.getProxyConfig().isEnabled());
+                return document.convertToJson();
+        }).collect(Collectors.toList()));
         return ResponseUtil.success(fullHttpResponse, true, resp);
 
       case "group":
@@ -96,8 +101,8 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
 
       case "screen":
         if (RequestUtil.hasHeader(httpRequest, "-Xvalue")
-            && projectMain.getCloud().getProxys().containsKey(RequestUtil.getHeaderValue(httpRequest,
-                "-Xvalue"))) {
+            && projectMain.getCloud().getProxys().containsKey(RequestUtil
+            .getHeaderValue(httpRequest, "-Xvalue"))) {
           final String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
           ProxyServer server = projectMain.getCloud().getProxy(group);
           if (!UserUtil.hasPermission(user, "cloudnet.web.screen.proxys.info.*", "*",
@@ -114,7 +119,7 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
           }
           return ResponseUtil.success(fullHttpResponse, true, resp);
         } else {
-          return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
         }
 
       case "proxys":
@@ -133,11 +138,11 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
                   Collectors.toList()));
           return ResponseUtil.success(fullHttpResponse, true, resp);
         } else {
-          return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
         }
 
       default: {
-        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
       }
     }
   }
@@ -167,7 +172,7 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
           server.getWrapper().writeProxyCommand(command, server.getProxyInfo());
           return ResponseUtil.success(fullHttpResponse, true, document);
         } else {
-          return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
         }
 
       case "stopscreen":
@@ -179,7 +184,7 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
           server.getWrapper().disableScreen(server.getProxyInfo());
           return ResponseUtil.success(fullHttpResponse, true, document);
         } else {
-          return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
         }
 
       case "stopproxy":
@@ -192,7 +197,7 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
           projectMain.getCloud().stopProxy(group);
           return ResponseUtil.success(fullHttpResponse, true, document);
         } else {
-          return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
         }
 
       case "stop":
@@ -209,7 +214,7 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
 
           return ResponseUtil.success(fullHttpResponse, true, document);
         } else {
-          return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
         }
 
       case "delete":
@@ -229,7 +234,7 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
 
           return ResponseUtil.success(fullHttpResponse, true, document);
         } else {
-          return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
         }
 
       case "save":
@@ -255,8 +260,8 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
 
         return ResponseUtil.success(fullHttpResponse, true, document);
       case "start":
-        if (RequestUtil.hasHeader(httpRequest, "-Xvalue", "-xCount") &&
-            projectMain.getCloud().getProxyGroups()
+        if (RequestUtil.hasHeader(httpRequest, "-Xvalue", "-xCount")
+            && projectMain.getCloud().getProxyGroups()
                 .containsKey(RequestUtil.getHeaderValue(httpRequest,
                     "-Xvalue"))) {
           String group = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
@@ -271,12 +276,12 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
 
           return ResponseUtil.success(fullHttpResponse, true, document);
         } else {
-          return ResponseUtil.xFieldNotFound(fullHttpResponse,
+          return ResponseUtil.fieldNotFound(fullHttpResponse,
               "No available -Xvalue,-Xcount command found!");
         }
 
       default:
-        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
 
     }
   }

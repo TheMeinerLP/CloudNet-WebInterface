@@ -6,7 +6,6 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.JsonU
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.RequestUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.ResponseUtil;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils.UserUtil;
-import com.google.gson.reflect.TypeToken;
 import de.dytanic.cloudnet.lib.serverselectors.mob.MobConfig;
 import de.dytanic.cloudnet.lib.serverselectors.mob.ServerMob;
 import de.dytanic.cloudnet.lib.user.User;
@@ -77,7 +76,7 @@ public final class MobApi extends MethodWebHandlerAdapter {
 
       }
       default: {
-        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
       }
     }
   }
@@ -127,7 +126,7 @@ public final class MobApi extends MethodWebHandlerAdapter {
         return ResponseUtil.success(fullHttpResponse, true, new Document());
 
       default:
-        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
 
     }
   }

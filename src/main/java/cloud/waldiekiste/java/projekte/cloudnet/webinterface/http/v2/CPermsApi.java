@@ -136,7 +136,7 @@ public final class CPermsApi extends MethodWebHandlerAdapter {
         }
 
       default:
-        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
 
     }
   }
@@ -152,7 +152,7 @@ public final class CPermsApi extends MethodWebHandlerAdapter {
     ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json");
     if (!RequestUtil
         .hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message")) {
-      return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
+      return ResponseUtil.cloudFieldNotFound(fullHttpResponse);
     }
     if (!RequestUtil.checkAuth(httpRequest)) {
       return UserUtil.failedAuthorization(fullHttpResponse);
@@ -225,7 +225,7 @@ public final class CPermsApi extends MethodWebHandlerAdapter {
         return ResponseUtil.success(fullHttpResponse, true, document);
 
       default:
-        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
 
     }
 

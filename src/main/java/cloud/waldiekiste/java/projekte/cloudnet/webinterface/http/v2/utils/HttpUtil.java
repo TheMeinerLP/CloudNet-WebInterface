@@ -12,7 +12,7 @@ public final class HttpUtil {
     ResponseUtil.setHeader(fullHttpResponse, "Content-Type", "application/json; charset=utf-8");
     if (!RequestUtil
         .hasHeader(httpRequest, "-xcloudnet-user", "-Xcloudnet-token", "-xcloudnet-message")) {
-      return ResponseUtil.xCloudFieldsNotFound(fullHttpResponse);
+      return ResponseUtil.cloudFieldNotFound(fullHttpResponse);
     }
     if (!RequestUtil.checkAuth(httpRequest)) {
       return UserUtil.failedAuthorization(fullHttpResponse);

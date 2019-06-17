@@ -80,7 +80,7 @@ public final class ServerApi extends MethodWebHandlerAdapter {
           }
           return ResponseUtil.success(fullHttpResponse, true, resp);
         } else {
-          return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
         }
 
       case "servers":
@@ -98,7 +98,7 @@ public final class ServerApi extends MethodWebHandlerAdapter {
                   .collect(Collectors.toList()));
           return ResponseUtil.success(fullHttpResponse, true, resp);
         } else {
-          return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
         }
 
       case "allservers":
@@ -135,7 +135,7 @@ public final class ServerApi extends MethodWebHandlerAdapter {
           return ResponseUtil.success(fullHttpResponse, true, resp);
         }
       default:
-        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
 
     }
   }
@@ -166,7 +166,7 @@ public final class ServerApi extends MethodWebHandlerAdapter {
               CloudNet.getInstance().stopServer(t.getName()));
           return ResponseUtil.success(fullHttpResponse, true, document);
         } else {
-          return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
         }
 
       case "command":
@@ -183,7 +183,7 @@ public final class ServerApi extends MethodWebHandlerAdapter {
           server.getWrapper().writeServerCommand(command, server.getServerInfo());
           return ResponseUtil.success(fullHttpResponse, true, document);
         } else {
-          return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
         }
 
       case "stopscreen":
@@ -195,7 +195,7 @@ public final class ServerApi extends MethodWebHandlerAdapter {
           server.getWrapper().disableScreen(server.getServerInfo());
           return ResponseUtil.success(fullHttpResponse, true, document);
         } else {
-          return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
         }
 
       case "delete":
@@ -216,7 +216,7 @@ public final class ServerApi extends MethodWebHandlerAdapter {
           CloudNet.getInstance().toWrapperInstances(wrappers).forEach(Wrapper::updateWrapper);
           return ResponseUtil.success(fullHttpResponse, true, document);
         } else {
-          return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
         }
 
       case "save":
@@ -257,12 +257,12 @@ public final class ServerApi extends MethodWebHandlerAdapter {
           }
           return ResponseUtil.success(fullHttpResponse, true, document);
         } else {
-          return ResponseUtil.xFieldNotFound(fullHttpResponse,
+          return ResponseUtil.fieldNotFound(fullHttpResponse,
               "No available -Xvalue,-Xcount command found!");
         }
 
       default:
-        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
 
     }
   }

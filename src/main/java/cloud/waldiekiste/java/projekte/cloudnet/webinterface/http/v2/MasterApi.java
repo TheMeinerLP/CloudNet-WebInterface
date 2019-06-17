@@ -50,7 +50,7 @@ public final class MasterApi extends MethodWebHandlerAdapter {
         return ResponseUtil.success(fullHttpResponse, true, document);
 
       default:
-        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
 
     }
   }
@@ -145,11 +145,11 @@ public final class MasterApi extends MethodWebHandlerAdapter {
           projectMain.getCloud().getCommandManager().dispatchCommand(command);
           return ResponseUtil.success(fullHttpResponse, true, document);
         } else {
-          return ResponseUtil.xValueFieldNotFound(fullHttpResponse);
+          return ResponseUtil.valueFieldNotFound(fullHttpResponse);
         }
 
       default:
-        return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
+        return ResponseUtil.messageFieldNotFound(fullHttpResponse);
 
     }
   }
