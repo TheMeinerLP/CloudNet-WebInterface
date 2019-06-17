@@ -39,6 +39,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.KeyStore;
@@ -127,7 +128,7 @@ public final class ProjectMain extends CoreModule {
       System.out.println("You have enabled ssl option! Shutdown normal WebServer!");
       if (!getCloud().getDbHandlers().getUpdateConfigurationDatabase().get()
           .contains("mdwi.domain")) {
-        if(sslSetup == null){
+        if (sslSetup == null) {
           this.sslSetup = new DomainSslSetup();
         }
         this.sslSetup.start(CloudNet.getLogger().getReader());
@@ -142,7 +143,6 @@ public final class ProjectMain extends CoreModule {
           }
         }
         Field webServer = cloudNetClass.getDeclaredField("webServer");
-        webServer.setAccessible(true);
         WebServer server = new WebServer(false,
             getCloud().getDbHandlers().getUpdateConfigurationDatabase().get()
                 .getString("mdwi.domain"),
@@ -157,6 +157,7 @@ public final class ProjectMain extends CoreModule {
         kmf.init(keyStore,TEMPORARY_KEY_PASSWORD.toCharArray());
         SslContext context = SslContextBuilder.forServer(kmf).build();
         sslContext.set(server, context);
+        webServer.setAccessible(true);
         webServer.set(getCloud(),server);
         getCloud().getWebServer().bind();
       } catch (NoSuchFieldException | IllegalAccessException | SSLException | CertificateException
@@ -298,7 +299,7 @@ public final class ProjectMain extends CoreModule {
 
   private String fileToSring(File f) {
     try (BufferedReader reader = new BufferedReader(
-        new InputStreamReader(new FileInputStream(f)))) {
+        new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8))) {
       return reader.lines().collect(Collectors.joining("\n"));
     } catch (IOException e) {
       e.printStackTrace();
