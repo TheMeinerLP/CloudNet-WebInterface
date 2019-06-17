@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2018.
- * Creative Commons Lizenzvertrag
- * CloudNet-Service-WebSocket-Extension von Phillipp Glanz ist lizenziert unter einer Creative Commons
- *  Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz.
- */
-
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils;
 
 import de.dytanic.cloudnet.lib.utility.document.Document;
@@ -17,6 +10,11 @@ import java.util.ArrayList;
 
 public final class ResponseUtil {
 
+  /**
+   * Send a permission denied message.
+   * @param response The response from web server to manipulate
+   * @return The response to send to the web server
+   */
   public static FullHttpResponse permissionDenied(FullHttpResponse response) {
     Document dataDocument = new Document("success", false).append("reason", new ArrayList<>())
         .append("response", new Document());
@@ -27,6 +25,13 @@ public final class ResponseUtil {
     return response;
   }
 
+  /**
+   * Send the response to web.
+   * @param response The response from web server to manipulate
+   * @param success The boolean to says it the request right
+   * @param dataDocument The content of the response
+   * @return The response to send to the web server
+   */
   public static FullHttpResponse success(FullHttpResponse response, boolean success,
       Document dataDocument) {
     dataDocument.append("success", success);
@@ -45,6 +50,11 @@ public final class ResponseUtil {
     response.headers().set(field, value);
   }
 
+  /**
+   * Send to web the cloud field isn't exist
+   * @param response The response from web server to manipulate
+   * @return The response to send to the web server
+   */
   public static FullHttpResponse xCloudFieldsNotFound(FullHttpResponse response) {
     Document dataDocument = new Document("success", false);
     dataDocument.append("reason", "-xcloudnet-user, -xcloudnet-password or -Xmessage not found!");
@@ -53,6 +63,11 @@ public final class ResponseUtil {
     return response;
   }
 
+  /**
+   * Send to web the value field isn't exist
+   * @param response The response from web server to manipulate
+   * @return The response to send to the web server
+   */
   public static FullHttpResponse xValueFieldNotFound(FullHttpResponse response) {
     Document dataDocument = new Document();
     dataDocument.append("success", false);
@@ -63,6 +78,11 @@ public final class ResponseUtil {
     return response;
   }
 
+  /**
+   * Send to web the message field isn't exist
+   * @param response The response from web server to manipulate
+   * @return The response to send to the web server
+   */
   public static FullHttpResponse xMessageFieldNotFound(FullHttpResponse response) {
     Document dataDocument = new Document();
     dataDocument.append("success", false);
@@ -73,6 +93,12 @@ public final class ResponseUtil {
     return response;
   }
 
+  /**
+   * Send to web the field isn't exist
+   * @param response The response from web server to manipulate
+   * @param message The error message/reason message
+   * @return The response to send to the web server
+   */
   public static FullHttpResponse xFieldNotFound(FullHttpResponse response, String message) {
     Document dataDocument = new Document();
     dataDocument.append("success", false);
@@ -83,6 +109,11 @@ public final class ResponseUtil {
     return response;
   }
 
+  /**
+   * Send the cross to web site
+   * @param request The response from web server to manipulate
+   * @return The response to send to the web server
+   */
   @SuppressWarnings("deprecation")
   public static FullHttpResponse cross(HttpRequest request) {
     FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(request.getProtocolVersion(),
@@ -90,7 +121,8 @@ public final class ResponseUtil {
     fullHttpResponse.headers().set("Content-Type", "application/json");
     fullHttpResponse.headers().set("Access-Control-Allow-Credentials", "true");
     fullHttpResponse.headers().set("Access-Control-Allow-Headers",
-        "content-type, if-none-match, -Xcloudnet-token, -Xmessage, -Xvalue, -Xcloudnet-user, -Xcloudnet-password,-Xcount");
+        "content-type, if-none-match, -Xcloudnet-token, -Xmessage, -Xvalue, -Xcloudnet-user,"
+            + " -Xcloudnet-password,-Xcount");
     fullHttpResponse.headers().set("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
     fullHttpResponse.headers().set("Access-Control-Allow-Origin", "*");
     fullHttpResponse.headers().set("Access-Control-Max-Age", "3600");
