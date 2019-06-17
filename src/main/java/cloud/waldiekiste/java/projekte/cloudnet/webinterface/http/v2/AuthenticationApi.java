@@ -16,9 +16,12 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import java.util.ArrayList;
 
-public final class AuthenticationAPI extends MethodWebHandlerAdapter {
+public final class AuthenticationApi extends MethodWebHandlerAdapter {
 
-  public AuthenticationAPI() {
+  /**
+   * Initiated the class.
+   */
+  public AuthenticationApi() {
     super("/cloudnet/api/v2/auth");
     CloudNet.getInstance().getWebServer().getWebServerProvider().registerHandler(this);
   }

@@ -27,11 +27,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("ALL")
-public final class UserAPI extends MethodWebHandlerAdapter {
+public final class UserApi extends MethodWebHandlerAdapter {
 
   private final ProjectMain projectMain;
 
-  public UserAPI(CloudNet cloudNet, ProjectMain projectMain) {
+  /**
+   * Initiated the class.
+   * @param cloudNet The main class of cloudnet
+   * @param projectMain The main class of the project
+   */
+  public UserApi(CloudNet cloudNet, ProjectMain projectMain) {
     super("/cloudnet/api/v2/userapi");
     cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
     this.projectMain = projectMain;
@@ -48,7 +53,7 @@ public final class UserAPI extends MethodWebHandlerAdapter {
     fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
     User user = HttpUtil.getUser(httpRequest);
     Document resp = new Document();
-    if(RequestUtil.getHeaderValue(httpRequest, "-Xmessage").equalsIgnoreCase("users")){
+    if (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").equalsIgnoreCase("users")) {
       if (!UserUtil.hasPermission(user, "*", "cloudnet.web.user.item.*")) {
         return ResponseUtil.permissionDenied(fullHttpResponse);
       } else {
@@ -56,7 +61,7 @@ public final class UserAPI extends MethodWebHandlerAdapter {
             .map(user1 -> JsonUtil.getGson().toJson(user1)).collect(Collectors.toList()));
         return ResponseUtil.success(fullHttpResponse, true, resp);
       }
-    }else{
+    } else {
       return ResponseUtil.xMessageFieldNotFound(fullHttpResponse);
     }
   }
@@ -102,8 +107,9 @@ public final class UserAPI extends MethodWebHandlerAdapter {
         } else {
           User newUser = new User(editUser.getName(), editUser.getUniqueId(),
               editUser.getApiToken(),
-              DyHash.hashString(new String(Base64.getDecoder().decode(usern.get("password").
-                  getAsString()), StandardCharsets.UTF_8)), editUser.getPermissions(), editUser.getMetaData());
+              DyHash.hashString(new String(Base64.getDecoder().decode(usern.get("password")
+                  .getAsString()), StandardCharsets.UTF_8)), editUser.getPermissions(),
+              editUser.getMetaData());
           Optional<User> oldUser = CloudNet.getInstance().getUsers().stream()
               .filter(u -> u.getName().equals(newUser.getName())).findAny();
 
@@ -126,8 +132,8 @@ public final class UserAPI extends MethodWebHandlerAdapter {
           }
           usern = Document.load(jsonuser);
           BasicUser basicUser = new BasicUser(usern.get("username").getAsString(),
-              new String(Base64.
-                  getDecoder().decode(usern.get("password").getAsString()), StandardCharsets.UTF_8),
+              new String(Base64
+                  .getDecoder().decode(usern.get("password").getAsString()), StandardCharsets.UTF_8),
               new ArrayList<>());
           if (CloudNet.getInstance().getUsers().stream()
               .noneMatch(u -> u.getName().equals(basicUser.getName()))) {

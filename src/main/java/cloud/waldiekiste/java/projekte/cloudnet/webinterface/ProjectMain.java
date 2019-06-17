@@ -3,7 +3,7 @@ package cloud.waldiekiste.java.projekte.cloudnet.webinterface;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandSetupConfig;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandUpdateChannel;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandVersion;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.AuthenticationAPI;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.AuthenticationApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.CPermsApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.DashboardApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.MasterApi;
@@ -12,7 +12,7 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.PlayerApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.ProxyApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.ServerApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.SignApi;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.UserAPI;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.UserApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.UtilsAPI;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.WrapperApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.listener.ScreenSessionListener;
@@ -71,9 +71,9 @@ public final class ProjectMain extends CoreModule {
    *
    * @see ConfigPermissions
    * @see MasterApi
-   * @see AuthenticationAPI
+   * @see AuthenticationApi
    * @see ProxyApi
-   * @see UserAPI
+   * @see UserApi
    * @see DashboardApi
    * @see ServerApi
    * @see WrapperApi
@@ -96,9 +96,9 @@ public final class ProjectMain extends CoreModule {
     getCloud().getCommandManager().registerCommand(new CommandUpdateChannel(this));
     getCloud().getEventManager().registerListener(this, new ScreenSessionListener(this));
     new MasterApi(getCloud(), this);
-    new AuthenticationAPI();
+    new AuthenticationApi();
     new ProxyApi(getCloud(), this);
-    new UserAPI(getCloud(), this);
+    new UserApi(getCloud(), this);
     new DashboardApi(getCloud(), this);
     new ServerApi(getCloud(), this);
     new WrapperApi(getCloud());
