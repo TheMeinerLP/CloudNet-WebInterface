@@ -34,6 +34,10 @@ public final class CPermsApi extends MethodWebHandlerAdapter {
   private final ProjectMain projectMain;
   private PermissionPool pool;
 
+  /**
+   * Initiated the class.
+   * @param projectMain The main class of the project
+   */
   public CPermsApi(ProjectMain projectMain) {
     super("/cloudnet/api/v2/cperms");
     this.projectMain = projectMain;
@@ -123,7 +127,7 @@ public final class CPermsApi extends MethodWebHandlerAdapter {
             }
             return ResponseUtil.success(fullHttpResponse, true, document);
           }
-        }else{
+        } else {
           return ResponseUtil.valueFieldNotFound(fullHttpResponse);
         }
       case "check":
@@ -194,7 +198,7 @@ public final class CPermsApi extends MethodWebHandlerAdapter {
           CloudNet.getInstance().getNetworkManager().updateAll();
           return ResponseUtil.success(fullHttpResponse, true, document);
 
-        }else{
+        } else {
           return ResponseUtil.valueFieldNotFound(fullHttpResponse);
         }
       case "user":
