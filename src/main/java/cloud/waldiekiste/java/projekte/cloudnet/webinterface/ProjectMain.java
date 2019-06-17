@@ -6,7 +6,7 @@ import cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands.CommandVer
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.AuthenticationAPI;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.CPermsApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.DashboardAPI;
-import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.MasterAPI;
+import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.MasterApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.MobApi;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.PlayerAPI;
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.ProxyApi;
@@ -70,7 +70,7 @@ public final class ProjectMain extends CoreModule {
    * startup. Errorservice is still under development.
    *
    * @see ConfigPermissions
-   * @see MasterAPI
+   * @see MasterApi
    * @see AuthenticationAPI
    * @see ProxyApi
    * @see UserAPI
@@ -95,7 +95,7 @@ public final class ProjectMain extends CoreModule {
     getCloud().getCommandManager().registerCommand(new CommandVersion(getVersion()));
     getCloud().getCommandManager().registerCommand(new CommandUpdateChannel(this));
     getCloud().getEventManager().registerListener(this, new ScreenSessionListener(this));
-    new MasterAPI(getCloud(), this);
+    new MasterApi(getCloud(), this);
     new AuthenticationAPI();
     new ProxyApi(getCloud(), this);
     new UserAPI(getCloud(), this);

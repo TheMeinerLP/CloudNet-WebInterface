@@ -18,12 +18,13 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import java.util.Locale;
 
-public final class MasterAPI extends MethodWebHandlerAdapter {
+public final class MasterApi extends MethodWebHandlerAdapter {
 
   private final ProjectMain projectMain;
 
-  public MasterAPI(CloudNet cloudNet, ProjectMain projectMain) {
+  public MasterApi(CloudNet cloudNet, ProjectMain projectMain) {
     super("/cloudnet/api/v2/master");
     cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
     this.projectMain = projectMain;
@@ -39,7 +40,7 @@ public final class MasterAPI extends MethodWebHandlerAdapter {
         HttpResponseStatus.OK);
     fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
     Document document = new Document();
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "corelog":
         document.append("response", projectMain.getConsoleLines());
         return ResponseUtil.success(fullHttpResponse, true, document);
@@ -65,7 +66,7 @@ public final class MasterAPI extends MethodWebHandlerAdapter {
     fullHttpResponse = HttpUtil.simpleCheck(fullHttpResponse, httpRequest);
     User user = HttpUtil.getUser(httpRequest);
     Document document = new Document();
-    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase()) {
+    switch (RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "reloadall":
         if (!UserUtil.hasPermission(user, "cloudnet.web.master.reload.all", "*",
             "cloudnet.web.master.reload.*")) {
