@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 public final class UserUtil {
 
   /**
-   * Check have the user the permission
+   * Check have the user the permission.
    * @param user The user to check the permissions
    * @param permissions The permission list to check
    * @return Return true if the user have the permission
@@ -25,7 +25,7 @@ public final class UserUtil {
   }
 
   /**
-   * Send a fail authorization
+   * Send a fail authorization.
    * @param response The response to edit
    * @return Return the response they are edited
    */

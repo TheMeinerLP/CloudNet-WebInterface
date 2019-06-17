@@ -40,7 +40,7 @@ public final class RequestUtil {
   }
 
   /**
-   * Get the content of the request
+   * Get the content of the request.
    * @param request The request to get content
    * @return The content of the request
    */
@@ -57,7 +57,7 @@ public final class RequestUtil {
   }
 
   /**
-   * Check if the user authorized to login
+   * Check if the user authorized to login.
    * @param httpRequest The request with information's about authorization
    * @return Return true if user authorized
    */

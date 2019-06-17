@@ -13,7 +13,7 @@ In this class, the user chooses the Updatechannel
 public final class UpdateChannelSetup extends Setup {
 
   /**
-   * Start the setup process to set the update channel type
+   * Start the setup process to set the update channel type.
    */
   public UpdateChannelSetup() {
     setupComplete(t -> {
@@ -24,8 +24,8 @@ public final class UpdateChannelSetup extends Setup {
       CloudNet.getInstance().getDbHandlers().getUpdateConfigurationDatabase().set(document);
     });
     /*
-    Here the user will get a message in which he get asked which UpdateChannel he wants to use RELEASE
-    | DEVELOPMENT | SNAPSHOT
+    Here the user will get a message in which he get asked which UpdateChannel he wants to use
+    RELEASE| DEVELOPMENT | SNAPSHOT
     If he types a other Message or something other, he gets a ErrorMessage.
     */
     request(new SetupRequest("type",

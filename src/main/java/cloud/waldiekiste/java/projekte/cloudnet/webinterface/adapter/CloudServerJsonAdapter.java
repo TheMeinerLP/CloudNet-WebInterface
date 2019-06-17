@@ -14,12 +14,12 @@ public class CloudServerJsonAdapter implements JsonSerializer<CloudServer> {
   public JsonElement serialize(CloudServer cloudServer, Type type,
       JsonSerializationContext jsonSerializationContext) {
     JsonObject object = new JsonObject();
-    object.add("serviceId", jsonSerializationContext.
-        serialize(cloudServer.getServiceId()));
+    object.add("serviceId", jsonSerializationContext
+        .serialize(cloudServer.getServiceId()));
     object.add("cloudServerMeta",
         jsonSerializationContext.serialize(cloudServer.getCloudServerMeta()));
-    object.add("cloudServerMeta", jsonSerializationContext.
-        serialize(cloudServer.getWrapper()));
+    object.add("cloudServerMeta", jsonSerializationContext
+        .serialize(cloudServer.getWrapper()));
     object.addProperty("serverGroupType", cloudServer.getServerGroupType().name()
         .toUpperCase(Locale.ENGLISH));
     object.add("serverInfo",

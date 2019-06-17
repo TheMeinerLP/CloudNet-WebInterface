@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2018.
- * Creative Commons Lizenzvertrag
- * CloudNet-Service-WebSocket-Extension von Phillipp Glanz ist lizenziert unter einer Creative Commons
- *  Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz.
- */
-
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.commands;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.ProjectMain;
@@ -16,6 +9,10 @@ public final class CommandSetupConfig extends Command {
 
   private final ProjectMain projectMain;
 
+  /**
+   * Start the setup process for the config.
+   * @param projectMain The main class of the project
+   */
   public CommandSetupConfig(ProjectMain projectMain) {
     super("setupI", "cloudnet.webinterface.setup", "sI");
     this.description = "Setup the CloudNet Material Design Interface";

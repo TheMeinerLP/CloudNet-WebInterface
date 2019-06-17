@@ -25,7 +25,7 @@ public final class PlayerApi extends MethodWebHandlerAdapter {
   private final ProjectMain projectMain;
 
   /**
-   *
+   *  Process the requests for player backend.
    * @param cloudNet The main class of cloudnet
    * @param projectMain The main class of the project
    */
@@ -51,7 +51,8 @@ public final class PlayerApi extends MethodWebHandlerAdapter {
     User user = CloudNet.getInstance()
         .getUser(RequestUtil.getHeaderValue(httpRequest, "-xcloudnet-user"));
     Document document = new Document();
-    if ("send".equals(RequestUtil.getHeaderValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH))) {
+    if ("send".equals(RequestUtil.getHeaderValue(httpRequest, "-Xmessage")
+        .toLowerCase(Locale.ENGLISH))) {
       if (RequestUtil.hasHeader(httpRequest, "-Xvalue", "-Xcount")) {
         String player = RequestUtil.getHeaderValue(httpRequest, "-Xvalue");
         String server = RequestUtil.getHeaderValue(httpRequest, "-Xcount");

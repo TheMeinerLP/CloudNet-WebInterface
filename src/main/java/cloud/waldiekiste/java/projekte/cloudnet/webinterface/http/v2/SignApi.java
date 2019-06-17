@@ -33,6 +33,10 @@ public final class SignApi extends MethodWebHandlerAdapter {
   private final Path path;
   private final ProjectMain projectMain;
 
+  /**
+   * Process the request about the sign system for cloudnet.
+   * @param projectMain The main class from the project
+   */
   public SignApi(ProjectMain projectMain) {
     super("/cloudnet/api/v2/sign");
     CloudNet.getInstance().getWebServer().getWebServerProvider().registerHandler(this);
@@ -62,8 +66,8 @@ public final class SignApi extends MethodWebHandlerAdapter {
         return ResponseUtil.success(fullHttpResponse, true, resp);
       case "config":
         Document document = Document.loadDocument(this.path);
-        SignLayoutConfig signLayoutConfig = JsonUtil.getGson().
-            fromJson(document.get("layout_config"),SignLayoutConfig.class);
+        SignLayoutConfig signLayoutConfig = JsonUtil.getGson()
+            .fromJson(document.get("layout_config"),SignLayoutConfig.class);
         resp.append("response", JsonUtil.getGson().toJson(signLayoutConfig));
         return ResponseUtil.success(fullHttpResponse, true, resp);
       case "random":

@@ -28,6 +28,10 @@ public final class ConfigPermissions {
     this.loadCache();
   }
 
+  /**
+   * Write the update of the permission group into the file
+   * @param permissionGroup The permission group to update
+   */
   public void updatePermissionGroup(PermissionGroup permissionGroup) {
     this.write(permissionGroup, this.cache);
     try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(
@@ -56,7 +60,6 @@ public final class ConfigPermissions {
   }
 
   private void write(PermissionGroup permissionGroup, Configuration configuration) {
-    Configuration section = configuration.getSection("groups");
     Configuration group = new Configuration();
     group.set("prefix", permissionGroup.getPrefix());
     group.set("suffix", permissionGroup.getSuffix());
@@ -78,6 +81,7 @@ public final class ConfigPermissions {
     }
     group.set("options", permissionGroup.getOptions());
     group.set("implements", permissionGroup.getImplementGroups());
+    Configuration section = configuration.getSection("groups");
     section.set(permissionGroup.getName(), group);
   }
 

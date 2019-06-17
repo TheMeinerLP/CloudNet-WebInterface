@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2018.
- * Creative Commons Lizenzvertrag
- * CloudNet-Service-WebSocket-Extension von Phillipp Glanz ist lizenziert unter einer Creative Commons
- *  Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz.
- */
-
 package cloud.waldiekiste.java.projekte.cloudnet.webinterface.http.v2.utils;
 
 import cloud.waldiekiste.java.projekte.cloudnet.webinterface.adapter.AdvanceServerConfigJsonAdapter;
@@ -100,6 +93,10 @@ import de.dytanic.cloudnetcore.network.components.WrapperMeta;
 
 public final class JsonUtil {
 
+  /**
+   * Build all adapters to gson class
+   * @return Return a gson class with all json adapters
+   */
   public static Gson getGson() {
     GsonBuilder builder = new GsonBuilder();
     builder.registerTypeAdapter(AutoSlot.class, new AutoSlotJsonAdapter());
