@@ -127,6 +127,9 @@ public final class ProjectMain extends CoreModule {
       System.out.println("You have enabled ssl option! Shutdown normal WebServer!");
       if (!getCloud().getDbHandlers().getUpdateConfigurationDatabase().get()
           .contains("mdwi.domain")) {
+        if(sslSetup == null){
+          this.sslSetup = new DomainSslSetup();
+        }
         this.sslSetup.start(CloudNet.getLogger().getReader());
       }
       getCloud().getWebServer().shutdown();
@@ -149,7 +152,8 @@ public final class ProjectMain extends CoreModule {
         sslContext.setAccessible(true);
         KeyStore keyStore = getKeyStore(new File(certs, "certFile.pem"),
             new File(certs, "keyFile.pem"), new File(certs, "caFile.pem"));
-        KeyManagerFactory kmf = KeyManagerFactory.getInstance(Security.getProperty("ssl.KeyManagerFactory.algorithm"));
+        KeyManagerFactory kmf = KeyManagerFactory
+            .getInstance(Security.getProperty("ssl.KeyManagerFactory.algorithm"));
         kmf.init(keyStore,TEMPORARY_KEY_PASSWORD.toCharArray());
         SslContext context = SslContextBuilder.forServer(kmf).build();
         sslContext.set(server, context);
@@ -292,8 +296,9 @@ public final class ProjectMain extends CoreModule {
 
   private static final String TEMPORARY_KEY_PASSWORD = "changeit";
 
-  private String fileToSring(File f){
-    try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)))) {
+  private String fileToSring(File f) {
+    try (BufferedReader reader = new BufferedReader(
+        new InputStreamReader(new FileInputStream(f)))) {
       return reader.lines().collect(Collectors.joining("\n"));
     } catch (IOException e) {
       e.printStackTrace();
@@ -311,7 +316,8 @@ public final class ProjectMain extends CoreModule {
       keyStore.load(null, null);
       keyStore.setCertificateEntry("ca-cert", caCertificate);
       keyStore.setCertificateEntry("client-cert", clientCertificate);
-      keyStore.setKeyEntry("client-key", privateKey, TEMPORARY_KEY_PASSWORD.toCharArray(), new Certificate[]{clientCertificate});
+      keyStore.setKeyEntry("client-key", privateKey, TEMPORARY_KEY_PASSWORD.toCharArray(),
+          new Certificate[]{clientCertificate});
       return keyStore;
     } catch (GeneralSecurityException | IOException e) {
       e.printStackTrace();
@@ -319,13 +325,15 @@ public final class ProjectMain extends CoreModule {
     return null;
   }
 
-  private Certificate loadCertificate(String certificatePem) throws IOException, GeneralSecurityException {
+  private Certificate loadCertificate(String certificatePem) throws IOException,
+      GeneralSecurityException {
     CertificateFactory certificateFactory = CertificateFactory.getInstance("X509");
     final byte[] content = readPemContent(certificatePem);
     return certificateFactory.generateCertificate(new ByteArrayInputStream(content));
   }
 
-  private PrivateKey loadPrivateKey(String privateKeyPem) throws IOException, GeneralSecurityException {
+  private PrivateKey loadPrivateKey(String privateKeyPem) throws IOException,
+      GeneralSecurityException {
     return pemLoadPrivateKeyPkcs1OrPkcs8Encoded(privateKeyPem);
   }
 
@@ -341,15 +349,16 @@ public final class ProjectMain extends CoreModule {
   private static PrivateKey pemLoadPrivateKeyPkcs1OrPkcs8Encoded(
       String privateKeyPem) throws GeneralSecurityException, IOException {
     // PKCS#8 format
-    final String PEM_PRIVATE_START = "-----BEGIN PRIVATE KEY-----";
-    final String PEM_PRIVATE_END = "-----END PRIVATE KEY-----";
+    final String pemPrivateStart = "-----BEGIN PRIVATE KEY-----";
+    final String pemPrivateEnd = "-----END PRIVATE KEY-----";
 
     // PKCS#1 format
-    final String PEM_RSA_PRIVATE_START = "-----BEGIN RSA PRIVATE KEY-----";
-    final String PEM_RSA_PRIVATE_END = "-----END RSA PRIVATE KEY-----";
+    final String pemRsaPrivateStart = "-----BEGIN RSA PRIVATE KEY-----";
+    final String pemRsaPrivateEnd = "-----END RSA PRIVATE KEY-----";
 
-    if (privateKeyPem.contains(PEM_PRIVATE_START)) { // PKCS#8 format
-      privateKeyPem = privateKeyPem.replace(PEM_PRIVATE_START, "").replace(PEM_PRIVATE_END, "");
+    if (privateKeyPem.contains(pemPrivateStart)) { // PKCS#8 format
+      privateKeyPem = privateKeyPem.replace(pemPrivateStart, "")
+          .replace(pemPrivateEnd, "");
       privateKeyPem = privateKeyPem.replaceAll("\\s", "");
 
       byte[] pkcs8EncodedKey = Base64.getDecoder().decode(privateKeyPem);
@@ -357,9 +366,10 @@ public final class ProjectMain extends CoreModule {
       KeyFactory factory = KeyFactory.getInstance("RSA");
       return factory.generatePrivate(new PKCS8EncodedKeySpec(pkcs8EncodedKey));
 
-    } else if (privateKeyPem.contains(PEM_RSA_PRIVATE_START)) {  // PKCS#1 format
+    } else if (privateKeyPem.contains(pemRsaPrivateStart)) {  // PKCS#1 format
 
-      privateKeyPem = privateKeyPem.replace(PEM_RSA_PRIVATE_START, "").replace(PEM_RSA_PRIVATE_END, "");
+      privateKeyPem = privateKeyPem.replace(pemRsaPrivateStart, "")
+          .replace(pemRsaPrivateEnd, "");
       privateKeyPem = privateKeyPem.replaceAll("\\s", "");
 
       DerInputStream derReader = new DerInputStream(Base64.getDecoder().decode(privateKeyPem));
@@ -380,8 +390,8 @@ public final class ProjectMain extends CoreModule {
       BigInteger exp2 = seq[7].getBigInteger();
       BigInteger crtCoef = seq[8].getBigInteger();
 
-      RSAPrivateCrtKeySpec keySpec = new RSAPrivateCrtKeySpec(modulus, publicExp, privateExp, prime1, prime2,
-          exp1, exp2, crtCoef);
+      RSAPrivateCrtKeySpec keySpec = new RSAPrivateCrtKeySpec(modulus, publicExp,
+          privateExp, prime1, prime2, exp1, exp2, crtCoef);
 
       KeyFactory factory = KeyFactory.getInstance("RSA");
 
