@@ -12,6 +12,6 @@
  | 2.2 above| :x: |
  | Complete generation 3 | :x: |
 #### CloudNet-Gen2-Support
- | CloudNet-Gen2 | 2.1.17 | Older as 2.1.17 |
+ | CloudNet-Gen2 | 2.1.17 | Below 2.1.17 |
  |----------------|-------|-----------------|
- | [CloudNet](https://github.com/SpigotMC/BungeeCord) | :heavy_check_mark: | :x: |
+ | [CloudNet](https://github.com/CloudNetService/CloudNet) | :heavy_check_mark: | :x: |
