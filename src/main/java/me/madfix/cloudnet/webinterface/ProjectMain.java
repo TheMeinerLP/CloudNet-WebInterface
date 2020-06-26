@@ -14,6 +14,7 @@ import me.madfix.cloudnet.webinterface.http.v2.UtilsApi;
 import me.madfix.cloudnet.webinterface.http.v2.WrapperApi;
 import me.madfix.cloudnet.webinterface.mob.MobDatabase;
 import me.madfix.cloudnet.webinterface.services.ConfigurationService;
+import me.madfix.cloudnet.webinterface.services.DatabaseService;
 import me.madfix.cloudnet.webinterface.sign.SignDatabase;
 import me.madfix.cloudnet.webinterface.listener.ScreenSessionListener;
 import me.madfix.cloudnet.webinterface.permission.ConfigPermissions;
@@ -27,6 +28,7 @@ import java.util.Map;
 public final class ProjectMain extends CoreModule {
 
   private ConfigurationService configurationService;
+  private DatabaseService databaseService;
 
   private ConfigPermissions configPermission;
   private List<String> consoleLines;
@@ -43,6 +45,7 @@ public final class ProjectMain extends CoreModule {
       CloudNet.getLogger().severe("Please create your configuration file under X and follow the instructions on the website. ");
     }
     if (this.configurationService.getOptionalInterfaceConfiguration().isPresent()) {
+      this.databaseService = new DatabaseService(this);
       this.consoleLines = new ArrayList<>();
       CloudNet.getLogger().getHandler().add(consoleLines::add);
     }
@@ -121,5 +124,7 @@ public final class ProjectMain extends CoreModule {
     return mobDatabase;
   }
 
-
+  public ConfigurationService getConfigurationService() {
+    return configurationService;
+  }
 }
