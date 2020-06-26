@@ -4,36 +4,39 @@ import java.util.Objects;
 
 public final class DatabaseConfiguration {
 
-  private final String dataSourceClassName;
+  private final String jdbcUrl;
   private final String username;
   private final String password;
-  private final String servername;
-  private final String databaseName;
   private final int minimumIdle;
   private final int maximumPoolSize;
+  private final int prepStmtCacheSize;
+  private final int prepStmtCacheSqlLimit;
+  private final boolean cachePrepStmts;
   private final long connectionTimeout;
   private final long idleTimeout;
   private final long maxLifetime;
 
-  public DatabaseConfiguration(String dataSourceClassName, String username, String password,
-      String servername, String databaseName, int minimumIdle, int maximumPoolSize,
+  public DatabaseConfiguration(String jdbcUrl, String username, String password, int minimumIdle,
+      int maximumPoolSize,
+      int prepStmtCacheSize, int prepStmtCacheSqlLimit, boolean cachePrepStmts,
       long connectionTimeout,
       long idleTimeout,
       long maxLifetime) {
-    this.dataSourceClassName = dataSourceClassName;
+    this.jdbcUrl = jdbcUrl;
     this.username = username;
     this.password = password;
-    this.servername = servername;
-    this.databaseName = databaseName;
     this.minimumIdle = minimumIdle;
     this.maximumPoolSize = maximumPoolSize;
+    this.prepStmtCacheSize = prepStmtCacheSize;
+    this.prepStmtCacheSqlLimit = prepStmtCacheSqlLimit;
+    this.cachePrepStmts = cachePrepStmts;
     this.connectionTimeout = connectionTimeout;
     this.idleTimeout = idleTimeout;
     this.maxLifetime = maxLifetime;
   }
 
-  public String getDataSourceClassName() {
-    return dataSourceClassName;
+  public String getJdbcUrl() {
+    return jdbcUrl;
   }
 
   public String getUsername() {
@@ -64,17 +67,29 @@ public final class DatabaseConfiguration {
     return maxLifetime;
   }
 
+  public int getPrepStmtCacheSize() {
+    return prepStmtCacheSize;
+  }
+
+  public int getPrepStmtCacheSqlLimit() {
+    return prepStmtCacheSqlLimit;
+  }
+
+  public boolean isCachePrepStmts() {
+    return cachePrepStmts;
+  }
 
   @Override
   public String toString() {
     return "DatabaseConfiguration{" +
-        "dataSourceClassName='" + dataSourceClassName + '\'' +
+        "jdbcUrl='" + jdbcUrl + '\'' +
         ", username='" + username + '\'' +
         ", password='" + password + '\'' +
-        ", servername='" + servername + '\'' +
-        ", databaseName='" + databaseName + '\'' +
         ", minimumIdle=" + minimumIdle +
         ", maximumPoolSize=" + maximumPoolSize +
+        ", prepStmtCacheSize=" + prepStmtCacheSize +
+        ", prepStmtCacheSqlLimit=" + prepStmtCacheSqlLimit +
+        ", cachePrepStmts=" + cachePrepStmts +
         ", connectionTimeout=" + connectionTimeout +
         ", idleTimeout=" + idleTimeout +
         ", maxLifetime=" + maxLifetime +
@@ -92,20 +107,21 @@ public final class DatabaseConfiguration {
     DatabaseConfiguration that = (DatabaseConfiguration) o;
     return minimumIdle == that.minimumIdle &&
         maximumPoolSize == that.maximumPoolSize &&
+        prepStmtCacheSize == that.prepStmtCacheSize &&
+        prepStmtCacheSqlLimit == that.prepStmtCacheSqlLimit &&
+        cachePrepStmts == that.cachePrepStmts &&
         connectionTimeout == that.connectionTimeout &&
         idleTimeout == that.idleTimeout &&
         maxLifetime == that.maxLifetime &&
-        Objects.equals(dataSourceClassName, that.dataSourceClassName) &&
+        Objects.equals(jdbcUrl, that.jdbcUrl) &&
         Objects.equals(username, that.username) &&
-        Objects.equals(password, that.password) &&
-        Objects.equals(servername, that.servername) &&
-        Objects.equals(databaseName, that.databaseName);
+        Objects.equals(password, that.password);
   }
 
   @Override
   public int hashCode() {
     return Objects
-        .hash(dataSourceClassName, username, password, servername, databaseName, minimumIdle,
-            maximumPoolSize, connectionTimeout, idleTimeout, maxLifetime);
+        .hash(jdbcUrl, username, password, minimumIdle, maximumPoolSize, prepStmtCacheSize,
+            prepStmtCacheSqlLimit, cachePrepStmts, connectionTimeout, idleTimeout, maxLifetime);
   }
 }
