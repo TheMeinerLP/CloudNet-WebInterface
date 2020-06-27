@@ -7,7 +7,7 @@ This is the CloudNet web interface for managing features from the cloud. The web
 
 | Feature | Supported |
 |-------|---------|
-| Mob Mangement| :rocket: |
+| Mob Mangement| :hammer: |
 | Cloud Permission Mangement | :rocket: |
 | Wrapper Mangement | :rocket: |
 | Sign Mangement | :rocket: |
@@ -29,9 +29,17 @@ Own implemented functions without dependencies on CloudNet:
 |-------|---------|
 | RestFulAPI | :rocket: |
 | Web Socket | :rocket: |
-| SQL Backend | :rocket: |
+| SQL Backend | :heavy_check_mark: |
 | Own Permission System | :rocket: |
 | Notification System | :rocket: |
+
+**Table legend**
+| Symbol | Description |
+|-------|---------|
+| :rocket: | Planned function |
+| :hammer: | Is in process |
+| :heavy_check_mark: | Is supported |
+| :x: | Not supported |
 
 ### How to install
 
