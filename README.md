@@ -18,10 +18,10 @@ This is the CloudNet web interface for managing features from the cloud. The web
 
 All graphical functions are based purely on HTML, CSS, JavaScript. To generate the respective files the framework Angluar CLI is used. Thereby we rely on a pure **material design** which makes us stand out.
 
-**Material Design**
+**Material Design**  
 The Material Design is a design standard created by Google to create simple and clear surfaces. We use this standard to make our web interface user friendly.
 
-**Functions of the interface itself**
+**Functions of the interface itself**  
 In order to guarantee the handiness and stability, the web interface also has its own functions. 
 Own implemented functions without dependencies on CloudNet:
 
