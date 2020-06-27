@@ -41,9 +41,12 @@ Own implemented functions without dependencies on CloudNet:
 | :heavy_check_mark: | Is supported |
 | :x: | Not supported |
 
-### How to install
+---  
+### How to install  
+**An installation guide is being planned but is not yet needed.**
 
----
+---  
+
 ### CloudNet Compatibility list 
 #### CloudNet-Support
  | CloudNet-Support | Supported | 
