@@ -33,6 +33,27 @@ Own implemented functions without dependencies on CloudNet:
 | Own Permission System | :rocket: |
 | Notification System | :rocket: |
 
+**Supported database types**
+
+| Database         | Supported          | 
+|:---------------- |:------------------ |
+| Apache Derby     | :rocket:           |
+| Firebird         | :rocket:           |
+| H2               | :heavy_check_mark: |
+| HSQLDB           | :rocket:           |
+| IBM DB2          | :rocket:           |
+| IBM Informix     | :rocket:           |
+| MS SQL Server    | :heavy_check_mark: |
+| ~~MySQL~~        | :x:                |
+| MariaDB          | :heavy_check_mark: |
+| Oracle           | :rocket:           |
+| OrientDB         | :rocket:           |
+| PostgreSQL       | :rocket:           |
+| PostgreSQL       | :rocket:           |
+| SAP MaxDB        | :rocket:           |
+| SQLite           | :rocket:           |
+| SyBase           | :rocket:           |
+
 **Table legend**
 | Symbol | Description |
 |-------|---------|
