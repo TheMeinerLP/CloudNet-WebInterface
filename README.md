@@ -1,6 +1,37 @@
 # CloudNet WebInterface RestAPI
 
 ### Description
+The Material Design Web Interface has all the features you need to manage your Cloud Simple and easy.
+We pay attention to quality, stability and future-proof approaches.
+This is the CloudNet web interface for managing features from the cloud. The web interface brings the following features from CloudNet:
+
+| Feature | Supported |
+|-------|---------|
+| Mob Mangement| :rocket: |
+| Cloud Permission Mangement | :rocket: |
+| Wrapper Mangement | :rocket: |
+| Sign Mangement | :rocket: |
+| ServerGroup Mangement | :rocket: |
+| ProxyGroup Mangement | :rocket: |
+| Server Mangement | :rocket: |
+| Proxy Mangement | :rocket: |
+
+All graphical functions are based purely on HTML, CSS, JavaScript. To generate the respective files the framework Angluar CLI is used. Thereby we rely on a pure **material design** which makes us stand out.
+
+**Material Design**
+The Material Design is a design standard created by Google to create simple and clear surfaces. We use this standard to make our web interface user friendly.
+
+**Functions of the interface itself**
+In order to guarantee the handiness and stability, the web interface also has its own functions. 
+Own implemented functions without dependencies on CloudNet:
+
+| Feature | Supported |
+|-------|---------|
+| RestFulAPI | :rocket: |
+| Web Socket | :rocket: |
+| SQL Backend | :rocket: |
+| Own Permission System | :rocket: |
+| Notification System | :rocket: |
 
 ### How to install
 
