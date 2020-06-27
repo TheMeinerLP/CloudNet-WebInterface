@@ -44,10 +44,10 @@ public final class MobDatabase extends DatabaseUsable {
   /**
    * Remove serverMob from the database.
    *
-   * @param serverMob the mob to remove from the database
+   * @param mobId the mob to remove from the database
    */
-  public void remove(ServerMob serverMob) {
-    selectorMobs.remove(serverMob.getUniqueId().toString());
+  public void remove(UUID mobId) {
+    selectorMobs.remove(mobId.toString());
     this.database.insert(selectorMobs);
   }
 
