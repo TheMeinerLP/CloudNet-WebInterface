@@ -3,7 +3,7 @@ package me.madfix.cloudnet.webinterface.http.v2;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Http;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Request;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Response;
-import me.madfix.cloudnet.webinterface.ProjectMain;
+import me.madfix.cloudnet.webinterface.WebInterface;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
 import de.dytanic.cloudnet.web.server.util.PathProvider;
@@ -17,17 +17,17 @@ import java.util.stream.IntStream;
 
 public final class DashboardApi extends MethodWebHandlerAdapter {
 
-  private final ProjectMain projectMain;
+  private final WebInterface webInterface;
 
   /**
    * Initiated the class.
    * @param cloudNet the CloudNet class
-   * @param projectMain the main class of the project
+   * @param webInterface the main class of the project
    */
-  public DashboardApi(CloudNet cloudNet, ProjectMain projectMain) {
+  public DashboardApi(CloudNet cloudNet, WebInterface webInterface) {
     super("/cloudnet/api/v2/dashboard");
     cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
-    this.projectMain = projectMain;
+    this.webInterface = webInterface;
   }
 
   @SuppressWarnings("deprecation")
@@ -39,19 +39,19 @@ public final class DashboardApi extends MethodWebHandlerAdapter {
     Document document = new Document();
     switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "players":
-        IntStream stream = projectMain.getCloud().getServerGroups().keySet().stream()
-            .mapToInt(server -> projectMain.getCloud().getOnlineCount(server));
+        IntStream stream = webInterface.getCloud().getServerGroups().keySet().stream()
+            .mapToInt(server -> webInterface.getCloud().getOnlineCount(server));
         document.append("response", stream.sum());
         return Response.success(fullHttpResponse,  document);
       case "servers":
-        document.append("response", projectMain.getCloud().getServers().size());
+        document.append("response", webInterface.getCloud().getServers().size());
         return Response.success(fullHttpResponse,  document);
 
       case "proxys":
-        document.append("response", projectMain.getCloud().getProxys().size());
+        document.append("response", webInterface.getCloud().getProxys().size());
         return Response.success(fullHttpResponse,  document);
       case "groups":
-        document.append("response", projectMain.getCloud().getServerGroups().size());
+        document.append("response", webInterface.getCloud().getServerGroups().size());
         return Response.success(fullHttpResponse,  document);
       default:
         return Response.messageFieldNotFound(fullHttpResponse);

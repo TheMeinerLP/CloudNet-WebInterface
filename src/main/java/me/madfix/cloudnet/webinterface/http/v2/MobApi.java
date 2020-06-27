@@ -5,7 +5,7 @@ import me.madfix.cloudnet.webinterface.http.v2.utils.HttpUser;
 import me.madfix.cloudnet.webinterface.http.v2.utils.JsonUtil;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Request;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Response;
-import me.madfix.cloudnet.webinterface.ProjectMain;
+import me.madfix.cloudnet.webinterface.WebInterface;
 import de.dytanic.cloudnet.lib.serverselectors.mob.MobConfig;
 import de.dytanic.cloudnet.lib.serverselectors.mob.ServerMob;
 import de.dytanic.cloudnet.lib.user.User;
@@ -25,17 +25,17 @@ import java.util.stream.Collectors;
 public final class MobApi extends MethodWebHandlerAdapter {
 
   private final Path path;
-  private final ProjectMain projectMain;
+  private final WebInterface webInterface;
 
   /**
    * Manage the requests about the mob system of cloudnet.
-   * @param projectMain The main class of the project
+   * @param webInterface The main class of the project
    */
-  public MobApi(ProjectMain projectMain) {
+  public MobApi(WebInterface webInterface) {
     super("/cloudnet/api/v2/mob");
     CloudNet.getInstance().getWebServer().getWebServerProvider().registerHandler(this);
     this.path = Paths.get("local/servermob_config.json");
-    this.projectMain = projectMain;
+    this.webInterface = webInterface;
   }
 
   @SuppressWarnings("deprecation")
@@ -64,7 +64,7 @@ public final class MobApi extends MethodWebHandlerAdapter {
         return Response.success(fullHttpResponse, resp);
       }
       case "db": {
-        resp.append("response", projectMain.getMobDatabase().loadAll().values().stream()
+        resp.append("response", webInterface.getMobDatabase().loadAll().values().stream()
             .map(serverMob -> JsonUtil.getGson().toJson(serverMob)).collect(
                 Collectors.toList()));
         return Response.success(fullHttpResponse, resp);
@@ -104,7 +104,7 @@ public final class MobApi extends MethodWebHandlerAdapter {
         if (!HttpUser.hasPermission(user, "*", "cloudnet.web.module.mob.delete")) {
           return Response.permissionDenied(fullHttpResponse);
         }
-        projectMain.getMobDatabase().remove(mob);
+        webInterface.getMobDatabase().remove(mob);
         CloudNet.getInstance().getNetworkManager().updateAll();
         return Response.success(fullHttpResponse, new Document());
 
@@ -113,7 +113,7 @@ public final class MobApi extends MethodWebHandlerAdapter {
         if (!HttpUser.hasPermission(user, "*", "cloudnet.web.module.mob.add")) {
           return Response.permissionDenied(fullHttpResponse);
         }
-        projectMain.getMobDatabase().append(mob);
+        webInterface.getMobDatabase().add(mob);
         CloudNet.getInstance().getNetworkManager().updateAll();
         return Response.success(fullHttpResponse, new Document());
 

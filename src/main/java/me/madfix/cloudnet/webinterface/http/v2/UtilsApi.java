@@ -3,7 +3,7 @@ package me.madfix.cloudnet.webinterface.http.v2;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Http;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Request;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Response;
-import me.madfix.cloudnet.webinterface.ProjectMain;
+import me.madfix.cloudnet.webinterface.WebInterface;
 import de.dytanic.cloudnet.lib.NetworkUtils;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
@@ -17,17 +17,17 @@ import java.util.Locale;
 
 public final class UtilsApi extends MethodWebHandlerAdapter {
 
-  private final ProjectMain projectMain;
+  private final WebInterface webInterface;
 
   /**
    * Manage general request they a not categories have.
    * @param cloudNet The main class from cloudnet
-   * @param projectMain The main class of the project
+   * @param webInterface The main class of the project
    */
-  public UtilsApi(CloudNet cloudNet, ProjectMain projectMain) {
+  public UtilsApi(CloudNet cloudNet, WebInterface webInterface) {
     super("/cloudnet/api/v2/utils");
     cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
-    this.projectMain = projectMain;
+    this.webInterface = webInterface;
   }
 
   @SuppressWarnings("deprecation")
@@ -39,7 +39,7 @@ public final class UtilsApi extends MethodWebHandlerAdapter {
     Document document = new Document();
     switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "version":
-        document.append("response", projectMain.getModuleConfig().getVersion());
+        document.append("response", webInterface.getModuleConfig().getVersion());
         return Response.success(fullHttpResponse, document);
 
       case "cloudversion":

@@ -5,7 +5,7 @@ import me.madfix.cloudnet.webinterface.http.v2.utils.HttpUser;
 import me.madfix.cloudnet.webinterface.http.v2.utils.JsonUtil;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Request;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Response;
-import me.madfix.cloudnet.webinterface.ProjectMain;
+import me.madfix.cloudnet.webinterface.WebInterface;
 import de.dytanic.cloudnet.lib.serverselectors.sign.Sign;
 import de.dytanic.cloudnet.lib.serverselectors.sign.SignLayoutConfig;
 import de.dytanic.cloudnet.lib.user.User;
@@ -31,17 +31,17 @@ import java.util.stream.Collectors;
 public final class SignApi extends MethodWebHandlerAdapter {
 
   private final Path path;
-  private final ProjectMain projectMain;
+  private final WebInterface webInterface;
 
   /**
    * Process the request about the sign system for cloudnet.
-   * @param projectMain The main class from the project
+   * @param webInterface The main class from the project
    */
-  public SignApi(ProjectMain projectMain) {
+  public SignApi(WebInterface webInterface) {
     super("/cloudnet/api/v2/sign");
     CloudNet.getInstance().getWebServer().getWebServerProvider().registerHandler(this);
     this.path = Paths.get("local/signLayout.json");
-    this.projectMain = projectMain;
+    this.webInterface = webInterface;
   }
 
   @SuppressWarnings("deprecation")
@@ -83,7 +83,7 @@ public final class SignApi extends MethodWebHandlerAdapter {
         }
       case "db":
         resp.append("response",
-            projectMain.getSignDatabase().loadAll().values().stream().map(sign ->
+            webInterface.getSignDatabase().loadAll().values().stream().map(sign ->
                 JsonUtil.getGson().toJson(sign)).collect(Collectors.toList()));
         return Response.success(fullHttpResponse, resp);
       default:
@@ -121,7 +121,7 @@ public final class SignApi extends MethodWebHandlerAdapter {
           return Response.permissionDenied(fullHttpResponse);
         }
         UUID id = UUID.fromString(content);
-        projectMain.getSignDatabase().removeSign(id);
+        webInterface.getSignDatabase().removeSign(id);
         CloudNet.getInstance().getNetworkManager().updateAll();
         return Response.success(fullHttpResponse, new Document());
       }
@@ -132,7 +132,7 @@ public final class SignApi extends MethodWebHandlerAdapter {
         }
         String content = Request.content(httpRequest);
         Sign s = JsonUtil.getGson().fromJson(content, Sign.class);
-        projectMain.getSignDatabase().appendSign(s);
+        webInterface.getSignDatabase().appendSign(s);
         CloudNet.getInstance().getNetworkManager().updateAll();
         return Response.success(fullHttpResponse, new Document());
       }
