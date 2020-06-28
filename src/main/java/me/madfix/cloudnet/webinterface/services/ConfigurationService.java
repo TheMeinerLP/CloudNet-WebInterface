@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public final class ConfigurationService {
 
-    private Optional<InterfaceConfiguration> optionalInterfaceConfiguration;
+    private InterfaceConfiguration optionalInterfaceConfiguration;
     private final Gson gson = new Gson();
 
     /**
@@ -38,7 +38,7 @@ public final class ConfigurationService {
                     CloudNet.getLogger().severe("[ConfigurationService] An unexpected error occurred while reading the configuration file ");
                     e.printStackTrace();
                 }
-                jsonConfig.ifPresent(jsonElement -> this.optionalInterfaceConfiguration = Optional.of(this.gson.fromJson(jsonElement, InterfaceConfiguration.class)));
+                jsonConfig.ifPresent(jsonElement -> this.optionalInterfaceConfiguration = this.gson.fromJson(jsonElement, InterfaceConfiguration.class));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -47,6 +47,6 @@ public final class ConfigurationService {
     }
 
     public Optional<InterfaceConfiguration> getOptionalInterfaceConfiguration() {
-        return optionalInterfaceConfiguration;
+        return Optional.ofNullable(optionalInterfaceConfiguration);
     }
 }

@@ -23,12 +23,12 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Mob Service is a class used to manage CloudNet Mobs. With this class it should be possible to manage all functions Cloudnet provides internally
+ * Mob Service is a class used to manage CloudNet Mobs. With this class it should be possible to manage all functions CloudNet provides internally
  */
 final class MobService {
 
     private boolean enable;
-    private Optional<MobDatabase> mobDatabase;
+    private MobDatabase mobDatabase;
     private final WebInterface webInterface;
     private final Path mobConfigurationFile = Paths.get("local", "servermob_config.json");
 
@@ -36,8 +36,8 @@ final class MobService {
         this.webInterface = webInterface;
         this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().ifPresent(interfaceConfiguration -> {
             this.enable = interfaceConfiguration.isMobSystem();
-            if (this.enable) this.mobDatabase = Optional.of(new MobDatabase(
-                    webInterface.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg")));
+            if (this.enable) this.mobDatabase = new MobDatabase(
+                    webInterface.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
         });
     }
 
@@ -58,7 +58,7 @@ final class MobService {
     public CompletableFuture<Optional<MobDatabase>> getMobDatabase() {
         CompletableFuture<Optional<MobDatabase>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable) {
-            optionalCompletableFuture.complete(this.mobDatabase);
+            optionalCompletableFuture.complete(Optional.ofNullable(this.mobDatabase));
         } else optionalCompletableFuture.cancel(true);
         return optionalCompletableFuture;
     }
@@ -71,7 +71,7 @@ final class MobService {
     public CompletableFuture<Optional<MobConfig>> getMobConfig() {
         CompletableFuture<Optional<MobConfig>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable) {
-            try(BufferedReader bufferedReader = Files.newBufferedReader(this.mobConfigurationFile,
+            try (BufferedReader bufferedReader = Files.newBufferedReader(this.mobConfigurationFile,
                     StandardCharsets.UTF_8)) {
                 Optional<JsonElement> jsonConfig = Optional.empty();
                 try {
@@ -100,10 +100,9 @@ final class MobService {
      */
     public CompletableFuture<Optional<ServerMob>> getServerMob(UUID mobId) {
         CompletableFuture<Optional<ServerMob>> optionalCompletableFuture = new CompletableFuture<>();
-        if (this.enable) {
-            this.mobDatabase.ifPresent(
-                    database -> optionalCompletableFuture.complete(database.loadAll().values().stream()
-                            .filter(serverMob -> serverMob.getUniqueId().equals(mobId)).findFirst()));
+        if (this.enable && this.mobDatabase != null) {
+            optionalCompletableFuture.complete(this.mobDatabase.loadAll().values().stream()
+                    .filter(serverMob -> serverMob.getUniqueId().equals(mobId)).findFirst());
         } else {
             optionalCompletableFuture.cancel(true);
         }
@@ -117,9 +116,8 @@ final class MobService {
      */
     public CompletableFuture<Optional<Collection<ServerMob>>> getMobs() {
         CompletableFuture<Optional<Collection<ServerMob>>> collectionCompletableFuture = new CompletableFuture<>();
-        if (this.enable) {
-            this.mobDatabase.ifPresent(
-                    database -> collectionCompletableFuture.complete(Optional.of(database.loadAll().values())));
+        if (this.enable && this.mobDatabase != null) {
+            collectionCompletableFuture.complete(Optional.of(this.mobDatabase.loadAll().values()));
         } else {
             collectionCompletableFuture.cancel(true);
         }
@@ -136,8 +134,8 @@ final class MobService {
     public CompletableFuture<Optional<Boolean>> removeMob(UUID mobId) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable) {
-            if (this.mobDatabase.isPresent()) {
-                this.mobDatabase.get().remove(mobId);
+            if (this.mobDatabase != null) {
+                this.mobDatabase.remove(mobId);
                 CloudNet.getInstance().getNetworkManager().updateAll();
                 optionalCompletableFuture.complete(Optional.of(true));
             }
@@ -156,8 +154,8 @@ final class MobService {
     public CompletableFuture<Optional<Boolean>> addMob(ServerMob serverMob) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable) {
-            if (this.mobDatabase.isPresent()) {
-                this.mobDatabase.get().add(serverMob);
+            if (this.mobDatabase != null) {
+                this.mobDatabase.add(serverMob);
                 CloudNet.getInstance().getNetworkManager().updateAll();
                 optionalCompletableFuture.complete(Optional.of(true));
             }
@@ -176,7 +174,7 @@ final class MobService {
     public CompletableFuture<Optional<Boolean>> updateMob(ServerMob serverMob) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable) {
-            if (this.mobDatabase.isPresent()) {
+            if (this.mobDatabase != null) {
                 this.getServerMob(serverMob.getUniqueId())
                         .thenAccept(result -> result.ifPresent(mob -> removeMob(mob.getUniqueId()).thenAccept(success -> {
                             if (success.isPresent() && success.get()) {
@@ -204,7 +202,8 @@ final class MobService {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable) {
             Document document = new Document();
-            document.append("mobConfig", mobConfig);
+            document.append("mobConfig",
+                    this.webInterface.getGson().toJsonTree(mobConfig, TypeToken.get(MobConfig.class).getType()));
             document.saveAsConfig(this.mobConfigurationFile);
             CloudNet.getInstance().getNetworkManager().updateAll();
             optionalCompletableFuture.complete(Optional.of(true));
