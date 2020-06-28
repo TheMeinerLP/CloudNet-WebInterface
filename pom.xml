@@ -14,7 +14,6 @@
   <properties>
     <!-- Dependencies -->
     <dependency.cloudnet.version>2.1.17</dependency.cloudnet.version>
-    <dependency.spark.version>2.8.0</dependency.spark.version>
     <dependency.hikaricp.version>3.4.5</dependency.hikaricp.version>
     <dependency.h2.version>1.4.200</dependency.h2.version>
     <dependency.mssql.version>8.2.2.jre8</dependency.mssql.version>
@@ -25,6 +24,8 @@
     <plugin.surefire.version>2.19.1</plugin.surefire.version>
     <plugin.platform-surefire.version>1.1.0</plugin.platform-surefire.version>
     <plugin.jupiter.version>5.1.0</plugin.jupiter.version>
+    <!-- Settings -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <repositories>
@@ -50,6 +51,21 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
         <version>${plugin.shade.version}</version>
+        <configuration>
+          <minimizeJar>true</minimizeJar>
+          <filters>
+            <filter>
+              <artifact>*:*</artifact>
+              <excludes>
+                <exclude>META-INF/*.SF</exclude>
+                <exclude>META-INF/*.DSA</exclude>
+                <exclude>META-INF/*.RSA</exclude>
+                <exclude>META-INF/services/*</exclude>
+                <exclude>META-INF/*.MF</exclude>
+              </excludes>
+            </filter>
+          </filters>
+        </configuration>
         <executions>
           <execution>
             <phase>package</phase>
@@ -93,16 +109,16 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>com.sparkjava</groupId>
-      <artifactId>spark-core</artifactId>
-      <version>${dependency.spark.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
       <version>${dependency.hikaricp.version}</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>

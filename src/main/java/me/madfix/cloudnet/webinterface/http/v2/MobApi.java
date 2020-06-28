@@ -104,7 +104,7 @@ public final class MobApi extends MethodWebHandlerAdapter {
         if (!HttpUser.hasPermission(user, "*", "cloudnet.web.module.mob.delete")) {
           return Response.permissionDenied(fullHttpResponse);
         }
-        webInterface.getMobDatabase().remove(mob);
+        webInterface.getMobDatabase().remove(mob.getUniqueId());
         CloudNet.getInstance().getNetworkManager().updateAll();
         return Response.success(fullHttpResponse, new Document());
 

@@ -36,7 +36,6 @@ public class ProxyConfigJsonAdapter implements JsonSerializer<ProxyConfig>,
             Motd.class);
     final String maintenaceProtocol = object.get("maintenaceProtocol").getAsString();
     final int maxPlayers = object.get("maxPlayers").getAsInt();
-    final boolean fastConnect = object.get("fastConnect").getAsBoolean();
     final boolean customPayloadFixer = object.get("customPayloadFixer").getAsBoolean();
     final AutoSlot autoSlot = jsonDeserializationContext
         .deserialize(object.get("autoSlot"), AutoSlot.class);
@@ -50,8 +49,7 @@ public class ProxyConfigJsonAdapter implements JsonSerializer<ProxyConfig>,
         .deserialize(object.get("dynamicFallback"),
             DynamicFallback.class);
     return new ProxyConfig(enabled, maintenance, motdsLayouts, maintenanceMotdLayout,
-        maintenaceProtocol, maxPlayers,
-        fastConnect, customPayloadFixer, autoSlot, tabList, playerInfos.toArray(new String[0]),
+        maintenaceProtocol, maxPlayers, customPayloadFixer, autoSlot, tabList, playerInfos.toArray(new String[0]),
         whitelist, dynamicFallback);
   }
 
@@ -69,7 +67,6 @@ public class ProxyConfigJsonAdapter implements JsonSerializer<ProxyConfig>,
         .serialize(proxyConfig.getMaintenanceMotdLayout()));
     object.addProperty("maintenaceProtocol", proxyConfig.getMaintenaceProtocol());
     object.addProperty("maxPlayers", proxyConfig.getMaxPlayers());
-    object.addProperty("fastConnect", proxyConfig.isFastConnect());
     object.addProperty("customPayloadFixer", proxyConfig.getCustomPayloadFixer());
     object.add("autoSlot", jsonSerializationContext.serialize(proxyConfig.getAutoSlot()));
     object.add("tabList", jsonSerializationContext.serialize(proxyConfig.getTabList()));
