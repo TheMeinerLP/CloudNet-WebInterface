@@ -36,7 +36,7 @@ public final class WebInterface extends CoreModule {
   private Map<String, List<String>> screenInfos = new HashMap<>();
   private SignDatabase signDatabase;
   private MobDatabase mobDatabase;
-  private Gson gson = new Gson();
+  private final Gson gson = new Gson();
 
   @Override
   public void onLoad() {
