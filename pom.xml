@@ -5,11 +5,11 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <name>CloudNet-Service-Websocket-Extension</name>
+  <name>CloudNet-Service-WebSocket-Extension</name>
   <artifactId>clounet-webinterface-restapi</artifactId>
   <groupId>me.madfix</groupId>
 
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
 
   <properties>
     <!-- Dependencies -->
@@ -29,7 +29,7 @@
 
   <repositories>
     <repository>
-      <id>cloudnet</id>
+      <id>CloudNet</id>
       <url>https://cloudnetservice.eu/repositories/</url>
     </repository>
   </repositories>
@@ -102,12 +102,6 @@
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
       <version>${dependency.hikaricp.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <version>${dependency.h2.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
