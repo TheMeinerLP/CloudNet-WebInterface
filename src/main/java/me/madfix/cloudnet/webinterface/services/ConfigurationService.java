@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.logging.Level;
 
 public final class ConfigurationService {
 
@@ -31,16 +32,17 @@ public final class ConfigurationService {
             return false;
         } else {
             try (BufferedReader configurationReader = Files.newBufferedReader(configurationFile, StandardCharsets.UTF_8)) { // Is needed to close the reader properly after reading the file
-                Optional<JsonElement> jsonConfig = Optional.empty();
+                Optional<JsonElement> jsonConfig;
                 try {
                     jsonConfig = Optional.of(JsonParser.parseReader(configurationReader));
                 } catch (JsonSyntaxException e) {
-                    CloudNet.getLogger().severe("[ConfigurationService] An unexpected error occurred while reading the configuration file ");
-                    e.printStackTrace();
+                    CloudNet.getLogger().log(Level.SEVERE,"[ConfigurationService] An unexpected error occurred while reading the configuration file ",e);
+                    return false;
                 }
                 jsonConfig.ifPresent(jsonElement -> this.optionalInterfaceConfiguration = this.gson.fromJson(jsonElement, InterfaceConfiguration.class));
             } catch (IOException e) {
-                e.printStackTrace();
+                CloudNet.getLogger().log(Level.SEVERE,"[ConfigurationService] An unexpected error occurred while reading the configuration file ",e);
+                return false;
             }
         }
         return true;

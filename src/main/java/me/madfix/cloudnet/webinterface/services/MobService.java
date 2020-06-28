@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 
 /**
  * Mob Service is a class used to manage CloudNet Mobs. With this class it should be possible to manage all functions CloudNet provides internally
@@ -77,15 +78,16 @@ final class MobService {
                 try {
                     jsonConfig = Optional.of(JsonParser.parseReader(bufferedReader));
                 } catch (JsonSyntaxException e) {
-                    CloudNet.getLogger().severe("[MobService] An unexpected error occurred while reading the configuration file.");
-                    CloudNet.getLogger().severe("[MobService] Mob service is deactivated to prevent errors. Please fix the errors and try the function again.");
                     this.enable = false;
-                    e.printStackTrace();
+                    CloudNet.getLogger().severe("[MobService] Mob service is deactivated to prevent errors. Please fix the errors and try the function again.");
+                    CloudNet.getLogger().log(Level.SEVERE, "[MobService] An unexpected error occurred while reading the configuration file.", e);
                 }
                 jsonConfig.ifPresent(jsonElement -> optionalCompletableFuture.complete(Optional.of(this.webInterface.getGson()
                         .fromJson(jsonElement, TypeToken.get(MobConfig.class).getType()))));
             } catch (IOException e) {
-                e.printStackTrace();
+                this.enable = false;
+                CloudNet.getLogger().severe("[MobService] Mob service is deactivated to prevent errors. Please fix the errors and try the function again.");
+                CloudNet.getLogger().log(Level.SEVERE, "[MobService] An unexpected error occurred while reading the configuration file.", e);
             }
         } else optionalCompletableFuture.cancel(true);
         return optionalCompletableFuture;
