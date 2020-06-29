@@ -20,7 +20,7 @@
     <dependency.mariadb.version>2.6.1</dependency.mariadb.version>
     <!-- Plugin Build Version -->
     <plugin.shade.version>3.2.4</plugin.shade.version>
-    <plugin.compiler.version>3.8.0</plugin.compiler.version>
+    <plugin.compiler.version>3.8.1</plugin.compiler.version>
     <plugin.surefire.version>2.22.2</plugin.surefire.version>
     <plugin.platform-surefire.version>1.1.0</plugin.platform-surefire.version>
     <plugin.jupiter.version>5.6.2</plugin.jupiter.version>
