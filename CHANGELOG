@@ -1,2 +1,8 @@
 1.0.0-SNAPSHOT:
--
+[+] Adding a configuration service
+[+] Adding a database configuration and its dependencies for MS SQL, MariaDB and H2
+[+] Adding hikari
+[+] Add issue template
+[+] Add pull request template
+[~] Improve readme
+[-] Removing gitlab ci
