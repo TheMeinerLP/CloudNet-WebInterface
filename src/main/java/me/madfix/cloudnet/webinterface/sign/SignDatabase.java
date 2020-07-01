@@ -5,7 +5,7 @@ import de.dytanic.cloudnet.lib.database.Database;
 import de.dytanic.cloudnet.lib.database.DatabaseDocument;
 import de.dytanic.cloudnet.lib.serverselectors.sign.Sign;
 import de.dytanic.cloudnet.lib.utility.document.Document;
-import me.madfix.cloudnet.webinterface.http.v2.utils.JsonUtil;
+import me.madfix.cloudnet.webinterface.http.v2.utils.JsonUtils;
 
 import java.util.Map;
 import java.util.UUID;
@@ -64,7 +64,7 @@ public final class SignDatabase extends DatabaseUsable {
         Document document = x.getDocument("signs");
         Map<UUID, Sign> signMap = document.keys().stream().collect(Collectors
                 .toMap(UUID::fromString,
-                        s -> JsonUtil.getGson().fromJson(document.get(s), Sign.class)));
+                        s -> JsonUtils.getGson().fromJson(document.get(s), Sign.class)));
         return signMap;
     }
 }

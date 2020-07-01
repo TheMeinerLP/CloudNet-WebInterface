@@ -2,7 +2,7 @@ package me.madfix.cloudnet.webinterface.http.v2.utils;
 
 import de.dytanic.cloudnet.lib.user.User;
 
-public final class HttpUser {
+public final class HttpUserHelper {
 
     /**
      * Check have the user the permission.

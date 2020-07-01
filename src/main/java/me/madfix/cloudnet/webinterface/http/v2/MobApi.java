@@ -12,7 +12,11 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import me.madfix.cloudnet.webinterface.WebInterface;
-import me.madfix.cloudnet.webinterface.http.v2.utils.*;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpResponseHelper;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpUserHelper;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpAuthHelper;
+import me.madfix.cloudnet.webinterface.http.v2.utils.JsonUtils;
+import me.madfix.cloudnet.webinterface.http.v2.utils.RequestHelper;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,35 +45,35 @@ public final class MobApi extends MethodWebHandlerAdapter {
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext,
                                 QueryDecoder queryDecoder,
                                 PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = HttpUtility.simpleCheck(httpRequest);
-        User user = HttpUtility.getUser(httpRequest);
+        FullHttpResponse fullHttpResponse = HttpAuthHelper.simpleCheck(httpRequest);
+        User user = HttpAuthHelper.getUser(httpRequest);
 
         Document resp = new Document();
-        if (!HttpUser.hasPermission(user, "*", "cloudnet.web.module.mob.load")) {
-            return HttpResponseUtility.permissionDenied(fullHttpResponse);
+        if (!HttpUserHelper.hasPermission(user, "*", "cloudnet.web.module.mob.load")) {
+            return HttpResponseHelper.permissionDenied(fullHttpResponse);
         }
-        switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
+        switch (RequestHelper.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
 
             case "check": {
                 resp.append("response", !CloudNet.getInstance().getConfig().getDisabledModules()
                         .contains("CloudNet-Service-MobModule"));
-                return HttpResponseUtility.success(fullHttpResponse, resp);
+                return HttpResponseHelper.success(fullHttpResponse, resp);
             }
             case "config": {
-                MobConfig config = JsonUtil.getGson().fromJson(Document.loadDocument(this.path)
+                MobConfig config = JsonUtils.getGson().fromJson(Document.loadDocument(this.path)
                         .get("mobConfig"), MobConfig.class);
-                resp.append("response", JsonUtil.getGson().toJson(config));
-                return HttpResponseUtility.success(fullHttpResponse, resp);
+                resp.append("response", JsonUtils.getGson().toJson(config));
+                return HttpResponseHelper.success(fullHttpResponse, resp);
             }
             case "db": {
                 resp.append("response", webInterface.getMobDatabase().loadAll().values().stream()
-                        .map(serverMob -> JsonUtil.getGson().toJson(serverMob)).collect(
+                        .map(serverMob -> JsonUtils.getGson().toJson(serverMob)).collect(
                                 Collectors.toList()));
-                return HttpResponseUtility.success(fullHttpResponse, resp);
+                return HttpResponseHelper.success(fullHttpResponse, resp);
 
             }
             default: {
-                return HttpResponseUtility.messageFieldNotFound(fullHttpResponse);
+                return HttpResponseHelper.messageFieldNotFound(fullHttpResponse);
             }
         }
     }
@@ -79,44 +83,44 @@ public final class MobApi extends MethodWebHandlerAdapter {
     public FullHttpResponse post(ChannelHandlerContext channelHandlerContext,
                                  QueryDecoder queryDecoder,
                                  PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = HttpUtility.simpleCheck(httpRequest);
-        User user = HttpUtility.getUser(httpRequest);
-        String content = Request.content(httpRequest);
-        switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
+        FullHttpResponse fullHttpResponse = HttpAuthHelper.simpleCheck(httpRequest);
+        User user = HttpAuthHelper.getUser(httpRequest);
+        String content = RequestHelper.content(httpRequest);
+        switch (RequestHelper.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
             case "save":
                 if (content.isEmpty()) {
-                    return HttpResponseUtility.badRequest(fullHttpResponse, new Document());
+                    return HttpResponseHelper.badRequest(fullHttpResponse, new Document());
                 }
-                if (!HttpUser.hasPermission(user, "*", "cloudnet.web.module.mob.save")) {
-                    return HttpResponseUtility.permissionDenied(fullHttpResponse);
+                if (!HttpUserHelper.hasPermission(user, "*", "cloudnet.web.module.mob.save")) {
+                    return HttpResponseHelper.permissionDenied(fullHttpResponse);
                 }
-                MobConfig signLayoutConfig = JsonUtil.getGson().fromJson(content, MobConfig.class);
+                MobConfig signLayoutConfig = JsonUtils.getGson().fromJson(content, MobConfig.class);
                 Document document = Document.loadDocument(this.path);
                 document.append("mobConfig", signLayoutConfig);
                 document.saveAsConfig(this.path);
                 CloudNet.getInstance().getNetworkManager().updateAll();
-                return HttpResponseUtility.success(fullHttpResponse, new Document());
+                return HttpResponseHelper.success(fullHttpResponse, new Document());
 
             case "delete":
-                ServerMob mob = JsonUtil.getGson().fromJson(content, ServerMob.class);
-                if (!HttpUser.hasPermission(user, "*", "cloudnet.web.module.mob.delete")) {
-                    return HttpResponseUtility.permissionDenied(fullHttpResponse);
+                ServerMob mob = JsonUtils.getGson().fromJson(content, ServerMob.class);
+                if (!HttpUserHelper.hasPermission(user, "*", "cloudnet.web.module.mob.delete")) {
+                    return HttpResponseHelper.permissionDenied(fullHttpResponse);
                 }
                 webInterface.getMobDatabase().remove(mob.getUniqueId());
                 CloudNet.getInstance().getNetworkManager().updateAll();
-                return HttpResponseUtility.success(fullHttpResponse, new Document());
+                return HttpResponseHelper.success(fullHttpResponse, new Document());
 
             case "add":
-                mob = JsonUtil.getGson().fromJson(content, ServerMob.class);
-                if (!HttpUser.hasPermission(user, "*", "cloudnet.web.module.mob.add")) {
-                    return HttpResponseUtility.permissionDenied(fullHttpResponse);
+                mob = JsonUtils.getGson().fromJson(content, ServerMob.class);
+                if (!HttpUserHelper.hasPermission(user, "*", "cloudnet.web.module.mob.add")) {
+                    return HttpResponseHelper.permissionDenied(fullHttpResponse);
                 }
                 webInterface.getMobDatabase().add(mob);
                 CloudNet.getInstance().getNetworkManager().updateAll();
-                return HttpResponseUtility.success(fullHttpResponse, new Document());
+                return HttpResponseHelper.success(fullHttpResponse, new Document());
 
             default:
-                return HttpResponseUtility.messageFieldNotFound(fullHttpResponse);
+                return HttpResponseHelper.messageFieldNotFound(fullHttpResponse);
 
         }
     }
@@ -125,6 +129,6 @@ public final class MobApi extends MethodWebHandlerAdapter {
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext,
                                     QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {
-        return HttpResponseUtility.cross(httpRequest);
+        return HttpResponseHelper.cross(httpRequest);
     }
 }

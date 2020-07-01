@@ -8,7 +8,7 @@ import io.netty.handler.codec.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
-public final class Request {
+public final class RequestHelper {
 
     /**
      * Check has header set.
@@ -66,8 +66,8 @@ public final class Request {
      * @return Return true if user authorized
      */
     public static boolean checkAuth(HttpRequest httpRequest) {
-        String username = Request.headerValue(httpRequest, "-xcloudnet-user");
-        String token = Request.headerValue(httpRequest, "-xcloudnet-token");
+        String username = RequestHelper.headerValue(httpRequest, "-xcloudnet-user");
+        String token = RequestHelper.headerValue(httpRequest, "-xcloudnet-token");
         return CloudNet.getInstance().authorization(username, token);
     }
 }

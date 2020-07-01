@@ -11,9 +11,9 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import me.madfix.cloudnet.webinterface.http.v2.utils.HttpUtility;
-import me.madfix.cloudnet.webinterface.http.v2.utils.Request;
-import me.madfix.cloudnet.webinterface.http.v2.utils.HttpResponseUtility;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpAuthHelper;
+import me.madfix.cloudnet.webinterface.http.v2.utils.RequestHelper;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpResponseHelper;
 
 import java.util.ArrayList;
 
@@ -35,14 +35,14 @@ public final class AuthenticationApi extends MethodWebHandlerAdapter {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(
                 httpRequest.getProtocolVersion(),
                 HttpResponseStatus.OK);
-        HttpResponseUtility.setHeader(fullHttpResponse, "Content-Type", "application/json");
-        if (!Request.hasHeader(httpRequest, "-xcloudnet-user", "-xcloudnet-password")) {
-            return HttpResponseUtility.cloudFieldNotFound(fullHttpResponse);
+        HttpResponseHelper.setHeader(fullHttpResponse, "Content-Type", "application/json");
+        if (!RequestHelper.hasHeader(httpRequest, "-xcloudnet-user", "-xcloudnet-password")) {
+            return HttpResponseHelper.cloudFieldNotFound(fullHttpResponse);
         }
-        String username = Request.headerValue(httpRequest, "-xcloudnet-user");
-        String userpassword = Request.headerValue(httpRequest, "-xcloudnet-password");
+        String username = RequestHelper.headerValue(httpRequest, "-xcloudnet-user");
+        String userpassword = RequestHelper.headerValue(httpRequest, "-xcloudnet-password");
         if (!CloudNet.getInstance().authorizationPassword(username, userpassword)) {
-            return HttpUtility.failedAuthorization(fullHttpResponse);
+            return HttpAuthHelper.failedAuthorization(fullHttpResponse);
         }
         User user = CloudNet.getInstance().getUser(username);
         Document userinfos = new Document();
@@ -53,13 +53,13 @@ public final class AuthenticationApi extends MethodWebHandlerAdapter {
         userinfos.append("permissions", new ArrayList<>(user.getPermissions()));
         Document document = new Document();
         document.append("response", userinfos);
-        return HttpResponseUtility.success(fullHttpResponse, document);
+        return HttpResponseHelper.success(fullHttpResponse, document);
     }
 
     @Override
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext,
                                     QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {
-        return HttpResponseUtility.cross(httpRequest);
+        return HttpResponseHelper.cross(httpRequest);
     }
 }

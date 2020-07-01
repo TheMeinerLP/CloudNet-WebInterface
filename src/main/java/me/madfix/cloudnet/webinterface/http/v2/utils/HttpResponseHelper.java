@@ -9,7 +9,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-public final class HttpResponseUtility {
+public final class HttpResponseHelper {
 
     /**
      * Send a permission denied message.

@@ -1,7 +1,19 @@
 package me.madfix.cloudnet.webinterface.adapter;
 
-import com.google.gson.*;
-import de.dytanic.cloudnet.lib.proxylayout.*;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import de.dytanic.cloudnet.lib.proxylayout.AutoSlot;
+import de.dytanic.cloudnet.lib.proxylayout.DynamicFallback;
+import de.dytanic.cloudnet.lib.proxylayout.Motd;
+import de.dytanic.cloudnet.lib.proxylayout.ProxyConfig;
+import de.dytanic.cloudnet.lib.proxylayout.TabList;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

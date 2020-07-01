@@ -12,10 +12,10 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import me.madfix.cloudnet.webinterface.WebInterface;
-import me.madfix.cloudnet.webinterface.http.v2.utils.HttpUtility;
-import me.madfix.cloudnet.webinterface.http.v2.utils.HttpUser;
-import me.madfix.cloudnet.webinterface.http.v2.utils.Request;
-import me.madfix.cloudnet.webinterface.http.v2.utils.HttpResponseUtility;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpAuthHelper;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpUserHelper;
+import me.madfix.cloudnet.webinterface.http.v2.utils.RequestHelper;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpResponseHelper;
 
 import java.util.Locale;
 
@@ -40,19 +40,19 @@ public final class MasterApi extends MethodWebHandlerAdapter {
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext,
                                 QueryDecoder queryDecoder,
                                 PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = HttpUtility.simpleCheck(httpRequest);
+        FullHttpResponse fullHttpResponse = HttpAuthHelper.simpleCheck(httpRequest);
         Document document = new Document();
-        switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
+        switch (RequestHelper.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
             case "corelog":
                 document.append("response", webInterface.getConsoleLines());
-                return HttpResponseUtility.success(fullHttpResponse, document);
+                return HttpResponseHelper.success(fullHttpResponse, document);
 
             case "commands":
                 document.append("response", webInterface.getCloud().getCommandManager().getCommands());
-                return HttpResponseUtility.success(fullHttpResponse, document);
+                return HttpResponseHelper.success(fullHttpResponse, document);
 
             default:
-                return HttpResponseUtility.messageFieldNotFound(fullHttpResponse);
+                return HttpResponseHelper.messageFieldNotFound(fullHttpResponse);
 
         }
     }
@@ -62,22 +62,22 @@ public final class MasterApi extends MethodWebHandlerAdapter {
     public FullHttpResponse post(ChannelHandlerContext channelHandlerContext,
                                  QueryDecoder queryDecoder,
                                  PathProvider pathProvider, HttpRequest httpRequest) throws Exception {
-        FullHttpResponse fullHttpResponse = HttpUtility.simpleCheck(httpRequest);
-        User user = HttpUtility.getUser(httpRequest);
+        FullHttpResponse fullHttpResponse = HttpAuthHelper.simpleCheck(httpRequest);
+        User user = HttpAuthHelper.getUser(httpRequest);
         Document document = new Document();
-        switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
+        switch (RequestHelper.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
             case "reloadall":
-                if (!HttpUser.hasPermission(user, "cloudnet.web.master.reload.all", "*",
+                if (!HttpUserHelper.hasPermission(user, "cloudnet.web.master.reload.all", "*",
                         "cloudnet.web.master.reload.*")) {
-                    return HttpResponseUtility.permissionDenied(fullHttpResponse);
+                    return HttpResponseHelper.permissionDenied(fullHttpResponse);
                 }
                 CloudNet.getInstance().reload();
-                return HttpResponseUtility.success(fullHttpResponse, document);
+                return HttpResponseHelper.success(fullHttpResponse, document);
 
             case "reloadconfig":
-                if (!HttpUser.hasPermission(user, "cloudnet.web.master.reload.config", "*",
+                if (!HttpUserHelper.hasPermission(user, "cloudnet.web.master.reload.config", "*",
                         "cloudnet.web.master.reload.*")) {
-                    return HttpResponseUtility.permissionDenied(fullHttpResponse);
+                    return HttpResponseHelper.permissionDenied(fullHttpResponse);
                 }
                 try {
                     CloudNet.getInstance().getConfig().load();
@@ -106,49 +106,49 @@ public final class MasterApi extends MethodWebHandlerAdapter {
                 CloudNet.getInstance().getNetworkManager().reload();
                 CloudNet.getInstance().getNetworkManager().updateAll();
                 CloudNet.getInstance().getWrappers().values().forEach(Wrapper::updateWrapper);
-                return HttpResponseUtility.success(fullHttpResponse, document);
+                return HttpResponseHelper.success(fullHttpResponse, document);
 
             case "reloadwrapper":
-                if (!HttpUser.hasPermission(user, "cloudnet.web.master.reload.wrapper", "*",
+                if (!HttpUserHelper.hasPermission(user, "cloudnet.web.master.reload.wrapper", "*",
                         "cloudnet.web.master.reload.*")) {
-                    return HttpResponseUtility.permissionDenied(fullHttpResponse);
+                    return HttpResponseHelper.permissionDenied(fullHttpResponse);
                 }
                 CloudNet.getInstance().getWrappers().values().stream().filter(wrapper ->
                         wrapper.getChannel() != null).forEach(wrapper ->
                         wrapper.sendCommand("reload"));
-                return HttpResponseUtility.success(fullHttpResponse, document);
+                return HttpResponseHelper.success(fullHttpResponse, document);
 
             case "clearcache":
-                if (!HttpUser.hasPermission(user, "cloudnet.web.master.clearcache", "*")) {
-                    return HttpResponseUtility.permissionDenied(fullHttpResponse);
+                if (!HttpUserHelper.hasPermission(user, "cloudnet.web.master.clearcache", "*")) {
+                    return HttpResponseHelper.permissionDenied(fullHttpResponse);
                 }
                 CloudNet.getInstance().getWrappers().values().stream().filter(wrapper ->
                         wrapper.getChannel() != null).forEach(wrapper ->
                         wrapper.sendCommand("clearcache"));
-                return HttpResponseUtility.success(fullHttpResponse, document);
+                return HttpResponseHelper.success(fullHttpResponse, document);
 
             case "stop":
-                if (!HttpUser.hasPermission(user, "cloudnet.web.master.stop", "*")) {
-                    return HttpResponseUtility.permissionDenied(fullHttpResponse);
+                if (!HttpUserHelper.hasPermission(user, "cloudnet.web.master.stop", "*")) {
+                    return HttpResponseHelper.permissionDenied(fullHttpResponse);
                 }
                 CloudNet.getInstance().shutdown();
-                return HttpResponseUtility.success(fullHttpResponse, document);
+                return HttpResponseHelper.success(fullHttpResponse, document);
 
             case "command":
-                if (Request.hasHeader(httpRequest, "-Xvalue")) {
-                    final String command = Request.headerValue(httpRequest, "-Xvalue");
-                    if (!HttpUser.hasPermission(user, "cloudnet.web.master.command.*", "*",
+                if (RequestHelper.hasHeader(httpRequest, "-Xvalue")) {
+                    final String command = RequestHelper.headerValue(httpRequest, "-Xvalue");
+                    if (!HttpUserHelper.hasPermission(user, "cloudnet.web.master.command.*", "*",
                             "cloudnet.web.master.command." + command)) {
-                        return HttpResponseUtility.permissionDenied(fullHttpResponse);
+                        return HttpResponseHelper.permissionDenied(fullHttpResponse);
                     }
                     webInterface.getCloud().getCommandManager().dispatchCommand(command);
-                    return HttpResponseUtility.success(fullHttpResponse, document);
+                    return HttpResponseHelper.success(fullHttpResponse, document);
                 } else {
-                    return HttpResponseUtility.valueFieldNotFound(fullHttpResponse);
+                    return HttpResponseHelper.valueFieldNotFound(fullHttpResponse);
                 }
 
             default:
-                return HttpResponseUtility.messageFieldNotFound(fullHttpResponse);
+                return HttpResponseHelper.messageFieldNotFound(fullHttpResponse);
 
         }
     }
@@ -157,6 +157,6 @@ public final class MasterApi extends MethodWebHandlerAdapter {
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext,
                                     QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {
-        return HttpResponseUtility.cross(httpRequest);
+        return HttpResponseHelper.cross(httpRequest);
     }
 }

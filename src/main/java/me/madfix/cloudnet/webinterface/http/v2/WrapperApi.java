@@ -9,7 +9,11 @@ import de.dytanic.cloudnetcore.CloudNet;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
-import me.madfix.cloudnet.webinterface.http.v2.utils.*;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpResponseHelper;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpAuthHelper;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpUserHelper;
+import me.madfix.cloudnet.webinterface.http.v2.utils.JsonUtils;
+import me.madfix.cloudnet.webinterface.http.v2.utils.RequestHelper;
 
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -31,27 +35,27 @@ public final class WrapperApi extends MethodWebHandlerAdapter {
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext,
                                 QueryDecoder queryDecoder,
                                 PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = HttpUtility.simpleCheck(httpRequest);
-        User user = HttpUtility.getUser(httpRequest);
-        switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
+        FullHttpResponse fullHttpResponse = HttpAuthHelper.simpleCheck(httpRequest);
+        User user = HttpAuthHelper.getUser(httpRequest);
+        switch (RequestHelper.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
             case "wrappers": {
                 Document document = new Document();
                 document.append("response", CloudNet.getInstance().getWrappers().keySet());
-                return HttpResponseUtility.success(fullHttpResponse, document);
+                return HttpResponseHelper.success(fullHttpResponse, document);
             }
             case "warpperinfos": {
-                if (!HttpUser.hasPermission(user, "*", "cloudnet.web.wrapper.item.*")) {
-                    return HttpResponseUtility.permissionDenied(fullHttpResponse);
+                if (!HttpUserHelper.hasPermission(user, "*", "cloudnet.web.wrapper.item.*")) {
+                    return HttpResponseHelper.permissionDenied(fullHttpResponse);
                 } else {
                     Document resp = new Document();
                     resp.append("response",
                             CloudNet.getInstance().getWrappers().values().stream()
-                                    .map(wrapper -> JsonUtil.getGson().toJson(wrapper)).collect(Collectors.toList()));
-                    return HttpResponseUtility.success(fullHttpResponse, resp);
+                                    .map(wrapper -> JsonUtils.getGson().toJson(wrapper)).collect(Collectors.toList()));
+                    return HttpResponseHelper.success(fullHttpResponse, resp);
                 }
             }
             default: {
-                return HttpResponseUtility.messageFieldNotFound(fullHttpResponse);
+                return HttpResponseHelper.messageFieldNotFound(fullHttpResponse);
             }
         }
     }
@@ -60,6 +64,6 @@ public final class WrapperApi extends MethodWebHandlerAdapter {
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext,
                                     QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {
-        return HttpResponseUtility.cross(httpRequest);
+        return HttpResponseHelper.cross(httpRequest);
     }
 }

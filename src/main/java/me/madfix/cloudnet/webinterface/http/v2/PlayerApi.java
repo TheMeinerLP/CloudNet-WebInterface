@@ -12,10 +12,10 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import me.madfix.cloudnet.webinterface.WebInterface;
-import me.madfix.cloudnet.webinterface.http.v2.utils.HttpUtility;
-import me.madfix.cloudnet.webinterface.http.v2.utils.HttpUser;
-import me.madfix.cloudnet.webinterface.http.v2.utils.Request;
-import me.madfix.cloudnet.webinterface.http.v2.utils.HttpResponseUtility;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpAuthHelper;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpUserHelper;
+import me.madfix.cloudnet.webinterface.http.v2.utils.RequestHelper;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpResponseHelper;
 
 import java.util.Locale;
 import java.util.UUID;
@@ -39,17 +39,17 @@ public final class PlayerApi extends MethodWebHandlerAdapter {
     @Override
     public FullHttpResponse post(ChannelHandlerContext channelHandlerContext,
                                  QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = HttpUtility.simpleCheck(httpRequest);
+        FullHttpResponse fullHttpResponse = HttpAuthHelper.simpleCheck(httpRequest);
         User user = CloudNet.getInstance()
-                .getUser(Request.headerValue(httpRequest, "-xcloudnet-user"));
+                .getUser(RequestHelper.headerValue(httpRequest, "-xcloudnet-user"));
         Document document = new Document();
-        if ("send".equals(Request.headerValue(httpRequest, "-Xmessage")
-                .toLowerCase(Locale.ENGLISH)) && Request.hasHeader(httpRequest, "-Xvalue", "-Xcount")) {
-            String player = Request.headerValue(httpRequest, "-Xvalue");
-            String server = Request.headerValue(httpRequest, "-Xcount");
-            if (!HttpUser.hasPermission(user, "cloudnet.web.player.send", "*",
+        if ("send".equals(RequestHelper.headerValue(httpRequest, "-Xmessage")
+                .toLowerCase(Locale.ENGLISH)) && RequestHelper.hasHeader(httpRequest, "-Xvalue", "-Xcount")) {
+            String player = RequestHelper.headerValue(httpRequest, "-Xvalue");
+            String server = RequestHelper.headerValue(httpRequest, "-Xcount");
+            if (!HttpUserHelper.hasPermission(user, "cloudnet.web.player.send", "*",
                     "cloudnet.web.player.*", "cloudnet.web.player.send." + player)) {
-                return HttpResponseUtility.permissionDenied(fullHttpResponse);
+                return HttpResponseHelper.permissionDenied(fullHttpResponse);
             }
             if (player.matches(
                     "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")) {
@@ -60,29 +60,29 @@ public final class PlayerApi extends MethodWebHandlerAdapter {
                 if (player.equalsIgnoreCase("*")) {
                     this.webInterface.getCloud().getNetworkManager().getOnlinePlayers().values()
                             .forEach(t -> CorePlayerExecutor.INSTANCE.sendPlayer(t, server));
-                    return HttpResponseUtility.success(fullHttpResponse, document);
+                    return HttpResponseHelper.success(fullHttpResponse, document);
                 } else {
                     UUID uuid = CloudNet.getInstance().getDbHandlers().getNameToUUIDDatabase()
                             .get(player);
                     if (uuid == null) {
                         document.append("code", 404);
-                        return HttpResponseUtility.badRequest(fullHttpResponse, document);
+                        return HttpResponseHelper.badRequest(fullHttpResponse, document);
                     }
                     CloudPlayer cloudPlayer = CloudNet.getInstance().getNetworkManager()
                             .getOnlinePlayer(uuid);
                     CorePlayerExecutor.INSTANCE.sendPlayer(cloudPlayer, server);
-                    return HttpResponseUtility.success(fullHttpResponse, document);
+                    return HttpResponseHelper.success(fullHttpResponse, document);
                 }
             }
-            return HttpResponseUtility.success(fullHttpResponse, document);
+            return HttpResponseHelper.success(fullHttpResponse, document);
         }
-        return HttpResponseUtility.messageFieldNotFound(fullHttpResponse);
+        return HttpResponseHelper.messageFieldNotFound(fullHttpResponse);
     }
 
     @Override
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext,
                                     QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {
-        return HttpResponseUtility.cross(httpRequest);
+        return HttpResponseHelper.cross(httpRequest);
     }
 }

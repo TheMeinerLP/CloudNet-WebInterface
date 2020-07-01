@@ -10,9 +10,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import me.madfix.cloudnet.webinterface.WebInterface;
-import me.madfix.cloudnet.webinterface.http.v2.utils.HttpUtility;
-import me.madfix.cloudnet.webinterface.http.v2.utils.Request;
-import me.madfix.cloudnet.webinterface.http.v2.utils.HttpResponseUtility;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpAuthHelper;
+import me.madfix.cloudnet.webinterface.http.v2.utils.RequestHelper;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpResponseHelper;
 
 import java.util.Locale;
 
@@ -37,16 +37,16 @@ public final class UtilsApi extends MethodWebHandlerAdapter {
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext,
                                 QueryDecoder queryDecoder,
                                 PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = HttpUtility.simpleCheck(httpRequest);
+        FullHttpResponse fullHttpResponse = HttpAuthHelper.simpleCheck(httpRequest);
         Document document = new Document();
-        switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
+        switch (RequestHelper.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
             case "version":
                 document.append("response", webInterface.getModuleConfig().getVersion());
-                return HttpResponseUtility.success(fullHttpResponse, document);
+                return HttpResponseHelper.success(fullHttpResponse, document);
 
             case "cloudversion":
                 document.append("response", NetworkUtils.class.getPackage().getImplementationVersion());
-                return HttpResponseUtility.success(fullHttpResponse, document);
+                return HttpResponseHelper.success(fullHttpResponse, document);
             case "badges":
                 Document infos = new Document();
                 infos.append("proxy_groups", CloudNet.getInstance().getProxyGroups().size());
@@ -55,14 +55,14 @@ public final class UtilsApi extends MethodWebHandlerAdapter {
                 infos.append("servers", CloudNet.getInstance().getServers().size());
                 infos.append("wrappers", CloudNet.getInstance().getWrappers().values().size());
                 document.append("response", infos);
-                return HttpResponseUtility.success(fullHttpResponse, document);
+                return HttpResponseHelper.success(fullHttpResponse, document);
 
             case "cloudstats":
                 document.append("response",
                         CloudNet.getInstance().getDbHandlers().getStatisticManager().getStatistics());
-                return HttpResponseUtility.success(fullHttpResponse, document);
+                return HttpResponseHelper.success(fullHttpResponse, document);
             default:
-                return HttpResponseUtility.messageFieldNotFound(fullHttpResponse);
+                return HttpResponseHelper.messageFieldNotFound(fullHttpResponse);
 
         }
     }
@@ -71,6 +71,6 @@ public final class UtilsApi extends MethodWebHandlerAdapter {
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext,
                                     QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {
-        return HttpResponseUtility.cross(httpRequest);
+        return HttpResponseHelper.cross(httpRequest);
     }
 }

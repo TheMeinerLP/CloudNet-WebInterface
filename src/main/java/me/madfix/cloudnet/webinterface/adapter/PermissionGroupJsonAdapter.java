@@ -2,7 +2,7 @@ package me.madfix.cloudnet.webinterface.adapter;
 
 import com.google.gson.*;
 import de.dytanic.cloudnet.lib.player.permission.PermissionGroup;
-import me.madfix.cloudnet.webinterface.http.v2.utils.JsonUtil;
+import me.madfix.cloudnet.webinterface.http.v2.utils.JsonUtils;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class PermissionGroupJsonAdapter implements JsonDeserializer<PermissionGr
         object.get("options").getAsJsonArray().forEach(t -> {
             JsonObject object1 = t.getAsJsonObject();
             String key = object1.get("key").getAsString();
-            Object obj = JsonUtil.getGson().fromJson(object1.get("value"), Object.class);
+            Object obj = JsonUtils.getGson().fromJson(object1.get("value"), Object.class);
             options.put(key, obj);
         });
         List<String> implement = new ArrayList<>();
@@ -86,7 +86,7 @@ public class PermissionGroupJsonAdapter implements JsonDeserializer<PermissionGr
         permissionGroup.getOptions().forEach((x, y) -> {
             JsonObject option = new JsonObject();
             option.addProperty("key", x);
-            option.addProperty("value", JsonUtil.getGson().toJson(y));
+            option.addProperty("value", JsonUtils.getGson().toJson(y));
             options.add(option);
         });
         object.add("options", options);

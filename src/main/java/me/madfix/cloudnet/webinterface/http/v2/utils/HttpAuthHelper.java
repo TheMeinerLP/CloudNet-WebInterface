@@ -10,7 +10,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.nio.charset.StandardCharsets;
 
-public final class HttpUtility {
+public final class HttpAuthHelper {
 
     /**
      * Do the simple check of a http response and check if the user authorized.
@@ -21,22 +21,22 @@ public final class HttpUtility {
     public static FullHttpResponse simpleCheck(HttpRequest httpRequest) {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.protocolVersion(),
                 HttpResponseStatus.OK);
-        HttpResponseUtility.setHeader(fullHttpResponse, "Content-Type",
+        HttpResponseHelper.setHeader(fullHttpResponse, "Content-Type",
                 "application/json; charset=utf-8");
-        if (!Request
+        if (!RequestHelper
                 .hasHeader(httpRequest, "-xcloudnet-user",
                         "-Xcloudnet-token", "-xcloudnet-message")) {
-            return HttpResponseUtility.cloudFieldNotFound(fullHttpResponse);
+            return HttpResponseHelper.cloudFieldNotFound(fullHttpResponse);
         }
-        if (!Request.checkAuth(httpRequest)) {
-            return HttpUtility.failedAuthorization(fullHttpResponse);
+        if (!RequestHelper.checkAuth(httpRequest)) {
+            return HttpAuthHelper.failedAuthorization(fullHttpResponse);
         }
         return fullHttpResponse;
     }
 
     public static User getUser(HttpRequest httpRequest) {
         return CloudNet.getInstance()
-                .getUser(Request.headerValue(httpRequest, "-xcloudnet-user"));
+                .getUser(RequestHelper.headerValue(httpRequest, "-xcloudnet-user"));
     }
 
     /**
