@@ -9,9 +9,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import me.madfix.cloudnet.webinterface.WebInterface;
-import me.madfix.cloudnet.webinterface.http.v2.utils.Http;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpUtility;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Request;
-import me.madfix.cloudnet.webinterface.http.v2.utils.Response;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpResponseUtility;
 
 import java.util.Locale;
 import java.util.stream.IntStream;
@@ -37,26 +37,26 @@ public final class DashboardApi extends MethodWebHandlerAdapter {
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext,
                                 QueryDecoder queryDecoder,
                                 PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = Http.simpleCheck(httpRequest);
+        FullHttpResponse fullHttpResponse = HttpUtility.simpleCheck(httpRequest);
         Document document = new Document();
         switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
             case "players":
                 IntStream stream = webInterface.getCloud().getServerGroups().keySet().stream()
                         .mapToInt(server -> webInterface.getCloud().getOnlineCount(server));
                 document.append("response", stream.sum());
-                return Response.success(fullHttpResponse, document);
+                return HttpResponseUtility.success(fullHttpResponse, document);
             case "servers":
                 document.append("response", webInterface.getCloud().getServers().size());
-                return Response.success(fullHttpResponse, document);
+                return HttpResponseUtility.success(fullHttpResponse, document);
 
             case "proxys":
                 document.append("response", webInterface.getCloud().getProxys().size());
-                return Response.success(fullHttpResponse, document);
+                return HttpResponseUtility.success(fullHttpResponse, document);
             case "groups":
                 document.append("response", webInterface.getCloud().getServerGroups().size());
-                return Response.success(fullHttpResponse, document);
+                return HttpResponseUtility.success(fullHttpResponse, document);
             default:
-                return Response.messageFieldNotFound(fullHttpResponse);
+                return HttpResponseUtility.messageFieldNotFound(fullHttpResponse);
         }
     }
 
@@ -64,6 +64,6 @@ public final class DashboardApi extends MethodWebHandlerAdapter {
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext,
                                     QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {
-        return Response.cross(httpRequest);
+        return HttpResponseUtility.cross(httpRequest);
     }
 }

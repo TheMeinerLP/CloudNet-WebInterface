@@ -10,7 +10,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.nio.charset.StandardCharsets;
 
-public final class Http {
+public final class HttpUtility {
 
     /**
      * Do the simple check of a http response and check if the user authorized.
@@ -21,15 +21,15 @@ public final class Http {
     public static FullHttpResponse simpleCheck(HttpRequest httpRequest) {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.protocolVersion(),
                 HttpResponseStatus.OK);
-        Response.setHeader(fullHttpResponse, "Content-Type",
+        HttpResponseUtility.setHeader(fullHttpResponse, "Content-Type",
                 "application/json; charset=utf-8");
         if (!Request
                 .hasHeader(httpRequest, "-xcloudnet-user",
                         "-Xcloudnet-token", "-xcloudnet-message")) {
-            return Response.cloudFieldNotFound(fullHttpResponse);
+            return HttpResponseUtility.cloudFieldNotFound(fullHttpResponse);
         }
         if (!Request.checkAuth(httpRequest)) {
-            return Http.failedAuthorization(fullHttpResponse);
+            return HttpUtility.failedAuthorization(fullHttpResponse);
         }
         return fullHttpResponse;
     }

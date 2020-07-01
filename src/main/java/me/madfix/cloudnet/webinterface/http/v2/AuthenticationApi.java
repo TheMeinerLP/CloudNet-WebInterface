@@ -11,9 +11,9 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import me.madfix.cloudnet.webinterface.http.v2.utils.Http;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpUtility;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Request;
-import me.madfix.cloudnet.webinterface.http.v2.utils.Response;
+import me.madfix.cloudnet.webinterface.http.v2.utils.HttpResponseUtility;
 
 import java.util.ArrayList;
 
@@ -35,14 +35,14 @@ public final class AuthenticationApi extends MethodWebHandlerAdapter {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(
                 httpRequest.getProtocolVersion(),
                 HttpResponseStatus.OK);
-        Response.setHeader(fullHttpResponse, "Content-Type", "application/json");
+        HttpResponseUtility.setHeader(fullHttpResponse, "Content-Type", "application/json");
         if (!Request.hasHeader(httpRequest, "-xcloudnet-user", "-xcloudnet-password")) {
-            return Response.cloudFieldNotFound(fullHttpResponse);
+            return HttpResponseUtility.cloudFieldNotFound(fullHttpResponse);
         }
         String username = Request.headerValue(httpRequest, "-xcloudnet-user");
         String userpassword = Request.headerValue(httpRequest, "-xcloudnet-password");
         if (!CloudNet.getInstance().authorizationPassword(username, userpassword)) {
-            return Http.failedAuthorization(fullHttpResponse);
+            return HttpUtility.failedAuthorization(fullHttpResponse);
         }
         User user = CloudNet.getInstance().getUser(username);
         Document userinfos = new Document();
@@ -53,13 +53,13 @@ public final class AuthenticationApi extends MethodWebHandlerAdapter {
         userinfos.append("permissions", new ArrayList<>(user.getPermissions()));
         Document document = new Document();
         document.append("response", userinfos);
-        return Response.success(fullHttpResponse, document);
+        return HttpResponseUtility.success(fullHttpResponse, document);
     }
 
     @Override
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext,
                                     QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {
-        return Response.cross(httpRequest);
+        return HttpResponseUtility.cross(httpRequest);
     }
 }

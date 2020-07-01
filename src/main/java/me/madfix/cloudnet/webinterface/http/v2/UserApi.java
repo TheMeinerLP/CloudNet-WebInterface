@@ -43,19 +43,19 @@ public final class UserApi extends MethodWebHandlerAdapter {
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext,
                                 QueryDecoder queryDecoder,
                                 PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = Http.simpleCheck(httpRequest);
-        User user = Http.getUser(httpRequest);
+        FullHttpResponse fullHttpResponse = HttpUtility.simpleCheck(httpRequest);
+        User user = HttpUtility.getUser(httpRequest);
         Document resp = new Document();
         if (Request.headerValue(httpRequest, "-Xmessage").equalsIgnoreCase("users")) {
             if (!HttpUser.hasPermission(user, "*", "cloudnet.web.user.item.*")) {
-                return Response.permissionDenied(fullHttpResponse);
+                return HttpResponseUtility.permissionDenied(fullHttpResponse);
             } else {
                 resp.append("response", CloudNet.getInstance().getUsers().stream()
                         .map(user1 -> JsonUtil.getGson().toJson(user1)).collect(Collectors.toList()));
-                return Response.success(fullHttpResponse, resp);
+                return HttpResponseUtility.success(fullHttpResponse, resp);
             }
         } else {
-            return Response.messageFieldNotFound(fullHttpResponse);
+            return HttpResponseUtility.messageFieldNotFound(fullHttpResponse);
         }
     }
 
@@ -64,18 +64,18 @@ public final class UserApi extends MethodWebHandlerAdapter {
     public FullHttpResponse post(ChannelHandlerContext channelHandlerContext,
                                  QueryDecoder queryDecoder,
                                  PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = Http.simpleCheck(httpRequest);
-        User user = Http.getUser(httpRequest);
+        FullHttpResponse fullHttpResponse = HttpUtility.simpleCheck(httpRequest);
+        User user = HttpUtility.getUser(httpRequest);
         String jsonuser = Request.content(httpRequest);
         switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
             case "save":
                 if (jsonuser.length() < 1) {
-                    return Response.badRequest(fullHttpResponse, new Document());
+                    return HttpResponseUtility.badRequest(fullHttpResponse, new Document());
                 }
                 User saveduser = JsonUtil.getGson().fromJson(jsonuser, User.class);
                 if (!HttpUser.hasPermission(user, "*", "cloudnet.web.user.save.*",
                         "cloudnet.web.user.save." + saveduser.getName())) {
-                    return Response.permissionDenied(fullHttpResponse);
+                    return HttpResponseUtility.permissionDenied(fullHttpResponse);
                 } else {
                     Optional<User> oldUser = CloudNet.getInstance().getUsers().stream()
                             .filter(u -> u.getName().equals(saveduser.getName())).findAny();
@@ -83,9 +83,9 @@ public final class UserApi extends MethodWebHandlerAdapter {
                         CloudNet.getInstance().getUsers().remove(oldUser.get());
                         CloudNet.getInstance().getUsers().add(saveduser);
                         CloudNet.getInstance().getConfig().save(CloudNet.getInstance().getUsers());
-                        return Response.success(fullHttpResponse, new Document());
+                        return HttpResponseUtility.success(fullHttpResponse, new Document());
                     } else {
-                        return Response.badRequest(fullHttpResponse, new Document());
+                        return HttpResponseUtility.badRequest(fullHttpResponse, new Document());
                     }
                 }
             case "reset":
@@ -93,7 +93,7 @@ public final class UserApi extends MethodWebHandlerAdapter {
                 User editUser = CloudNet.getInstance().getUser(usern.get("username").getAsString());
                 if (!HttpUser.hasPermission(user, "*", "cloudnet.web.user.restepassword.*",
                         "cloudnet.web.user.restepassword." + editUser.getName())) {
-                    return Response.permissionDenied(fullHttpResponse);
+                    return HttpResponseUtility.permissionDenied(fullHttpResponse);
                 } else {
                     User newUser = new User(editUser.getName(), editUser.getUniqueId(),
                             editUser.getApiToken(),
@@ -107,18 +107,18 @@ public final class UserApi extends MethodWebHandlerAdapter {
                         CloudNet.getInstance().getUsers().remove(oldUser.get());
                         CloudNet.getInstance().getUsers().add(newUser);
                         this.webInterface.getCloud().getConfig().save(webInterface.getCloud().getUsers());
-                        return Response.success(fullHttpResponse, new Document());
+                        return HttpResponseUtility.success(fullHttpResponse, new Document());
                     } else {
-                        return Response.badRequest(fullHttpResponse, new Document());
+                        return HttpResponseUtility.badRequest(fullHttpResponse, new Document());
                     }
                 }
             case "add":
                 if (!HttpUser.hasPermission(user, "*", "cloudnet.web.user.add.*")) {
-                    return Response.permissionDenied(fullHttpResponse);
+                    return HttpResponseUtility.permissionDenied(fullHttpResponse);
                 } else {
                     jsonuser = Request.content(httpRequest);
                     if (jsonuser.isEmpty()) {
-                        return Response.badRequest(fullHttpResponse, new Document());
+                        return HttpResponseUtility.badRequest(fullHttpResponse, new Document());
                     }
                     usern = Document.load(jsonuser);
                     BasicUser basicUser = new BasicUser(usern.get("username").getAsString(),
@@ -129,9 +129,9 @@ public final class UserApi extends MethodWebHandlerAdapter {
                             .noneMatch(u -> u.getName().equals(basicUser.getName()))) {
                         CloudNet.getInstance().getUsers().add(basicUser);
                         CloudNet.getInstance().getConfig().save(CloudNet.getInstance().getUsers());
-                        return Response.success(fullHttpResponse, new Document());
+                        return HttpResponseUtility.success(fullHttpResponse, new Document());
                     } else {
-                        return Response.badRequest(fullHttpResponse, new Document());
+                        return HttpResponseUtility.badRequest(fullHttpResponse, new Document());
                     }
                 }
             case "delete":
@@ -139,23 +139,23 @@ public final class UserApi extends MethodWebHandlerAdapter {
                     final String username1 = Request.headerValue(httpRequest, "-Xvalue");
                     if (!HttpUser.hasPermission(user, "cloudnet.web.user.delete.*", "*",
                             "cloudnet.web.user.delete." + username1)) {
-                        return Response.permissionDenied(fullHttpResponse);
+                        return HttpResponseUtility.permissionDenied(fullHttpResponse);
                     }
                     Optional<User> oldUser = CloudNet.getInstance().getUsers().stream()
                             .filter(u -> u.getName().equals(username1)).findAny();
                     if (oldUser.isPresent()) {
                         CloudNet.getInstance().getUsers().remove(oldUser.get());
                         this.webInterface.getCloud().getConfig().save(webInterface.getCloud().getUsers());
-                        return Response.success(fullHttpResponse, new Document());
+                        return HttpResponseUtility.success(fullHttpResponse, new Document());
                     } else {
-                        return Response.badRequest(fullHttpResponse, new Document());
+                        return HttpResponseUtility.badRequest(fullHttpResponse, new Document());
                     }
                 } else {
-                    return Response.valueFieldNotFound(fullHttpResponse);
+                    return HttpResponseUtility.valueFieldNotFound(fullHttpResponse);
                 }
 
             default:
-                return Response.messageFieldNotFound(fullHttpResponse);
+                return HttpResponseUtility.messageFieldNotFound(fullHttpResponse);
 
         }
     }
@@ -164,6 +164,6 @@ public final class UserApi extends MethodWebHandlerAdapter {
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext,
                                     QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {
-        return Response.cross(httpRequest);
+        return HttpResponseUtility.cross(httpRequest);
     }
 }

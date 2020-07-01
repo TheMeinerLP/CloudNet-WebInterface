@@ -31,27 +31,27 @@ public final class WrapperApi extends MethodWebHandlerAdapter {
     public FullHttpResponse get(ChannelHandlerContext channelHandlerContext,
                                 QueryDecoder queryDecoder,
                                 PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = Http.simpleCheck(httpRequest);
-        User user = Http.getUser(httpRequest);
+        FullHttpResponse fullHttpResponse = HttpUtility.simpleCheck(httpRequest);
+        User user = HttpUtility.getUser(httpRequest);
         switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
             case "wrappers": {
                 Document document = new Document();
                 document.append("response", CloudNet.getInstance().getWrappers().keySet());
-                return Response.success(fullHttpResponse, document);
+                return HttpResponseUtility.success(fullHttpResponse, document);
             }
             case "warpperinfos": {
                 if (!HttpUser.hasPermission(user, "*", "cloudnet.web.wrapper.item.*")) {
-                    return Response.permissionDenied(fullHttpResponse);
+                    return HttpResponseUtility.permissionDenied(fullHttpResponse);
                 } else {
                     Document resp = new Document();
                     resp.append("response",
                             CloudNet.getInstance().getWrappers().values().stream()
                                     .map(wrapper -> JsonUtil.getGson().toJson(wrapper)).collect(Collectors.toList()));
-                    return Response.success(fullHttpResponse, resp);
+                    return HttpResponseUtility.success(fullHttpResponse, resp);
                 }
             }
             default: {
-                return Response.messageFieldNotFound(fullHttpResponse);
+                return HttpResponseUtility.messageFieldNotFound(fullHttpResponse);
             }
         }
     }
@@ -60,6 +60,6 @@ public final class WrapperApi extends MethodWebHandlerAdapter {
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext,
                                     QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {
-        return Response.cross(httpRequest);
+        return HttpResponseUtility.cross(httpRequest);
     }
 }

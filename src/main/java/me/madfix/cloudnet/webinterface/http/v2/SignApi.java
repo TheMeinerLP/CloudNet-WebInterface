@@ -50,24 +50,24 @@ public final class SignApi extends MethodWebHandlerAdapter {
         new DefaultFullHttpResponse(
                 httpRequest.getProtocolVersion(),
                 HttpResponseStatus.OK);
-        FullHttpResponse fullHttpResponse = Http.simpleCheck(httpRequest);
-        User user = Http.getUser(httpRequest);
+        FullHttpResponse fullHttpResponse = HttpUtility.simpleCheck(httpRequest);
+        User user = HttpUtility.getUser(httpRequest);
 
         if (!HttpUser.hasPermission(user, "*", "cloudnet.web.module.sign.load")) {
-            return Response.permissionDenied(fullHttpResponse);
+            return HttpResponseUtility.permissionDenied(fullHttpResponse);
         }
         Document resp = new Document();
         switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
             case "check":
                 resp.append("response", !CloudNet.getInstance().getConfig().getDisabledModules()
                         .contains("CloudNet-Service-SignsModule"));
-                return Response.success(fullHttpResponse, resp);
+                return HttpResponseUtility.success(fullHttpResponse, resp);
             case "config":
                 Document document = Document.loadDocument(this.path);
                 SignLayoutConfig signLayoutConfig = JsonUtil.getGson()
                         .fromJson(document.get("layout_config"), SignLayoutConfig.class);
                 resp.append("response", JsonUtil.getGson().toJson(signLayoutConfig));
-                return Response.success(fullHttpResponse, resp);
+                return HttpResponseUtility.success(fullHttpResponse, resp);
             case "random":
                 Random random = new Random();
                 ArrayList<MinecraftServer> arrayList = new ArrayList<>(
@@ -75,17 +75,17 @@ public final class SignApi extends MethodWebHandlerAdapter {
                 if (arrayList.size() > 0) {
                     resp.append("response",
                             JsonUtil.getGson().toJson(arrayList.get(random.nextInt(arrayList.size()))));
-                    return Response.success(fullHttpResponse, resp);
+                    return HttpResponseUtility.success(fullHttpResponse, resp);
                 } else {
-                    return Response.badRequest(fullHttpResponse, new Document());
+                    return HttpResponseUtility.badRequest(fullHttpResponse, new Document());
                 }
             case "db":
                 resp.append("response",
                         webInterface.getSignDatabase().loadAll().values().stream().map(sign ->
                                 JsonUtil.getGson().toJson(sign)).collect(Collectors.toList()));
-                return Response.success(fullHttpResponse, resp);
+                return HttpResponseUtility.success(fullHttpResponse, resp);
             default:
-                return Response.messageFieldNotFound(fullHttpResponse);
+                return HttpResponseUtility.messageFieldNotFound(fullHttpResponse);
         }
     }
 
@@ -94,16 +94,16 @@ public final class SignApi extends MethodWebHandlerAdapter {
     public FullHttpResponse post(ChannelHandlerContext channelHandlerContext,
                                  QueryDecoder queryDecoder,
                                  PathProvider pathProvider, HttpRequest httpRequest) {
-        FullHttpResponse fullHttpResponse = Http.simpleCheck(httpRequest);
-        User user = Http.getUser(httpRequest);
+        FullHttpResponse fullHttpResponse = HttpUtility.simpleCheck(httpRequest);
+        User user = HttpUtility.getUser(httpRequest);
         switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
             case "save": {
                 String content = Request.content(httpRequest);
                 if (content.isEmpty()) {
-                    return Response.badRequest(fullHttpResponse, new Document());
+                    return HttpResponseUtility.badRequest(fullHttpResponse, new Document());
                 }
                 if (!HttpUser.hasPermission(user, "*", "cloudnet.web.module.sign.save")) {
-                    return Response.permissionDenied(fullHttpResponse);
+                    return HttpResponseUtility.permissionDenied(fullHttpResponse);
                 }
                 SignLayoutConfig signLayoutConfig = JsonUtil.getGson()
                         .fromJson(content, SignLayoutConfig.class);
@@ -111,31 +111,31 @@ public final class SignApi extends MethodWebHandlerAdapter {
                 document.append("layout_config", signLayoutConfig);
                 document.saveAsConfig(this.path);
                 CloudNet.getInstance().getNetworkManager().updateAll();
-                return Response.success(fullHttpResponse, new Document());
+                return HttpResponseUtility.success(fullHttpResponse, new Document());
             }
             case "delete": {
                 String content = Request.content(httpRequest);
                 if (!HttpUser.hasPermission(user, "*", "cloudnet.web.module.sign.delete.*")) {
-                    return Response.permissionDenied(fullHttpResponse);
+                    return HttpResponseUtility.permissionDenied(fullHttpResponse);
                 }
                 UUID id = UUID.fromString(content);
                 webInterface.getSignDatabase().removeSign(id);
                 CloudNet.getInstance().getNetworkManager().updateAll();
-                return Response.success(fullHttpResponse, new Document());
+                return HttpResponseUtility.success(fullHttpResponse, new Document());
             }
 
             case "add": {
                 if (!HttpUser.hasPermission(user, "*", "cloudnet.web.module.sign.add")) {
-                    return Response.permissionDenied(fullHttpResponse);
+                    return HttpResponseUtility.permissionDenied(fullHttpResponse);
                 }
                 String content = Request.content(httpRequest);
                 Sign s = JsonUtil.getGson().fromJson(content, Sign.class);
                 webInterface.getSignDatabase().appendSign(s);
                 CloudNet.getInstance().getNetworkManager().updateAll();
-                return Response.success(fullHttpResponse, new Document());
+                return HttpResponseUtility.success(fullHttpResponse, new Document());
             }
             default: {
-                return Response.messageFieldNotFound(fullHttpResponse);
+                return HttpResponseUtility.messageFieldNotFound(fullHttpResponse);
             }
         }
     }
@@ -144,6 +144,6 @@ public final class SignApi extends MethodWebHandlerAdapter {
     public FullHttpResponse options(ChannelHandlerContext channelHandlerContext,
                                     QueryDecoder queryDecoder,
                                     PathProvider pathProvider, HttpRequest httpRequest) {
-        return Response.cross(httpRequest);
+        return HttpResponseUtility.cross(httpRequest);
     }
 }
