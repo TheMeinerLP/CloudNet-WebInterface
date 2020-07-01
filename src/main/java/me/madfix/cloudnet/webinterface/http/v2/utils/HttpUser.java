@@ -1,11 +1,6 @@
 package me.madfix.cloudnet.webinterface.http.v2.utils;
 
 import de.dytanic.cloudnet.lib.user.User;
-import de.dytanic.cloudnet.lib.utility.document.Document;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpResponseStatus;
-
-import java.nio.charset.StandardCharsets;
 
 public final class HttpUser {
 

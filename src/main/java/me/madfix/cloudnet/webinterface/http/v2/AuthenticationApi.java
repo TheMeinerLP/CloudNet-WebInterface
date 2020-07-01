@@ -1,8 +1,5 @@
 package me.madfix.cloudnet.webinterface.http.v2;
 
-import me.madfix.cloudnet.webinterface.http.v2.utils.Http;
-import me.madfix.cloudnet.webinterface.http.v2.utils.Request;
-import me.madfix.cloudnet.webinterface.http.v2.utils.Response;
 import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.web.server.handler.MethodWebHandlerAdapter;
@@ -14,6 +11,9 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import me.madfix.cloudnet.webinterface.http.v2.utils.Http;
+import me.madfix.cloudnet.webinterface.http.v2.utils.Request;
+import me.madfix.cloudnet.webinterface.http.v2.utils.Response;
 
 import java.util.ArrayList;
 

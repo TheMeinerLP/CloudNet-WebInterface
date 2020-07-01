@@ -1,10 +1,6 @@
 package me.madfix.cloudnet.webinterface.adapter;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.*;
 import de.dytanic.cloudnetcore.network.components.Wrapper;
 
 import java.lang.reflect.Type;

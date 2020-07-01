@@ -1,13 +1,6 @@
 package me.madfix.cloudnet.webinterface.adapter;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.*;
 import de.dytanic.cloudnet.lib.serverselectors.sign.SearchingAnimation;
 import de.dytanic.cloudnet.lib.serverselectors.sign.SignGroupLayouts;
 import de.dytanic.cloudnet.lib.serverselectors.sign.SignLayoutConfig;

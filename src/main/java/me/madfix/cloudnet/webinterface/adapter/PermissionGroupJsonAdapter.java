@@ -1,15 +1,8 @@
 package me.madfix.cloudnet.webinterface.adapter;
 
-import me.madfix.cloudnet.webinterface.http.v2.utils.JsonUtil;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.*;
 import de.dytanic.cloudnet.lib.player.permission.PermissionGroup;
+import me.madfix.cloudnet.webinterface.http.v2.utils.JsonUtil;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

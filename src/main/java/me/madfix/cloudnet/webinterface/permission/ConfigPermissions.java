@@ -1,6 +1,9 @@
 package me.madfix.cloudnet.webinterface.permission;
 
 import de.dytanic.cloudnet.lib.player.permission.PermissionGroup;
+import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.config.YamlConfiguration;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,10 +18,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import net.md_5.bungee.config.Configuration;
-import net.md_5.bungee.config.ConfigurationProvider;
-import net.md_5.bungee.config.YamlConfiguration;
 
 public final class ConfigPermissions {
 

@@ -36,12 +36,12 @@ public final class ConfigurationService {
                 try {
                     jsonConfig = Optional.of(JsonParser.parseReader(configurationReader));
                 } catch (JsonSyntaxException e) {
-                    CloudNet.getLogger().log(Level.SEVERE,"[ConfigurationService] An unexpected error occurred while reading the configuration file ",e);
+                    CloudNet.getLogger().log(Level.SEVERE, "[ConfigurationService] An unexpected error occurred while reading the configuration file ", e);
                     return false;
                 }
                 jsonConfig.ifPresent(jsonElement -> this.optionalInterfaceConfiguration = this.gson.fromJson(jsonElement, InterfaceConfiguration.class));
             } catch (IOException e) {
-                CloudNet.getLogger().log(Level.SEVERE,"[ConfigurationService] An unexpected error occurred while reading the configuration file ",e);
+                CloudNet.getLogger().log(Level.SEVERE, "[ConfigurationService] An unexpected error occurred while reading the configuration file ", e);
                 return false;
             }
         }
