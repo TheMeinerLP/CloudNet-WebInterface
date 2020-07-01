@@ -48,7 +48,6 @@ public final class WrapperApi extends MethodWebHandlerAdapter {
           Document resp = new Document();
           resp.append("response",
               CloudNet.getInstance().getWrappers().values().stream()
-                  .filter(wrapper -> wrapper.isReady())
                   .map(wrapper -> JsonUtil.getGson().toJson(wrapper)).collect(Collectors.toList()));
           return Response.success(fullHttpResponse, resp);
         }

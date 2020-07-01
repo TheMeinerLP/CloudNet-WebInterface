@@ -4,7 +4,7 @@ import me.madfix.cloudnet.webinterface.http.v2.utils.Http;
 import me.madfix.cloudnet.webinterface.http.v2.utils.HttpUser;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Request;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Response;
-import me.madfix.cloudnet.webinterface.ProjectMain;
+import me.madfix.cloudnet.webinterface.WebInterface;
 import de.dytanic.cloudnet.lib.player.CloudPlayer;
 import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
@@ -21,17 +21,17 @@ import java.util.UUID;
 
 public final class PlayerApi extends MethodWebHandlerAdapter {
 
-  private final ProjectMain projectMain;
+  private final WebInterface webInterface;
 
   /**
    *  Process the requests for player backend.
    * @param cloudNet The main class of cloudnet
-   * @param projectMain The main class of the project
+   * @param webInterface The main class of the project
    */
-  public PlayerApi(CloudNet cloudNet, ProjectMain projectMain) {
+  public PlayerApi(CloudNet cloudNet, WebInterface webInterface) {
     super("/cloudnet/api/v2/player");
     cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
-    this.projectMain = projectMain;
+    this.webInterface = webInterface;
   }
 
   @Override
@@ -52,12 +52,12 @@ public final class PlayerApi extends MethodWebHandlerAdapter {
         }
         if (player.matches(
             "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")) {
-          CloudPlayer cloudPlayer = this.projectMain.getCloud().getNetworkManager()
+          CloudPlayer cloudPlayer = this.webInterface.getCloud().getNetworkManager()
               .getOnlinePlayer(UUID.fromString(player));
           CorePlayerExecutor.INSTANCE.sendPlayer(cloudPlayer, server);
         } else {
           if (player.equalsIgnoreCase("*")) {
-            this.projectMain.getCloud().getNetworkManager().getOnlinePlayers().values()
+            this.webInterface.getCloud().getNetworkManager().getOnlinePlayers().values()
                 .forEach(t -> CorePlayerExecutor.INSTANCE.sendPlayer(t, server));
             return Response.success(fullHttpResponse, document);
           } else {
