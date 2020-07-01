@@ -1,5 +1,7 @@
 # CloudNet WebInterface RestAPI
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/0b18b6dca11843bd854d6a6cd072f19f)](https://app.codacy.com/gh/TheMadfixLab/CloudNet-WebInterface?utm_source=github.com&utm_medium=referral&utm_content=TheMadfixLab/CloudNet-WebInterface&utm_campaign=Badge_Grade_Dashboard)
+
 ![Java 8 CI with Maven](https://github.com/TheMadfixLab/CloudNet-WebInterface/workflows/Java%208%20CI%20with%20Maven/badge.svg)
 ![Java 11 CI with Maven](https://github.com/TheMadfixLab/CloudNet-WebInterface/workflows/Java%2011%20CI%20with%20Maven/badge.svg)
 ![GitHub All Releases](https://img.shields.io/github/downloads/TheMadfixLab/CloudNet-WebInterface/total?color=%23000&logoColor=%23000)
