@@ -42,7 +42,7 @@ public final class ServerApi extends MethodWebHandlerAdapter {
 
     @SuppressWarnings("deprecation")
     @Override
-    public FullHttpResponse get(ChannelHandlerContext channelHandlerContext,
+    public FullHttpResponse get(ChannelHandlerContext ctx,
                                 QueryDecoder queryDecoder,
                                 PathProvider pathProvider, HttpRequest httpRequest) {
         FullHttpResponse fullHttpResponse = HttpAuthHelper.simpleCheck(httpRequest);

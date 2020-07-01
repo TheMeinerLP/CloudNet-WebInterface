@@ -42,7 +42,7 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
 
     @SuppressWarnings("deprecation")
     @Override
-    public FullHttpResponse get(ChannelHandlerContext channelHandlerContext,
+    public FullHttpResponse get(ChannelHandlerContext ctx,
                                 QueryDecoder queryDecoder,
                                 PathProvider pathProvider, HttpRequest httpRequest) {
         FullHttpResponse fullHttpResponse = HttpAuthHelper.simpleCheck(httpRequest);
@@ -146,7 +146,7 @@ public final class ProxyApi extends MethodWebHandlerAdapter {
 
     @SuppressWarnings("deprecation")
     @Override
-    public FullHttpResponse post(ChannelHandlerContext channelHandlerContext,
+    public FullHttpResponse post(ChannelHandlerContext ctx,
                                  QueryDecoder queryDecoder,
                                  PathProvider pathProvider, HttpRequest httpRequest) {
         FullHttpResponse fullHttpResponse = HttpAuthHelper.simpleCheck(httpRequest);

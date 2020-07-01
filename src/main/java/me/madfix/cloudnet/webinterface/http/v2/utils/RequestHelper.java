@@ -37,7 +37,7 @@ public final class RequestHelper {
         if (hasHeader(request, header.toLowerCase(Locale.ENGLISH))) {
             return request.headers().get(header.toLowerCase(Locale.ENGLISH));
         } else {
-            throw new NullPointerException("Header-Field " + header + " not found!");
+            throw new RuntimeException("Header-Field " + header + " not found!");
         }
     }
 

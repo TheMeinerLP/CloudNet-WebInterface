@@ -16,9 +16,14 @@ public final class DatabaseConfiguration {
     private final long idleTimeout;
     private final long maxLifetime;
 
-    public DatabaseConfiguration(String jdbcUrl, String username, String password, int minimumIdle,
+    public DatabaseConfiguration(String jdbcUrl,
+                                 String username,
+                                 String password,
+                                 int minimumIdle,
                                  int maximumPoolSize,
-                                 int prepStmtCacheSize, int prepStmtCacheSqlLimit, boolean cachePrepStmts,
+                                 int prepStmtCacheSize,
+                                 int prepStmtCacheSqlLimit,
+                                 boolean cachePrepStmts,
                                  long connectionTimeout,
                                  long idleTimeout,
                                  long maxLifetime) {
