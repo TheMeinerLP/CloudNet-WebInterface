@@ -55,7 +55,7 @@ public final class RequestHelper {
             buf.readBytes(bytes);
             return new String(bytes, StandardCharsets.UTF_8);
         } else {
-            throw new NullPointerException("No content found!");
+            throw new RuntimeException("No content found!");
         }
     }
 
