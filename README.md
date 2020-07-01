@@ -2,6 +2,7 @@
 
 ![Java 8 CI with Maven](https://github.com/TheMadfixLab/CloudNet-WebInterface/workflows/Java%208%20CI%20with%20Maven/badge.svg)
 ![Java 11 CI with Maven](https://github.com/TheMadfixLab/CloudNet-WebInterface/workflows/Java%2011%20CI%20with%20Maven/badge.svg)
+![GitHub All Releases](https://img.shields.io/github/downloads/TheMadfixLab/CloudNet-WebInterface/total?color=%23000&logoColor=%23000)
 
 ## Description
 The Material Design Web Interface has all the features you need to manage your Cloud Simple and easy.
