@@ -6,3 +6,10 @@
 [+] Add pull request template
 [~] Improve readme
 [-] Removing gitlab ci
+
+1.1.0-SNAPSHOT:
+[+] Adding Mob Service
+[+] Adding github actions
+[+] Add scm info in maven
+[~] Improve mob database
+[~] Reduce null pointer exceptions
