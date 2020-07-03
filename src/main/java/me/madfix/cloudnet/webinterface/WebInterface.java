@@ -7,18 +7,11 @@ import me.madfix.cloudnet.webinterface.database.MobDatabase;
 import me.madfix.cloudnet.webinterface.services.ConfigurationService;
 import me.madfix.cloudnet.webinterface.services.DatabaseService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public final class WebInterface extends CoreModule {
 
     private ConfigurationService configurationService;
     private DatabaseService databaseService;
-
-    private List<String> consoleLines;
-    private Map<String, List<String>> screenInfos = new HashMap<>();
     private MobDatabase mobDatabase;
     private final Gson gson = new Gson();
 
@@ -32,8 +25,6 @@ public final class WebInterface extends CoreModule {
         }
         if (this.configurationService.getOptionalInterfaceConfiguration().isPresent()) {
             this.databaseService = new DatabaseService(this);
-            this.consoleLines = new ArrayList<>();
-            CloudNet.getLogger().getHandler().add(consoleLines::add);
         }
     }
 
@@ -51,28 +42,8 @@ public final class WebInterface extends CoreModule {
 
     }
 
-    /**
-     * Clearing consoleLines & screenInfos for RAM "boost".
-     */
     @Override
     public void onShutdown() {
-        consoleLines = null;
-        screenInfos = null;
-    }
-
-    /**
-     * Here its getting the ConsoleLines List and its returning the list.
-     */
-    public List<String> getConsoleLines() {
-        return consoleLines;
-    }
-
-    /**
-     * Here its getting a String, a List wich contains a String and the ScreenInfo Map, its returning
-     * the map.
-     */
-    public Map<String, List<String>> getScreenInfos() {
-        return screenInfos;
     }
 
     public MobDatabase getMobDatabase() {
