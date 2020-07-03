@@ -4,23 +4,8 @@ import com.google.gson.Gson;
 import de.dytanic.cloudnetcore.CloudNet;
 import de.dytanic.cloudnetcore.api.CoreModule;
 import me.madfix.cloudnet.webinterface.database.MobDatabase;
-import me.madfix.cloudnet.webinterface.http.v2.AuthenticationApi;
-import me.madfix.cloudnet.webinterface.http.v2.CPermsApi;
-import me.madfix.cloudnet.webinterface.http.v2.DashboardApi;
-import me.madfix.cloudnet.webinterface.http.v2.MasterApi;
-import me.madfix.cloudnet.webinterface.http.v2.MobApi;
-import me.madfix.cloudnet.webinterface.http.v2.PlayerApi;
-import me.madfix.cloudnet.webinterface.http.v2.ProxyApi;
-import me.madfix.cloudnet.webinterface.http.v2.ServerApi;
-import me.madfix.cloudnet.webinterface.http.v2.SignApi;
-import me.madfix.cloudnet.webinterface.http.v2.UserApi;
-import me.madfix.cloudnet.webinterface.http.v2.UtilsApi;
-import me.madfix.cloudnet.webinterface.http.v2.WrapperApi;
-import me.madfix.cloudnet.webinterface.listener.ScreenSessionListener;
-import me.madfix.cloudnet.webinterface.permission.ConfigPermissions;
 import me.madfix.cloudnet.webinterface.services.ConfigurationService;
 import me.madfix.cloudnet.webinterface.services.DatabaseService;
-import me.madfix.cloudnet.webinterface.sign.SignDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,10 +17,8 @@ public final class WebInterface extends CoreModule {
     private ConfigurationService configurationService;
     private DatabaseService databaseService;
 
-    private ConfigPermissions configPermission;
     private List<String> consoleLines;
     private Map<String, List<String>> screenInfos = new HashMap<>();
-    private SignDatabase signDatabase;
     private MobDatabase mobDatabase;
     private final Gson gson = new Gson();
 
@@ -58,28 +41,10 @@ public final class WebInterface extends CoreModule {
     public void onBootstrap() {
         if (this.configurationService.getOptionalInterfaceConfiguration().isPresent()) {
             try {
-                this.configPermission = new ConfigPermissions();
-                this.signDatabase = new SignDatabase(
-                        this.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
                 this.mobDatabase = new MobDatabase(
                         this.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-            getCloud().getEventManager().registerListener(this, new ScreenSessionListener(this));
-            new MasterApi(getCloud(), this);
-            new AuthenticationApi();
-            new ProxyApi(getCloud(), this);
-            new UserApi(getCloud(), this);
-            new DashboardApi(getCloud(), this);
-            new ServerApi(getCloud(), this);
-            new WrapperApi(getCloud());
-            new UtilsApi(getCloud(), this);
-            new PlayerApi(getCloud(), this);
-            new SignApi(this);
-            new MobApi(this);
-            if (this.configPermission.isEnabled()) {
-                new CPermsApi(this);
             }
         }
 
@@ -96,15 +61,6 @@ public final class WebInterface extends CoreModule {
     }
 
     /**
-     * Here its getting the ConfigPermission and its returning them.
-     *
-     * @see ConfigPermissions
-     */
-    public ConfigPermissions getConfigPermission() {
-        return configPermission;
-    }
-
-    /**
      * Here its getting the ConsoleLines List and its returning the list.
      */
     public List<String> getConsoleLines() {
@@ -117,10 +73,6 @@ public final class WebInterface extends CoreModule {
      */
     public Map<String, List<String>> getScreenInfos() {
         return screenInfos;
-    }
-
-    public SignDatabase getSignDatabase() {
-        return signDatabase;
     }
 
     public MobDatabase getMobDatabase() {
