@@ -48,6 +48,10 @@ public final class ConfigurationService {
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     public Optional<InterfaceConfiguration> getOptionalInterfaceConfiguration() {
         return Optional.ofNullable(optionalInterfaceConfiguration);
     }

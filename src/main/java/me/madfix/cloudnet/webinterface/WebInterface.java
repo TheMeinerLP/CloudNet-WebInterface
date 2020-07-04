@@ -1,11 +1,18 @@
 package me.madfix.cloudnet.webinterface;
 
 import com.google.gson.Gson;
+import de.dytanic.cloudnet.lib.serverselectors.sign.Position;
+import de.dytanic.cloudnet.lib.serverselectors.sign.Sign;
 import de.dytanic.cloudnetcore.CloudNet;
 import de.dytanic.cloudnetcore.api.CoreModule;
 import me.madfix.cloudnet.webinterface.database.MobDatabase;
+import me.madfix.cloudnet.webinterface.logging.WebInterfaceLogger;
 import me.madfix.cloudnet.webinterface.services.ConfigurationService;
 import me.madfix.cloudnet.webinterface.services.DatabaseService;
+
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.logging.Level;
 
 
 public final class WebInterface extends CoreModule {
@@ -14,6 +21,7 @@ public final class WebInterface extends CoreModule {
     private DatabaseService databaseService;
     private MobDatabase mobDatabase;
     private final Gson gson = new Gson();
+    private final WebInterfaceLogger logger = new WebInterfaceLogger();
 
     @Override
     public void onLoad() {
@@ -35,7 +43,7 @@ public final class WebInterface extends CoreModule {
                 this.mobDatabase = new MobDatabase(
                         this.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
             } catch (Exception e) {
-                e.printStackTrace();
+                getLogger().log(Level.SEVERE,"database.load.mob",e);
             }
         }
 
@@ -44,6 +52,10 @@ public final class WebInterface extends CoreModule {
 
     @Override
     public void onShutdown() {
+    }
+
+    public WebInterfaceLogger getLogger() {
+        return logger;
     }
 
     public MobDatabase getMobDatabase() {
