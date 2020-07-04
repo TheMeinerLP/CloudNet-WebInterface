@@ -52,7 +52,7 @@ public final class DatabaseService {
 
     private void createDataSource() {
         this.hikariDataSource = new HikariDataSource(this.hikariConfig);
-        CloudNet.getLogger().info("Creating the data source was successful!");
+        this.webInterface.getLogger().info("Creating the data source was successful!");
     }
 
     public Optional<HikariDataSource> getDataSource() {

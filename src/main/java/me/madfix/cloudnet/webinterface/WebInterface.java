@@ -21,15 +21,16 @@ public final class WebInterface extends CoreModule {
     private DatabaseService databaseService;
     private MobDatabase mobDatabase;
     private final Gson gson = new Gson();
-    private final WebInterfaceLogger logger = new WebInterfaceLogger();
+    private WebInterfaceLogger logger;
 
     @Override
     public void onLoad() {
+        this.logger = new WebInterfaceLogger();
         this.configurationService = new ConfigurationService();
         if (!this.configurationService.loadConfigurationFile()) {
-            CloudNet.getLogger().severe("No configuration file was found with the name: interface.json.");
-            CloudNet.getLogger().severe("Web interface will not start!");
-            CloudNet.getLogger().severe("Please create your configuration file under X and follow the instructions on the website. ");
+            this.logger.severe("No configuration file was found with the name: interface.json.");
+            this.logger.severe("Web interface will not start!");
+            this.logger.severe("Please create your configuration file under X and follow the instructions on the website. ");
         }
         if (this.configurationService.getOptionalInterfaceConfiguration().isPresent()) {
             this.databaseService = new DatabaseService(this);
