@@ -19,7 +19,7 @@ jobs:
       - name: Release Jar
         run: |
           mkdir -p temp;
-          cp target/cloudnet-webinterface-restapi*
+          cp target/cloudnet-webinterface-restapi* temp/;
       - uses: actions/upload-artifact@master
           with:
             name: CloudNet-V2-WebInterface
