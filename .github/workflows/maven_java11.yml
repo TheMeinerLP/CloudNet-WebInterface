@@ -20,7 +20,7 @@ jobs:
         run: mvn -B package --file pom.xml
       - name: Release Jar
         run: |
-          mkdir -p temp;
+          mkdir temp;
           cp target/cloudnet-webinterface-restapi* temp/;
       - uses: actions/upload-artifact@master
         with:
