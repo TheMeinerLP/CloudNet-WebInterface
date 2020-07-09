@@ -5,6 +5,7 @@ import java.util.Objects;
 public final class DatabaseConfiguration {
 
     private final String jdbcUrl;
+    private final String driverClassName;
     private final String username;
     private final String password;
     private final int minimumIdle;
@@ -17,6 +18,7 @@ public final class DatabaseConfiguration {
     private final long maxLifetime;
 
     public DatabaseConfiguration(String jdbcUrl,
+                                 String driverClassName,
                                  String username,
                                  String password,
                                  int minimumIdle,
@@ -28,6 +30,7 @@ public final class DatabaseConfiguration {
                                  long idleTimeout,
                                  long maxLifetime) {
         this.jdbcUrl = jdbcUrl;
+        this.driverClassName = driverClassName;
         this.username = username;
         this.password = password;
         this.minimumIdle = minimumIdle;
@@ -84,10 +87,15 @@ public final class DatabaseConfiguration {
         return cachePrepStmts;
     }
 
+    public String getDriverClassName() {
+        return driverClassName;
+    }
+
     @Override
     public String toString() {
         return "DatabaseConfiguration{" +
                 "jdbcUrl='" + jdbcUrl + '\'' +
+                ", driverClassName='" + driverClassName + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", minimumIdle=" + minimumIdle +
@@ -103,12 +111,8 @@ public final class DatabaseConfiguration {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         DatabaseConfiguration that = (DatabaseConfiguration) o;
         return minimumIdle == that.minimumIdle &&
                 maximumPoolSize == that.maximumPoolSize &&
@@ -119,14 +123,13 @@ public final class DatabaseConfiguration {
                 idleTimeout == that.idleTimeout &&
                 maxLifetime == that.maxLifetime &&
                 Objects.equals(jdbcUrl, that.jdbcUrl) &&
+                Objects.equals(driverClassName, that.driverClassName) &&
                 Objects.equals(username, that.username) &&
                 Objects.equals(password, that.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects
-                .hash(jdbcUrl, username, password, minimumIdle, maximumPoolSize, prepStmtCacheSize,
-                        prepStmtCacheSqlLimit, cachePrepStmts, connectionTimeout, idleTimeout, maxLifetime);
+        return Objects.hash(jdbcUrl, driverClassName, username, password, minimumIdle, maximumPoolSize, prepStmtCacheSize, prepStmtCacheSqlLimit, cachePrepStmts, connectionTimeout, idleTimeout, maxLifetime);
     }
 }
