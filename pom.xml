@@ -117,13 +117,13 @@
       <groupId>de.dytanic.cloudnet</groupId>
       <artifactId>cloudnet-core</artifactId>
       <version>${dependency.cloudnet.version}</version>
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
       <version>${dependency.hikaricp.version}</version>
-      <scope>provided</scope>
+      <scope>compile</scope>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
