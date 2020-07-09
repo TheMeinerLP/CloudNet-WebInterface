@@ -3,6 +3,7 @@
 ![Java 8 CI with Maven](https://github.com/TheMadfixLab/CloudNet-WebInterface/workflows/Java%208%20CI%20with%20Maven/badge.svg)
 ![Java 11 CI with Maven](https://github.com/TheMadfixLab/CloudNet-WebInterface/workflows/Java%2011%20CI%20with%20Maven/badge.svg)
 ![GitHub All Releases](https://img.shields.io/github/downloads/TheMadfixLab/CloudNet-WebInterface/total?color=%23000&logoColor=%23000)
+[![Build Status](https://travis-ci.com/TheMadfixLab/CloudNet-WebInterface.svg?branch=master)](https://travis-ci.com/TheMadfixLab/CloudNet-WebInterface)
 
 **LGTM**
 
