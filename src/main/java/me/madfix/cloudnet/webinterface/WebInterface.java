@@ -28,9 +28,9 @@ public final class WebInterface extends CoreModule {
         this.logger = new WebInterfaceLogger();
         this.configurationService = new ConfigurationService();
         if (!this.configurationService.loadConfigurationFile()) {
-            this.logger.severe("No configuration file was found with the name: interface.json.");
-            this.logger.severe("Web interface will not start!");
-            this.logger.severe("Please create your configuration file under X and follow the instructions on the website. ");
+            this.logger.severe("[100] No configuration file was found with the name: interface.json.");
+            this.logger.severe("[100] Web interface will not start!");
+            this.logger.severe("[100] Please create your configuration file under X and follow the instructions on the website. ");
         }
         if (this.configurationService.getOptionalInterfaceConfiguration().isPresent()) {
             this.databaseService = new DatabaseService(this);
@@ -44,7 +44,7 @@ public final class WebInterface extends CoreModule {
                 this.mobDatabase = new MobDatabase(
                         this.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
             } catch (Exception e) {
-                getLogger().log(Level.SEVERE,"database.load.mob",e);
+                getLogger().log(Level.SEVERE,"[300] An unexpected error occurred while loading the mob database",e);
             }
         }
 
