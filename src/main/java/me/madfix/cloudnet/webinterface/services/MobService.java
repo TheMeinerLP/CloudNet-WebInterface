@@ -79,15 +79,15 @@ final class MobService {
                     jsonConfig = Optional.of(JsonParser.parseReader(bufferedReader));
                 } catch (JsonSyntaxException e) {
                     this.enable = false;
-                    CloudNet.getLogger().severe("[MobService] Mob service is deactivated to prevent errors. Please fix the errors and try the function again.");
-                    CloudNet.getLogger().log(Level.SEVERE, "[MobService] An unexpected error occurred while reading the configuration file.", e);
+                    CloudNet.getLogger().severe("[301] Mob service is deactivated to prevent errors. Please fix the errors and try the function again.");
+                    CloudNet.getLogger().log(Level.SEVERE, "[301] An unexpected error occurred while reading the configuration file.", e);
                 }
                 jsonConfig.ifPresent(jsonElement -> optionalCompletableFuture.complete(Optional.of(this.webInterface.getGson()
                         .fromJson(jsonElement, TypeToken.get(MobConfig.class).getType()))));
             } catch (IOException e) {
                 this.enable = false;
-                CloudNet.getLogger().severe("[MobService] Mob service is deactivated to prevent errors. Please fix the errors and try the function again.");
-                CloudNet.getLogger().log(Level.SEVERE, "[MobService] An unexpected error occurred while reading the configuration file.", e);
+                CloudNet.getLogger().severe("[302] Mob service is deactivated to prevent errors. Please fix the errors and try the function again.");
+                CloudNet.getLogger().log(Level.SEVERE, "[302] An unexpected error occurred while reading the configuration file.", e);
             }
         } else optionalCompletableFuture.cancel(true);
         return optionalCompletableFuture;
