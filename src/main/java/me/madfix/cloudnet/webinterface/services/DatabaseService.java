@@ -9,6 +9,7 @@ import me.madfix.cloudnet.webinterface.model.InterfaceConfiguration;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
+import java.util.logging.Level;
 
 public final class DatabaseService {
 
@@ -26,6 +27,12 @@ public final class DatabaseService {
                 .getOptionalInterfaceConfiguration().isPresent()) {
             final InterfaceConfiguration interfaceConfiguration = this.webInterface
                     .getConfigurationService().getOptionalInterfaceConfiguration().get();
+            try {
+                Class.forName(interfaceConfiguration.getDatabaseConfiguration().getDriverClassName());
+            } catch (ClassNotFoundException e) {
+                this.webInterface.getLogger().log(Level.SEVERE,"[200] An unexpected error occurred while loading the SQL driver", e);
+            }
+            this.hikariConfig.setDriverClassName(interfaceConfiguration.getDatabaseConfiguration().getDriverClassName());
             this.hikariConfig
                     .setUsername(interfaceConfiguration.getDatabaseConfiguration().getUsername());
             this.hikariConfig
@@ -64,8 +71,8 @@ public final class DatabaseService {
         if (getDataSource().isPresent()) {
             try {
                 optionalConnection = Optional.of(this.hikariDataSource.getConnection());
-            } catch (SQLException throwable) {
-                throwable.printStackTrace();
+            } catch (SQLException e) {
+                this.webInterface.getLogger().log(Level.SEVERE, "[201] Something went wrong while establishing an SQL connection!", e);
             }
         }
         return optionalConnection;
