@@ -1,0 +1,5 @@
+language: java
+dist: bionic
+sudo: false
+notifications:
+  email: false
