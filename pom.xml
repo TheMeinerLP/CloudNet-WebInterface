@@ -9,7 +9,7 @@
   <artifactId>cloudnet-webinterface-restapi</artifactId>
   <groupId>me.madfix</groupId>
 
-  <version>1.1.0-SNAPSHOT</version>
+  <version>1.1.5-SNAPSHOT</version>
 
   <scm>
     <tag>HEAD</tag>
@@ -63,7 +63,7 @@
         <artifactId>maven-shade-plugin</artifactId>
         <version>${plugin.shade.version}</version>
         <configuration>
-          <minimizeJar>true</minimizeJar>
+          <!--<minimizeJar>true</minimizeJar>-->
           <filters>
             <filter>
               <artifact>*:*</artifact>
@@ -119,33 +119,36 @@
       <version>${dependency.cloudnet.version}</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>com.zaxxer</groupId>
-      <artifactId>HikariCP</artifactId>
-      <version>${dependency.hikaricp.version}</version>
-      <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
+
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <version>${dependency.h2.version}</version>
-      <scope>provided</scope>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
       <artifactId>mssql-jdbc</artifactId>
       <version>${dependency.mssql.version}</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.mariadb.jdbc</groupId>
       <artifactId>mariadb-java-client</artifactId>
       <version>${dependency.mariadb.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+      <version>${dependency.hikaricp.version}</version>
+      <scope>compile</scope>
+      <!--<exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>-->
     </dependency>
   </dependencies>
 
