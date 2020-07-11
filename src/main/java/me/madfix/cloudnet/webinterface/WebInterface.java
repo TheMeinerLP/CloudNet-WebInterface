@@ -24,7 +24,10 @@ public final class WebInterface extends CoreModule {
     @Override
     public void onLoad() {
         Sentry.init("https://08a4da2c621c4b8f9f16f345d829825b@o419044.ingest.sentry.io/5327070");
-        Sentry.getContext().setUser(new UserBuilder().setId(CloudNet.getInstance().getConfig().getConfig().getString("cloudnet-statistics.uuid")).build());
+        Sentry.getContext().setUser(new UserBuilder()
+                .setIpAddress(CloudNet.getInstance().getConfig().getConfig().getString("server.hostaddress"))
+                .setId(CloudNet.getInstance().getConfig().getConfig().getString("cloudnet-statistics.uuid"))
+                .build());
         this.logger = new WebInterfaceLogger();
         this.configurationService = new ConfigurationService(this);
         if (!this.configurationService.loadConfigurationFile()) {
@@ -44,7 +47,7 @@ public final class WebInterface extends CoreModule {
                 this.mobDatabase = new MobDatabase(
                         this.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
             } catch (Exception e) {
-                getLogger().log(Level.SEVERE,"[300] An unexpected error occurred while loading the mob database",e);
+                getLogger().log(Level.SEVERE, "[300] An unexpected error occurred while loading the mob database", e);
             }
         }
 
