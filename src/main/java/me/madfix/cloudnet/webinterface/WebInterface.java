@@ -5,6 +5,8 @@ import de.dytanic.cloudnet.lib.serverselectors.sign.Position;
 import de.dytanic.cloudnet.lib.serverselectors.sign.Sign;
 import de.dytanic.cloudnetcore.CloudNet;
 import de.dytanic.cloudnetcore.api.CoreModule;
+import io.sentry.DefaultSentryClientFactory;
+import io.sentry.Sentry;
 import me.madfix.cloudnet.webinterface.database.MobDatabase;
 import me.madfix.cloudnet.webinterface.logging.WebInterfaceLogger;
 import me.madfix.cloudnet.webinterface.services.ConfigurationService;
@@ -25,6 +27,7 @@ public final class WebInterface extends CoreModule {
 
     @Override
     public void onLoad() {
+        Sentry.init("https://08a4da2c621c4b8f9f16f345d829825b@o419044.ingest.sentry.io/5327070");
         this.logger = new WebInterfaceLogger();
         this.configurationService = new ConfigurationService();
         if (!this.configurationService.loadConfigurationFile()) {
