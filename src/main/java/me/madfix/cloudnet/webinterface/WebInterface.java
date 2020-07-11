@@ -1,8 +1,10 @@
 package me.madfix.cloudnet.webinterface;
 
 import com.google.gson.Gson;
+import de.dytanic.cloudnetcore.CloudNet;
 import de.dytanic.cloudnetcore.api.CoreModule;
 import io.sentry.Sentry;
+import io.sentry.event.UserBuilder;
 import me.madfix.cloudnet.webinterface.database.MobDatabase;
 import me.madfix.cloudnet.webinterface.logging.WebInterfaceLogger;
 import me.madfix.cloudnet.webinterface.services.ConfigurationService;
@@ -22,6 +24,7 @@ public final class WebInterface extends CoreModule {
     @Override
     public void onLoad() {
         Sentry.init("https://08a4da2c621c4b8f9f16f345d829825b@o419044.ingest.sentry.io/5327070");
+        Sentry.getContext().setUser(new UserBuilder().setId(CloudNet.getInstance().getConfig().getConfig().getString("cloudnet-statistics.uuid")).build());
         this.logger = new WebInterfaceLogger();
         this.configurationService = new ConfigurationService(this);
         if (!this.configurationService.loadConfigurationFile()) {
