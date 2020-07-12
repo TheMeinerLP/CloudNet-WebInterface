@@ -9,7 +9,7 @@
     <artifactId>cloudnet-webinterface-restapi</artifactId>
     <groupId>me.madfix</groupId>
 
-    <version>1.4.3-SNAPSHOT</version>
+    <version>1.4.4-SNAPSHOT</version>
 
     <scm>
         <tag>HEAD</tag>
@@ -125,6 +125,7 @@
             <groupId>io.sentry</groupId>
             <artifactId>sentry</artifactId>
             <version>${dependency.sentry.version}</version>
+            <scope>compile</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
