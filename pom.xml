@@ -9,7 +9,7 @@
     <artifactId>cloudnet-webinterface-restapi</artifactId>
     <groupId>me.madfix</groupId>
 
-    <version>1.4.2-SNAPSHOT</version>
+    <version>1.4.3-SNAPSHOT</version>
 
     <scm>
         <tag>HEAD</tag>
@@ -161,12 +161,12 @@
             <artifactId>HikariCP</artifactId>
             <version>${dependency.hikaricp.version}</version>
             <scope>compile</scope>
-            <!--<exclusions>
+            <exclusions>
               <exclusion>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
               </exclusion>
-            </exclusions>-->
+            </exclusions>
         </dependency>
 
 
