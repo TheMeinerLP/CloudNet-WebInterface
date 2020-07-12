@@ -168,16 +168,15 @@ final class MobService {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable) {
             if (this.mobDatabase != null) {
-                this.getServerMob(serverMob.getUniqueId())
-                        .thenAccept(result -> result.ifPresent(mob -> removeMob(mob.getUniqueId()).thenAccept(success -> {
-                            if (success.isPresent() && success.get()) {
-                                addMob(serverMob).thenAccept(addMobSuccess -> {
-                                    if (addMobSuccess.isPresent() && addMobSuccess.get()) {
-                                        optionalCompletableFuture.complete(Optional.of(true));
-                                    } else optionalCompletableFuture.cancel(true);
-                                });
+                removeMob(serverMob.getUniqueId()).thenAccept(success -> {
+                    if (success.isPresent() && success.get()) {
+                        addMob(serverMob).thenAccept(addMobSuccess -> {
+                            if (addMobSuccess.isPresent() && addMobSuccess.get()) {
+                                optionalCompletableFuture.complete(Optional.of(true));
                             } else optionalCompletableFuture.cancel(true);
-                        })));
+                        });
+                    } else optionalCompletableFuture.cancel(true);
+                });
             } else optionalCompletableFuture.cancel(true);
         } else optionalCompletableFuture.cancel(true);
         return optionalCompletableFuture;

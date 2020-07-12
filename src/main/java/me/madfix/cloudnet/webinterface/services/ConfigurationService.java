@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import de.dytanic.cloudnetcore.CloudNet;
+import me.madfix.cloudnet.webinterface.WebInterface;
 import me.madfix.cloudnet.webinterface.model.InterfaceConfiguration;
 
 import java.io.BufferedReader;
@@ -20,6 +21,11 @@ public final class ConfigurationService {
 
     private InterfaceConfiguration optionalInterfaceConfiguration;
     private final Gson gson = new Gson();
+    private final WebInterface webInterface;
+
+    public ConfigurationService(WebInterface webInterface) {
+        this.webInterface = webInterface;
+    }
 
     /**
      * Loads the file(interface.json) if available
@@ -36,12 +42,12 @@ public final class ConfigurationService {
                 try {
                     jsonConfig = Optional.of(JsonParser.parseReader(configurationReader));
                 } catch (JsonSyntaxException e) {
-                    CloudNet.getLogger().log(Level.SEVERE, "[101] An unexpected error occurred while reading the configuration file ", e);
+                    this.webInterface.getLogger().log(Level.SEVERE, "[101] An unexpected error occurred while reading the configuration file ", e);
                     return false;
                 }
                 jsonConfig.ifPresent(jsonElement -> this.optionalInterfaceConfiguration = this.gson.fromJson(jsonElement, InterfaceConfiguration.class));
             } catch (IOException e) {
-                CloudNet.getLogger().log(Level.SEVERE, "[102] An unexpected error occurred while reading the configuration file ", e);
+                this.webInterface.getLogger().log(Level.SEVERE, "[102] An unexpected error occurred while reading the configuration file ", e);
                 return false;
             }
         }

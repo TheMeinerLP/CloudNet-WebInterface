@@ -1,6 +1,7 @@
 package me.madfix.cloudnet.webinterface.logging;
 
 import de.dytanic.cloudnetcore.CloudNet;
+import io.sentry.jul.SentryHandler;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -34,6 +35,7 @@ public class WebInterfaceLogger extends Logger {
         } catch (IOException e) {
             log(Level.SEVERE,"An unexpected error occurred while adding the file logger", e);
         }
+        addHandler(new SentryHandler());
     }
 
     @Override

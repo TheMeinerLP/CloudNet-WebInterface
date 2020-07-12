@@ -1,32 +1,36 @@
 package me.madfix.cloudnet.webinterface;
 
 import com.google.gson.Gson;
-import de.dytanic.cloudnet.lib.serverselectors.sign.Position;
-import de.dytanic.cloudnet.lib.serverselectors.sign.Sign;
 import de.dytanic.cloudnetcore.CloudNet;
 import de.dytanic.cloudnetcore.api.CoreModule;
-import me.madfix.cloudnet.webinterface.database.MobDatabase;
+import io.sentry.Sentry;
+import io.sentry.event.UserBuilder;
 import me.madfix.cloudnet.webinterface.logging.WebInterfaceLogger;
+import me.madfix.cloudnet.webinterface.services.CloudNetService;
 import me.madfix.cloudnet.webinterface.services.ConfigurationService;
 import me.madfix.cloudnet.webinterface.services.DatabaseService;
-
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.logging.Level;
 
 
 public final class WebInterface extends CoreModule {
 
     private ConfigurationService configurationService;
     private DatabaseService databaseService;
-    private MobDatabase mobDatabase;
+    private CloudNetService cloudNetService;
+
     private final Gson gson = new Gson();
     private WebInterfaceLogger logger;
 
+
+
     @Override
     public void onLoad() {
+        Sentry.init("https://08a4da2c621c4b8f9f16f345d829825b@o419044.ingest.sentry.io/5327070");
+        Sentry.getContext().setUser(new UserBuilder()
+                .setIpAddress(CloudNet.getInstance().getConfig().getConfig().getString("server.hostaddress"))
+                .setId(CloudNet.getInstance().getConfig().getConfig().getString("cloudnet-statistics.uuid"))
+                .build());
         this.logger = new WebInterfaceLogger();
-        this.configurationService = new ConfigurationService();
+        this.configurationService = new ConfigurationService(this);
         if (!this.configurationService.loadConfigurationFile()) {
             this.logger.severe("[100] No configuration file was found with the name: interface.json.");
             this.logger.severe("[100] Web interface will not start!");
@@ -40,12 +44,7 @@ public final class WebInterface extends CoreModule {
     @Override
     public void onBootstrap() {
         if (this.configurationService.getOptionalInterfaceConfiguration().isPresent()) {
-            try {
-                this.mobDatabase = new MobDatabase(
-                        this.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
-            } catch (Exception e) {
-                getLogger().log(Level.SEVERE,"[300] An unexpected error occurred while loading the mob database",e);
-            }
+            this.cloudNetService = new CloudNetService(this);
         }
 
 
@@ -59,10 +58,6 @@ public final class WebInterface extends CoreModule {
         return logger;
     }
 
-    public MobDatabase getMobDatabase() {
-        return mobDatabase;
-    }
-
     public ConfigurationService getConfigurationService() {
         return configurationService;
     }
@@ -73,5 +68,9 @@ public final class WebInterface extends CoreModule {
 
     public Gson getGson() {
         return gson;
+    }
+
+    public CloudNetService getCloudNetService() {
+        return cloudNetService;
     }
 }

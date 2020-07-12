@@ -64,8 +64,6 @@ public final class MobDatabase extends DatabaseUsable {
                 .forEach(serverMob -> serverMob.setItemId(138));
         mobMap.values().stream().filter(serverMob -> serverMob.getAutoJoin() == null)
                 .forEach(serverMob -> serverMob.setAutoJoin(false));
-        this.selectorMobs.append("mobs", Document.GSON.toJsonTree(mobMap));
-        this.database.insert(this.selectorMobs);
         return mobMap;
     }
 }
