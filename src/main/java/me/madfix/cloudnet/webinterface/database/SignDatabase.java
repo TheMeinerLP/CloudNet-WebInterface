@@ -36,7 +36,7 @@ public final class SignDatabase extends DatabaseUsable {
      * @param sign sign layout
      * @return the database with all signs
      */
-    public SignDatabase appendSign(Sign sign) {
+    public SignDatabase add(Sign sign) {
         this.selectorSigns.append(sign.getUniqueId().toString(), this.gson.toJsonTree(sign));
         this.database.insert(this.selectorSigns);
         return this;
