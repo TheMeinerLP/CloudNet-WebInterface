@@ -90,6 +90,7 @@ final class SignService {
         return optionalCompletableFuture;
     }
 
+    //TODO: Add documentation
     public CompletableFuture<Optional<Sign>> getSign(UUID signId) {
         CompletableFuture<Optional<Sign>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.signDatabase != null) {
@@ -99,6 +100,7 @@ final class SignService {
         return optionalCompletableFuture;
     }
 
+    //TODO: Add documentation
     public CompletableFuture<Optional<Collection<Sign>>> getSigns() {
         CompletableFuture<Optional<Collection<Sign>>> collectionCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.signDatabase != null) {
@@ -107,6 +109,7 @@ final class SignService {
         return collectionCompletableFuture;
     }
 
+    //TODO: Add documentation
     public CompletableFuture<Optional<Boolean>> removeSign(UUID signId) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.signDatabase != null) {
@@ -117,6 +120,7 @@ final class SignService {
         return optionalCompletableFuture;
     }
 
+    //TODO: Add documentation
     public CompletableFuture<Optional<Boolean>> addSign(Sign sign) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.signDatabase != null) {
@@ -127,6 +131,7 @@ final class SignService {
         return optionalCompletableFuture;
     }
 
+    //TODO: Add documentation
     public CompletableFuture<Optional<Boolean>> updateSign(Sign sign) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.signDatabase != null) {
@@ -143,6 +148,7 @@ final class SignService {
         return optionalCompletableFuture;
     }
 
+    //TODO: Add documentation
     public CompletableFuture<Optional<Boolean>> updateSignConfig(SignLayoutConfig signLayoutConfig) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable) {
