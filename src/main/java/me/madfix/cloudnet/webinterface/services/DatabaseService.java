@@ -52,7 +52,7 @@ public final class DatabaseService {
                     interfaceConfiguration.getDatabaseConfiguration().getPrepStmtCacheSize());
             this.hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit",
                     interfaceConfiguration.getDatabaseConfiguration().getPrepStmtCacheSqlLimit());
-            CloudNet.getLogger().info("The loading of the database configuration was successful!");
+            this.webInterface.getLogger().info("The loading of the database configuration was successful!");
             createDataSource();
         }
     }
