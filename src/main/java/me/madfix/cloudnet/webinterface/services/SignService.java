@@ -4,9 +4,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import de.dytanic.cloudnet.lib.serverselectors.mob.ServerMob;
 import de.dytanic.cloudnet.lib.serverselectors.sign.Sign;
 import de.dytanic.cloudnet.lib.serverselectors.sign.SignLayoutConfig;
+import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnetcore.CloudNet;
 import me.madfix.cloudnet.webinterface.WebInterface;
 import me.madfix.cloudnet.webinterface.database.SignDatabase;
@@ -18,7 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -96,14 +95,64 @@ final class SignService {
         if (this.enable && this.signDatabase != null) {
             optionalCompletableFuture.complete(this.signDatabase.loadAll().values()
                     .stream().filter(s -> s.getUniqueId().equals(signId)).findFirst());
-        }
+        } else optionalCompletableFuture.cancel(true);
         return optionalCompletableFuture;
     }
 
     public CompletableFuture<Optional<Collection<Sign>>> getSigns() {
         CompletableFuture<Optional<Collection<Sign>>> collectionCompletableFuture = new CompletableFuture<>();
+        if (this.enable && this.signDatabase != null) {
+            collectionCompletableFuture.complete(Optional.of(this.signDatabase.loadAll().values()));
+        } else collectionCompletableFuture.cancel(true);
         return collectionCompletableFuture;
     }
 
+    public CompletableFuture<Optional<Boolean>> removeSign(UUID signId) {
+        CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
+        if (this.enable && this.signDatabase != null) {
+            this.signDatabase.removeSign(signId);
+            CloudNet.getInstance().getNetworkManager().updateAll();
+            optionalCompletableFuture.complete(Optional.of(true));
+        } else optionalCompletableFuture.cancel(true);
+        return optionalCompletableFuture;
+    }
 
+    public CompletableFuture<Optional<Boolean>> addSign(Sign sign) {
+        CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
+        if (this.enable && this.signDatabase != null) {
+            this.signDatabase.add(sign);
+            CloudNet.getInstance().getNetworkManager().updateAll();
+            optionalCompletableFuture.complete(Optional.of(true));
+        } else optionalCompletableFuture.cancel(true);
+        return optionalCompletableFuture;
+    }
+
+    public CompletableFuture<Optional<Boolean>> updateSign(Sign sign) {
+        CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
+        if (this.enable && this.signDatabase != null) {
+            removeSign(sign.getUniqueId()).thenAccept(success -> {
+                if (success.isPresent() && success.get()) {
+                    addSign(sign).thenAccept(addSignSuccess -> {
+                        if (addSignSuccess.isPresent() && addSignSuccess.get()) {
+                            optionalCompletableFuture.complete(Optional.of(true));
+                        } else optionalCompletableFuture.cancel(true);
+                    });
+                } else optionalCompletableFuture.cancel(true);
+            });
+        } else optionalCompletableFuture.cancel(true);
+        return optionalCompletableFuture;
+    }
+
+    public CompletableFuture<Optional<Boolean>> updateSignConfig(SignLayoutConfig signLayoutConfig) {
+        CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
+        if (this.enable) {
+            Document document = new Document();
+            document.append("layout_config", this.webInterface.getGson().toJsonTree(signLayoutConfig,
+                    TypeToken.get(SignLayoutConfig.class).getType()));
+            document.saveAsConfig(this.signConfigurationFile);
+            CloudNet.getInstance().getNetworkManager().updateAll();
+            optionalCompletableFuture.complete(Optional.of(true));
+        } else optionalCompletableFuture.cancel(true);
+        return optionalCompletableFuture;
+    }
 }
