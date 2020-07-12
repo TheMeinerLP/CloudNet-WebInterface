@@ -5,21 +5,22 @@ import de.dytanic.cloudnetcore.CloudNet;
 import de.dytanic.cloudnetcore.api.CoreModule;
 import io.sentry.Sentry;
 import io.sentry.event.UserBuilder;
-import me.madfix.cloudnet.webinterface.database.MobDatabase;
 import me.madfix.cloudnet.webinterface.logging.WebInterfaceLogger;
+import me.madfix.cloudnet.webinterface.services.CloudNetService;
 import me.madfix.cloudnet.webinterface.services.ConfigurationService;
 import me.madfix.cloudnet.webinterface.services.DatabaseService;
-
-import java.util.logging.Level;
 
 
 public final class WebInterface extends CoreModule {
 
     private ConfigurationService configurationService;
     private DatabaseService databaseService;
-    private MobDatabase mobDatabase;
+    private CloudNetService cloudNetService;
+
     private final Gson gson = new Gson();
     private WebInterfaceLogger logger;
+
+
 
     @Override
     public void onLoad() {
@@ -43,12 +44,7 @@ public final class WebInterface extends CoreModule {
     @Override
     public void onBootstrap() {
         if (this.configurationService.getOptionalInterfaceConfiguration().isPresent()) {
-            try {
-                this.mobDatabase = new MobDatabase(
-                        this.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
-            } catch (Exception e) {
-                getLogger().log(Level.SEVERE, "[300] An unexpected error occurred while loading the mob database", e);
-            }
+            this.cloudNetService = new CloudNetService(this);
         }
 
 
@@ -62,10 +58,6 @@ public final class WebInterface extends CoreModule {
         return logger;
     }
 
-    public MobDatabase getMobDatabase() {
-        return mobDatabase;
-    }
-
     public ConfigurationService getConfigurationService() {
         return configurationService;
     }
@@ -76,5 +68,9 @@ public final class WebInterface extends CoreModule {
 
     public Gson getGson() {
         return gson;
+    }
+
+    public CloudNetService getCloudNetService() {
+        return cloudNetService;
     }
 }
