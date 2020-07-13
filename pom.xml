@@ -43,8 +43,28 @@
 
     <repositories>
         <repository>
-            <id>CloudNet</id>
-            <url>https://cloudnetservice.eu/repositories/</url>
+            <id>CloudNet-Releases</id>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>https://repo.cloudnetservice.eu/repository/releases/</url>
+        </repository>
+        <repository>
+            <id>CloudNet-Snapshots</id>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+            <url>https://repo.cloudnetservice.eu/repository/snapshots/</url>
         </repository>
     </repositories>
 
