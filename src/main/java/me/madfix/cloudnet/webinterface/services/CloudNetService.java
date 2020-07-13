@@ -6,10 +6,12 @@ public class CloudNetService {
 
     private final MobService mobService;
     private final SignService signService;
+    private final ProxyGroupService proxyGroupService;
 
     public CloudNetService(WebInterface webInterface) {
         this.mobService = new MobService(webInterface);
         this.signService = new SignService(webInterface);
+        proxyGroupService = new ProxyGroupService(webInterface);
     }
 
     public MobService getMobService() {
@@ -18,5 +20,9 @@ public class CloudNetService {
 
     public SignService getSignService() {
         return signService;
+    }
+
+    public ProxyGroupService getProxyGroupService() {
+        return proxyGroupService;
     }
 }
