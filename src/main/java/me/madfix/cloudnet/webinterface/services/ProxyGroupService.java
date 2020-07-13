@@ -90,7 +90,7 @@ final class ProxyGroupService {
     public CompletableFuture<Optional<Boolean>> stopProxies(String proxyGroup) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         this.webInterface.getCloud().getProxys().values().forEach(ps -> this.webInterface.getCloud().stopProxy(ps));
-        optionalCompletableFuture.complete(Optional.of(this.webInterface.getCloud().getProxys().values().size() <= 0));
+        optionalCompletableFuture.complete(Optional.of(this.webInterface.getCloud().getProxys(proxyGroup).size() <= 0));
         return optionalCompletableFuture;
     }
 
@@ -126,7 +126,7 @@ final class ProxyGroupService {
     //TODO: Add documentation
     public CompletableFuture<Optional<Boolean>> updateProxyGroup(ProxyGroup proxyGroup) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
-        CloudNet.getInstance().getProxyGroups().remove(proxyGroup.getName());
+        this.webInterface.getCloud().getProxyGroups().remove(proxyGroup.getName());
         this.webInterface.getCloud().getConfig().deleteGroup(proxyGroup);
         this.webInterface.getCloud().getConfig().createGroup(proxyGroup);
         this.webInterface.getCloud().getProxyGroups().put(proxyGroup.getName(), proxyGroup);
