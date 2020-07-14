@@ -9,15 +9,17 @@ public final class InterfaceConfiguration {
     private final String host;
     private final boolean mobSystem;
     private final boolean signSystem;
+    private final boolean permissionSystem;
     private final DatabaseConfiguration databaseConfiguration;
 
     public InterfaceConfiguration(int restPort, int webSocketPort, String host,
-                                  boolean mobSystem, boolean signSystem, DatabaseConfiguration databaseConfiguration) {
+                                  boolean mobSystem, boolean signSystem, boolean permissionSystem, DatabaseConfiguration databaseConfiguration) {
         this.restPort = restPort;
         this.webSocketPort = webSocketPort;
         this.host = host;
         this.mobSystem = mobSystem;
         this.signSystem = signSystem;
+        this.permissionSystem = permissionSystem;
         this.databaseConfiguration = databaseConfiguration;
     }
 
@@ -41,37 +43,12 @@ public final class InterfaceConfiguration {
         return mobSystem;
     }
 
+    public boolean isPermissionSystem() {
+        return permissionSystem;
+    }
+
     public boolean isSignSystem() {
         return signSystem;
     }
 
-    @Override
-    public String toString() {
-        return "InterfaceConfiguration{" +
-                "restPort=" + restPort +
-                ", webSocketPort=" + webSocketPort +
-                ", host='" + host + '\'' +
-                ", mobSystem=" + mobSystem +
-                ", signSystem=" + signSystem +
-                ", databaseConfiguration=" + databaseConfiguration +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        InterfaceConfiguration that = (InterfaceConfiguration) o;
-        return restPort == that.restPort &&
-                webSocketPort == that.webSocketPort &&
-                mobSystem == that.mobSystem &&
-                signSystem == that.signSystem &&
-                Objects.equals(host, that.host) &&
-                Objects.equals(databaseConfiguration, that.databaseConfiguration);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(restPort, webSocketPort, host, mobSystem, signSystem, databaseConfiguration);
-    }
 }
