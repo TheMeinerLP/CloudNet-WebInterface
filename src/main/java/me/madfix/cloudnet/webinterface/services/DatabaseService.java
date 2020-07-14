@@ -2,7 +2,6 @@ package me.madfix.cloudnet.webinterface.services;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import de.dytanic.cloudnetcore.CloudNet;
 import me.madfix.cloudnet.webinterface.WebInterface;
 import me.madfix.cloudnet.webinterface.model.InterfaceConfiguration;
 
@@ -30,7 +29,7 @@ public final class DatabaseService {
             try {
                 Class.forName(interfaceConfiguration.getDatabaseConfiguration().getDriverClassName());
             } catch (ClassNotFoundException e) {
-                this.webInterface.getLogger().log(Level.SEVERE,"[200] An unexpected error occurred while loading the SQL driver", e);
+                this.webInterface.getLogger().log(Level.SEVERE, "[200] An unexpected error occurred while loading the SQL driver", e);
             }
             this.hikariConfig.setDriverClassName(interfaceConfiguration.getDatabaseConfiguration().getDriverClassName());
             this.hikariConfig

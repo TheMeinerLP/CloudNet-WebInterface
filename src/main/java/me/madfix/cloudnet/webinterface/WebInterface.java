@@ -21,7 +21,6 @@ public final class WebInterface extends CoreModule {
     private WebInterfaceLogger logger;
 
 
-
     @Override
     public void onLoad() {
         Sentry.init("https://08a4da2c621c4b8f9f16f345d829825b@o419044.ingest.sentry.io/5327070");

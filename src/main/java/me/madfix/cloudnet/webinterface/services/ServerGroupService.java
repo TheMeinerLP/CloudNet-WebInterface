@@ -2,12 +2,10 @@ package me.madfix.cloudnet.webinterface.services;
 
 import de.dytanic.cloudnet.lib.server.ServerGroup;
 import de.dytanic.cloudnetcore.network.components.MinecraftServer;
-import de.dytanic.cloudnetcore.network.components.ProxyServer;
 import de.dytanic.cloudnetcore.network.components.Wrapper;
 import me.madfix.cloudnet.webinterface.WebInterface;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -57,7 +55,9 @@ final class ServerGroupService {
             optionalCompletableFuture.complete(Optional.of(
                     this.webInterface.getCloud().getScreenProvider().getScreens()
                             .containsKey(server.getServiceId().getServerId())));
-        } else optionalCompletableFuture.cancel(true);
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 
@@ -68,7 +68,9 @@ final class ServerGroupService {
         if (minecraftServer != null) {
             minecraftServer.getWrapper().writeServerCommand(command, minecraftServer.getLastServerInfo());
             optionalCompletableFuture.complete(Optional.of(true));
-        }  else optionalCompletableFuture.cancel(true);
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 
@@ -82,7 +84,9 @@ final class ServerGroupService {
             optionalCompletableFuture.complete(Optional.of(!
                     this.webInterface.getCloud().getScreenProvider().getScreens()
                             .containsKey(minecraftServer.getServiceId().getServerId())));
-        }  else optionalCompletableFuture.cancel(true);
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 

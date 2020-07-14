@@ -1,7 +1,6 @@
 package me.madfix.cloudnet.webinterface.services;
 
 import de.dytanic.cloudnet.lib.server.ProxyGroup;
-import de.dytanic.cloudnetcore.CloudNet;
 import de.dytanic.cloudnetcore.network.components.ProxyServer;
 import de.dytanic.cloudnetcore.network.components.Wrapper;
 import me.madfix.cloudnet.webinterface.WebInterface;
@@ -57,7 +56,9 @@ final class ProxyGroupService {
             optionalCompletableFuture.complete(Optional.of(
                     this.webInterface.getCloud().getScreenProvider().getScreens()
                             .containsKey(proxy.getServiceId().getServerId())));
-        } else optionalCompletableFuture.cancel(true);
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 
@@ -68,7 +69,9 @@ final class ProxyGroupService {
         if (proxy != null) {
             proxy.getWrapper().writeProxyCommand(command, proxy.getLastProxyInfo());
             optionalCompletableFuture.complete(Optional.of(true));
-        }  else optionalCompletableFuture.cancel(true);
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 
@@ -82,7 +85,9 @@ final class ProxyGroupService {
             optionalCompletableFuture.complete(Optional.of(!
                     this.webInterface.getCloud().getScreenProvider().getScreens()
                             .containsKey(proxy.getServiceId().getServerId())));
-        } else optionalCompletableFuture.cancel(true);
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 
@@ -111,6 +116,7 @@ final class ProxyGroupService {
         optionalCompletableFuture.complete(Optional.of(newSize > lastSize));
         return optionalCompletableFuture;
     }
+
     //TODO: Add documentation
     public CompletableFuture<Optional<Boolean>> startProxies(String proxyGroup, int amount) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
