@@ -37,8 +37,10 @@ final class MobService {
         this.webInterface = webInterface;
         this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().ifPresent(interfaceConfiguration -> {
             this.enable = interfaceConfiguration.isMobSystem();
-            if (this.enable) this.mobDatabase = new MobDatabase(
-                    webInterface.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
+            if (this.enable) {
+                this.mobDatabase = new MobDatabase(
+                        webInterface.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
+            }
         });
     }
 
@@ -60,7 +62,9 @@ final class MobService {
         CompletableFuture<Optional<MobDatabase>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable) {
             optionalCompletableFuture.complete(Optional.ofNullable(this.mobDatabase));
-        } else optionalCompletableFuture.cancel(true);
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 
@@ -79,17 +83,19 @@ final class MobService {
                     jsonConfig = Optional.of(JsonParser.parseReader(bufferedReader));
                 } catch (JsonSyntaxException e) {
                     this.enable = false;
-                    CloudNet.getLogger().severe("[MobService] Mob service is deactivated to prevent errors. Please fix the errors and try the function again.");
-                    CloudNet.getLogger().log(Level.SEVERE, "[MobService] An unexpected error occurred while reading the configuration file.", e);
+                    CloudNet.getLogger().severe("[301] Mob service is deactivated to prevent errors. Please fix the errors and try the function again.");
+                    CloudNet.getLogger().log(Level.SEVERE, "[301] An unexpected error occurred while reading the configuration file.", e);
                 }
                 jsonConfig.ifPresent(jsonElement -> optionalCompletableFuture.complete(Optional.of(this.webInterface.getGson()
                         .fromJson(jsonElement, TypeToken.get(MobConfig.class).getType()))));
             } catch (IOException e) {
                 this.enable = false;
-                CloudNet.getLogger().severe("[MobService] Mob service is deactivated to prevent errors. Please fix the errors and try the function again.");
-                CloudNet.getLogger().log(Level.SEVERE, "[MobService] An unexpected error occurred while reading the configuration file.", e);
+                CloudNet.getLogger().severe("[302] Mob service is deactivated to prevent errors. Please fix the errors and try the function again.");
+                CloudNet.getLogger().log(Level.SEVERE, "[302] An unexpected error occurred while reading the configuration file.", e);
             }
-        } else optionalCompletableFuture.cancel(true);
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 
@@ -104,7 +110,9 @@ final class MobService {
         if (this.enable && this.mobDatabase != null) {
             optionalCompletableFuture.complete(this.mobDatabase.loadAll().values().stream()
                     .filter(serverMob -> serverMob.getUniqueId().equals(mobId)).findFirst());
-        } else optionalCompletableFuture.cancel(true);
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 
@@ -117,7 +125,9 @@ final class MobService {
         CompletableFuture<Optional<Collection<ServerMob>>> collectionCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.mobDatabase != null) {
             collectionCompletableFuture.complete(Optional.of(this.mobDatabase.loadAll().values()));
-        } else collectionCompletableFuture.cancel(true);
+        } else {
+            collectionCompletableFuture.cancel(true);
+        }
         return collectionCompletableFuture;
     }
 
@@ -135,8 +145,12 @@ final class MobService {
                 this.mobDatabase.remove(mobId);
                 CloudNet.getInstance().getNetworkManager().updateAll();
                 optionalCompletableFuture.complete(Optional.of(true));
-            } else optionalCompletableFuture.cancel(true);
-        } else optionalCompletableFuture.cancel(true);
+            } else {
+                optionalCompletableFuture.cancel(true);
+            }
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 
@@ -153,8 +167,12 @@ final class MobService {
                 this.mobDatabase.add(serverMob);
                 CloudNet.getInstance().getNetworkManager().updateAll();
                 optionalCompletableFuture.complete(Optional.of(true));
-            } else optionalCompletableFuture.cancel(true);
-        } else optionalCompletableFuture.cancel(true);
+            } else {
+                optionalCompletableFuture.cancel(true);
+            }
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 
@@ -168,18 +186,25 @@ final class MobService {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable) {
             if (this.mobDatabase != null) {
-                this.getServerMob(serverMob.getUniqueId())
-                        .thenAccept(result -> result.ifPresent(mob -> removeMob(mob.getUniqueId()).thenAccept(success -> {
-                            if (success.isPresent() && success.get()) {
-                                addMob(serverMob).thenAccept(addMobSuccess -> {
-                                    if (addMobSuccess.isPresent() && addMobSuccess.get()) {
-                                        optionalCompletableFuture.complete(Optional.of(true));
-                                    } else optionalCompletableFuture.cancel(true);
-                                });
-                            } else optionalCompletableFuture.cancel(true);
-                        })));
-            } else optionalCompletableFuture.cancel(true);
-        } else optionalCompletableFuture.cancel(true);
+                removeMob(serverMob.getUniqueId()).thenAccept(success -> {
+                    if (success.isPresent() && success.get()) {
+                        addMob(serverMob).thenAccept(addMobSuccess -> {
+                            if (addMobSuccess.isPresent() && addMobSuccess.get()) {
+                                optionalCompletableFuture.complete(Optional.of(true));
+                            } else {
+                                optionalCompletableFuture.cancel(true);
+                            }
+                        });
+                    } else {
+                        optionalCompletableFuture.cancel(true);
+                    }
+                });
+            } else {
+                optionalCompletableFuture.cancel(true);
+            }
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 
@@ -198,7 +223,9 @@ final class MobService {
             document.saveAsConfig(this.mobConfigurationFile);
             CloudNet.getInstance().getNetworkManager().updateAll();
             optionalCompletableFuture.complete(Optional.of(true));
-        } else optionalCompletableFuture.cancel(true);
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 }
