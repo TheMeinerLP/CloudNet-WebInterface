@@ -23,7 +23,7 @@ public class WebInterfaceLogger extends Logger {
             try {
                 Files.createDirectories(path);
             } catch (IOException e) {
-                log(Level.SEVERE,"An unexpected error occurred while creating the file logger folder", e);
+                log(Level.SEVERE, "An unexpected error occurred while creating the file logger folder", e);
             }
         }
         try {
@@ -33,7 +33,7 @@ public class WebInterfaceLogger extends Logger {
             webInterfaceFileHandler.setEncoding(StandardCharsets.UTF_8.name());
             addHandler(webInterfaceFileHandler);
         } catch (IOException e) {
-            log(Level.SEVERE,"An unexpected error occurred while adding the file logger", e);
+            log(Level.SEVERE, "An unexpected error occurred while adding the file logger", e);
         }
         addHandler(new SentryHandler());
     }

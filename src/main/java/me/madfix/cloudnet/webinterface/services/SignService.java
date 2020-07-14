@@ -34,8 +34,10 @@ final class SignService {
         this.webInterface = webInterface;
         this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().ifPresent(interfaceConfiguration -> {
             this.enable = interfaceConfiguration.isSignSystem();
-            if (this.enable) this.signDatabase = new SignDatabase(
-                    webInterface.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
+            if (this.enable) {
+                this.signDatabase = new SignDatabase(
+                        webInterface.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
+            }
         });
     }
 
@@ -57,7 +59,9 @@ final class SignService {
         CompletableFuture<Optional<SignDatabase>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable) {
             optionalCompletableFuture.complete(Optional.ofNullable(this.signDatabase));
-        } else optionalCompletableFuture.cancel(true);
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 
@@ -86,7 +90,9 @@ final class SignService {
                 CloudNet.getLogger().severe("[402] Sign service is deactivated to prevent errors. Please fix the errors and try the function again.");
                 CloudNet.getLogger().log(Level.SEVERE, "[402] An unexpected error occurred while reading the configuration file.", e);
             }
-        } else optionalCompletableFuture.cancel(true);
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 
@@ -96,7 +102,9 @@ final class SignService {
         if (this.enable && this.signDatabase != null) {
             optionalCompletableFuture.complete(this.signDatabase.loadAll().values()
                     .stream().filter(s -> s.getUniqueId().equals(signId)).findFirst());
-        } else optionalCompletableFuture.cancel(true);
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 
@@ -105,7 +113,9 @@ final class SignService {
         CompletableFuture<Optional<Collection<Sign>>> collectionCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.signDatabase != null) {
             collectionCompletableFuture.complete(Optional.of(this.signDatabase.loadAll().values()));
-        } else collectionCompletableFuture.cancel(true);
+        } else {
+            collectionCompletableFuture.cancel(true);
+        }
         return collectionCompletableFuture;
     }
 
@@ -116,7 +126,9 @@ final class SignService {
             this.signDatabase.removeSign(signId);
             CloudNet.getInstance().getNetworkManager().updateAll();
             optionalCompletableFuture.complete(Optional.of(true));
-        } else optionalCompletableFuture.cancel(true);
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 
@@ -127,7 +139,9 @@ final class SignService {
             this.signDatabase.add(sign);
             CloudNet.getInstance().getNetworkManager().updateAll();
             optionalCompletableFuture.complete(Optional.of(true));
-        } else optionalCompletableFuture.cancel(true);
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 
@@ -140,11 +154,17 @@ final class SignService {
                     addSign(sign).thenAccept(addSignSuccess -> {
                         if (addSignSuccess.isPresent() && addSignSuccess.get()) {
                             optionalCompletableFuture.complete(Optional.of(true));
-                        } else optionalCompletableFuture.cancel(true);
+                        } else {
+                            optionalCompletableFuture.cancel(true);
+                        }
                     });
-                } else optionalCompletableFuture.cancel(true);
+                } else {
+                    optionalCompletableFuture.cancel(true);
+                }
             });
-        } else optionalCompletableFuture.cancel(true);
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 
@@ -158,7 +178,9 @@ final class SignService {
             document.saveAsConfig(this.signConfigurationFile);
             CloudNet.getInstance().getNetworkManager().updateAll();
             optionalCompletableFuture.complete(Optional.of(true));
-        } else optionalCompletableFuture.cancel(true);
+        } else {
+            optionalCompletableFuture.cancel(true);
+        }
         return optionalCompletableFuture;
     }
 }

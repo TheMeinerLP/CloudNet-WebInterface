@@ -9,6 +9,7 @@ public class CloudNetService {
     private final ProxyGroupService proxyGroupService;
     private final ServerGroupService serverGroupService;
     private final WrapperService wrapperService;
+    private final CloudPermissionService cloudPermissionService;
 
     public CloudNetService(WebInterface webInterface) {
         this.mobService = new MobService(webInterface);
@@ -16,6 +17,7 @@ public class CloudNetService {
         this.proxyGroupService = new ProxyGroupService(webInterface);
         this.serverGroupService = new ServerGroupService(webInterface);
         this.wrapperService = new WrapperService(webInterface);
+        this.cloudPermissionService = new CloudPermissionService(webInterface);
     }
 
     public MobService getMobService() {
@@ -36,5 +38,9 @@ public class CloudNetService {
 
     public WrapperService getWrapperService() {
         return wrapperService;
+    }
+
+    public CloudPermissionService getCloudPermissionService() {
+        return cloudPermissionService;
     }
 }

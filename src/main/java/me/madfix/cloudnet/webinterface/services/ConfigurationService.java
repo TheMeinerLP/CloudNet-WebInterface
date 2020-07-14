@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import de.dytanic.cloudnetcore.CloudNet;
 import me.madfix.cloudnet.webinterface.WebInterface;
 import me.madfix.cloudnet.webinterface.model.InterfaceConfiguration;
 
@@ -54,10 +53,6 @@ public final class ConfigurationService {
         return true;
     }
 
-    /**
-     *
-     * @return
-     */
     public Optional<InterfaceConfiguration> getOptionalInterfaceConfiguration() {
         return Optional.ofNullable(optionalInterfaceConfiguration);
     }
