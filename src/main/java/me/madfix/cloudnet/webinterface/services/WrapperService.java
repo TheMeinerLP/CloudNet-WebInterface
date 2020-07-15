@@ -16,21 +16,29 @@ final class WrapperService {
         this.webInterface = webInterface;
     }
 
-    //TODO: Add documentation
+    /**
+     * @return all wrapper names as collection
+     */
     public CompletableFuture<Optional<Collection<String>>> getWrapperNames() {
         CompletableFuture<Optional<Collection<String>>> optionalCompletableFuture = new CompletableFuture<>();
         optionalCompletableFuture.complete(Optional.of(this.webInterface.getCloud().getWrappers().keySet()));
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * @return all wrapper instances as collection
+     */
     public CompletableFuture<Optional<Collection<Wrapper>>> getWrappers() {
         CompletableFuture<Optional<Collection<Wrapper>>> optionalCompletableFuture = new CompletableFuture<>();
         optionalCompletableFuture.complete(Optional.of(this.webInterface.getCloud().getWrappers().values()));
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Adds a wrapper to the system
+     * @param wrapperMeta contains all necessary information
+     * @return true is returned if the operation was successful
+     */
     public CompletableFuture<Optional<Boolean>> createWrapper(WrapperMeta wrapperMeta) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         this.webInterface.getCloud().getConfig().createWrapper(wrapperMeta);
@@ -39,14 +47,22 @@ final class WrapperService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Removes a wrapper from the system
+     * @param wrapperMeta contains all necessary information
+     * @return true is returned if the operation was successful
+     */
     public CompletableFuture<Optional<Boolean>> deleteWrapper(WrapperMeta wrapperMeta) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         this.webInterface.getCloud().getConfig().deleteWrapper(wrapperMeta);
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Returns a wrapper instance by its id
+     * @param wrapperId is used as an indicator for the instance
+     * @return the wrapper instance as optional to avoid a null pointer exception
+     */
     public CompletableFuture<Optional<Wrapper>> getWrapper(String wrapperId) {
         CompletableFuture<Optional<Wrapper>> optionalCompletableFuture = new CompletableFuture<>();
         optionalCompletableFuture.complete(Optional.of(this.webInterface.getCloud().getWrappers().get(wrapperId)));
