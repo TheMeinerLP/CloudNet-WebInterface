@@ -96,7 +96,11 @@ final class SignService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Returns a sign based on its Id
+     * @param signId is the id by which the sign can be recognized
+     * @return a sign instance in an optional so that no null pointer exception occurs
+     */
     public CompletableFuture<Optional<Sign>> getSign(UUID signId) {
         CompletableFuture<Optional<Sign>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.signDatabase != null) {
@@ -108,7 +112,10 @@ final class SignService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Returns a list of signs
+     * @return a sign list in an optional so that no null pointer exception occurs
+     */
     public CompletableFuture<Optional<Collection<Sign>>> getSigns() {
         CompletableFuture<Optional<Collection<Sign>>> collectionCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.signDatabase != null) {
@@ -119,7 +126,11 @@ final class SignService {
         return collectionCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Removes a sign by its Id
+     * @param signId is taken as indicator for the sign
+     * @return true is returned if the operation was successful
+     */
     public CompletableFuture<Optional<Boolean>> removeSign(UUID signId) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.signDatabase != null) {
@@ -132,7 +143,11 @@ final class SignService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Adds a sign to the system
+     * @param sign what to add
+     * @return true is returned if the operation was successful
+     */
     public CompletableFuture<Optional<Boolean>> addSign(Sign sign) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.signDatabase != null) {
@@ -145,7 +160,11 @@ final class SignService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Updates a sign in the system
+     * @param sign  what to update
+     * @return true is returned if the operation was successful
+     */
     public CompletableFuture<Optional<Boolean>> updateSign(Sign sign) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.signDatabase != null) {
@@ -168,7 +187,11 @@ final class SignService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Updates the configuration
+     * @param signLayoutConfig to be updated
+     * @return true is returned if the operation was successful
+     */
     public CompletableFuture<Optional<Boolean>> updateSignConfig(SignLayoutConfig signLayoutConfig) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable) {

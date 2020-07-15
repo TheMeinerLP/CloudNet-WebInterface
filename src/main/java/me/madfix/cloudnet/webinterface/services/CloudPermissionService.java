@@ -50,10 +50,20 @@ final class CloudPermissionService {
                 });
     }
 
+    /**
+     * Allows you to check if the cloud permission system is active
+     *
+     * @return true will return if the system is active
+     */
     public CompletableFuture<Optional<Boolean>> isEnabled() {
         return CompletableFuture.completedFuture(Optional.of(this.enable));
     }
 
+    /**
+     * Returns the permission pool
+     *
+     * @return the pool itself
+     */
     public CompletableFuture<Optional<PermissionPool>> getPermissionPool() {
         CompletableFuture<Optional<PermissionPool>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.permissionPool.isAvailable()) {
@@ -64,6 +74,11 @@ final class CloudPermissionService {
         return optionalCompletableFuture;
     }
 
+    /**
+     * Returns a group by the name
+     *
+     * @return the group instance as a completable future with an optional zero prevention
+     */
     public CompletableFuture<Optional<PermissionGroup>> getGroup(String groupName) {
         CompletableFuture<Optional<PermissionGroup>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.permissionPool.isAvailable()) {
@@ -74,6 +89,9 @@ final class CloudPermissionService {
         return optionalCompletableFuture;
     }
 
+    /**
+     * @return returns a collection of groups from the system
+     */
     public CompletableFuture<Optional<Collection<PermissionGroup>>> getGroups() {
         CompletableFuture<Optional<Collection<PermissionGroup>>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.permissionPool.isAvailable()) {
@@ -84,6 +102,11 @@ final class CloudPermissionService {
         return optionalCompletableFuture;
     }
 
+    /**
+     * Returns an offline player instance by its UUID
+     * @param uniquePlayerId is the unique id of mojang to identify the player
+     * @return a completeable future with an optional to avoid null pointer exceptions
+     */
     public CompletableFuture<Optional<OfflinePlayer>> getPlayer(UUID uniquePlayerId) {
         CompletableFuture<Optional<OfflinePlayer>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.permissionPool.isAvailable()) {
@@ -95,6 +118,11 @@ final class CloudPermissionService {
         return optionalCompletableFuture;
     }
 
+    /**
+     * Returns an offline player instance by its in game name
+     * @param playerName is the in game name of the player
+     * @return a completeable future with an optional to avoid null pointer exceptions
+     */
     public CompletableFuture<Optional<OfflinePlayer>> getPlayer(String playerName) {
         CompletableFuture<Optional<OfflinePlayer>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.permissionPool.isAvailable()) {
@@ -111,6 +139,11 @@ final class CloudPermissionService {
         return optionalCompletableFuture;
     }
 
+    /**
+     * Creates and updates a group
+     * @param permissionGroup to be updated or created
+     * @return a completable future with an optional boolean that returns true if the task was successful
+     */
     public CompletableFuture<Optional<Boolean>> updateGroup(PermissionGroup permissionGroup) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.permissionPool.isAvailable()) {
@@ -127,6 +160,11 @@ final class CloudPermissionService {
         return optionalCompletableFuture;
     }
 
+    /**
+     * Updates a player in the database and also online when he is online
+     * @param offlinePlayer to be updated
+     * @return a completable future with an optional boolean that returns true if the task was successful
+     */
     public CompletableFuture<Optional<Boolean>> updatePlayer(OfflinePlayer offlinePlayer) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.permissionPool.isAvailable()) {
@@ -155,6 +193,11 @@ final class CloudPermissionService {
         return optionalCompletableFuture;
     }
 
+    /**
+     * Removes a permission group from the system
+     * @param name identifies the name of the group
+     * @return a completable future with an optional boolean that returns true if the task was successful
+     */
     public CompletableFuture<Optional<Boolean>> removeGroup(String name) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable && this.permissionPool.isAvailable()) {

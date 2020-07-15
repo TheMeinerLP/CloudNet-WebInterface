@@ -17,35 +17,52 @@ final class ProxyGroupService {
         this.webInterface = webInterface;
     }
 
-    //TODO: Add documentation
+    /**
+     * Returns the proxy group using the name
+     * @param groupName is used to identify the group
+     * @return a proxy group in an optional to avoid a null pointer exception
+     */
     public CompletableFuture<Optional<ProxyGroup>> getProxyGroup(String groupName) {
         CompletableFuture<Optional<ProxyGroup>> optionalCompletableFuture = new CompletableFuture<>();
         optionalCompletableFuture.complete(Optional.of(this.webInterface.getCloud().getProxyGroup(groupName)));
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * @return a list of proxy groups
+     */
     public CompletableFuture<Optional<Collection<ProxyGroup>>> getProxyGroups() {
         CompletableFuture<Optional<Collection<ProxyGroup>>> optionalCompletableFuture = new CompletableFuture<>();
         optionalCompletableFuture.complete(Optional.of(this.webInterface.getCloud().getProxyGroups().values()));
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Returns a list of proxies by the proxy group name
+     * @param groupName is used to identify the group
+     * @return a list of proxies in an optional to avoid a null pointer exception
+     */
     public CompletableFuture<Optional<Collection<ProxyServer>>> getProxiesFromGroup(String groupName) {
         CompletableFuture<Optional<Collection<ProxyServer>>> optionalCompletableFuture = new CompletableFuture<>();
         optionalCompletableFuture.complete(Optional.of(this.webInterface.getCloud().getProxys(groupName)));
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Returns a list of proxies
+     * @return a list of proxies in an optional to avoid a null pointer exception
+     */
     public CompletableFuture<Optional<Collection<ProxyServer>>> getProxies() {
         CompletableFuture<Optional<Collection<ProxyServer>>> optionalCompletableFuture = new CompletableFuture<>();
         optionalCompletableFuture.complete(Optional.of(this.webInterface.getCloud().getProxys().values()));
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Starts a screen from CloudNet using the proxy id
+     * @param proxyId is used to identify the proxy
+     * @return a completable future with an optional boolean that returns true if the task was successful
+     */
     public CompletableFuture<Optional<Boolean>> startProxyScreen(String proxyId) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         ProxyServer proxy = this.webInterface.getCloud().getProxy(proxyId);
@@ -62,7 +79,12 @@ final class ProxyGroupService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Sends a command to the proxy console
+     * @param proxyId is used to identify the proxy
+     * @param command to be sent to the console
+     * @return a completable future with an optional boolean that returns true if the task was successful
+     */
     public CompletableFuture<Optional<Boolean>> writeCommand(String proxyId, String command) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         ProxyServer proxy = this.webInterface.getCloud().getProxy(proxyId);
@@ -75,7 +97,11 @@ final class ProxyGroupService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Stops a screen from CloudNet using the proxy id
+     * @param proxyId is used to identify the proxy
+     * @return a completable future with an optional boolean that returns true if the task was successful
+     */
     public CompletableFuture<Optional<Boolean>> stopProxyScreen(String proxyId) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         ProxyServer proxy = this.webInterface.getCloud().getProxy(proxyId);
@@ -91,7 +117,11 @@ final class ProxyGroupService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Stop all proxies of a group
+     * @param proxyGroup is used to identify the group
+     * @return a completable future with an optional boolean that returns true if the task was successful
+     */
     public CompletableFuture<Optional<Boolean>> stopProxies(String proxyGroup) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         this.webInterface.getCloud().getProxys().values().forEach(ps -> this.webInterface.getCloud().stopProxy(ps));
@@ -99,7 +129,11 @@ final class ProxyGroupService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Stop the proxy
+     * @param proxyId is used to identify the proxy
+     * @return a completable future with an optional boolean that returns true if the task was successful
+     */
     public CompletableFuture<Optional<Boolean>> stopProxy(String proxyId) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         this.webInterface.getCloud().stopProxy(proxyId);
@@ -107,7 +141,11 @@ final class ProxyGroupService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Starts a proxy from the group
+     * @param proxyGroup is used to identify the group
+     * @return a completable future with an optional boolean that returns true if the task was successful
+     */
     public CompletableFuture<Optional<Boolean>> startProxy(String proxyGroup) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         int lastSize = this.webInterface.getCloud().getProxys().size();
@@ -117,7 +155,12 @@ final class ProxyGroupService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Starts a fixed number of proxies from the group
+     * @param proxyGroup is used to identify the group
+     * @param amount indicates the number
+     * @return a completable future with an optional boolean that returns true if the task was successful
+     */
     public CompletableFuture<Optional<Boolean>> startProxies(String proxyGroup, int amount) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         int lastSize = this.webInterface.getCloud().getProxys().size();
@@ -129,7 +172,11 @@ final class ProxyGroupService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Updates a proxy group
+     * @param proxyGroup is used to identify the group
+     * @return a completable future with an optional boolean that returns true if the task was successful
+     */
     public CompletableFuture<Optional<Boolean>> updateProxyGroup(ProxyGroup proxyGroup) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         this.webInterface.getCloud().getProxyGroups().remove(proxyGroup.getName());

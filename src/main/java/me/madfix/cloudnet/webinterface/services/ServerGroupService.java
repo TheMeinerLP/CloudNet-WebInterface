@@ -17,35 +17,53 @@ final class ServerGroupService {
         this.webInterface = webInterface;
     }
 
-    //TODO: Add documentation
+    /**
+     * Returns the group by a name
+     * @param groupName is used as an indicator for the group
+     * @return a server group in an optional to avoid a null pointer exception
+     */
     public CompletableFuture<Optional<ServerGroup>> getServerGroup(String groupName) {
         CompletableFuture<Optional<ServerGroup>> optionalCompletableFuture = new CompletableFuture<>();
         optionalCompletableFuture.complete(Optional.of(this.webInterface.getCloud().getServerGroup(groupName)));
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Returns collection to server groups
+     * @return a list of server groups in an optional to avoid a null pointer exception
+     */
     public CompletableFuture<Optional<Collection<ServerGroup>>> getServerGroups() {
         CompletableFuture<Optional<Collection<ServerGroup>>> optionalCompletableFuture = new CompletableFuture<>();
         optionalCompletableFuture.complete(Optional.of(this.webInterface.getCloud().getServerGroups().values()));
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Returns collection on servers based on the group name
+     * @param groupName is used as an indicator for the minecraft servers
+     * @return a list of servers from a group in an optional to avoid a null pointer exception
+     */
     public CompletableFuture<Optional<Collection<MinecraftServer>>> getServersFromGroup(String groupName) {
         CompletableFuture<Optional<Collection<MinecraftServer>>> optionalCompletableFuture = new CompletableFuture<>();
         optionalCompletableFuture.complete(Optional.of(this.webInterface.getCloud().getServers(groupName)));
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Returns collection on servers
+     * @return a list of servers in an optional to avoid a null pointer exception
+     */
     public CompletableFuture<Optional<Collection<MinecraftServer>>> getServers() {
         CompletableFuture<Optional<Collection<MinecraftServer>>> optionalCompletableFuture = new CompletableFuture<>();
         optionalCompletableFuture.complete(Optional.of(this.webInterface.getCloud().getServers().values()));
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Starts the screen of a server
+     * @param serverId is used as an indicator for the minecraft server
+     * @return true is returned if the operation was successful
+     */
     public CompletableFuture<Optional<Boolean>> startServerScreen(String serverId) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         MinecraftServer server = this.webInterface.getCloud().getServer(serverId);
@@ -61,7 +79,12 @@ final class ServerGroupService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Writes a command to the console from the server
+     * @param serverId is used as an indicator for the minecraft server
+     * @param command is the relevant command to be transmitted
+     * @return true is returned if the operation was successful
+     */
     public CompletableFuture<Optional<Boolean>> writeCommand(String serverId, String command) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         MinecraftServer minecraftServer = this.webInterface.getCloud().getServer(serverId);
@@ -74,7 +97,11 @@ final class ServerGroupService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Stop a screen from a server
+     * @param serverId is used as an indicator for the minecraft server
+     * @return true is returned if the operation was successful
+     */
     public CompletableFuture<Optional<Boolean>> stopServerScreen(String serverId) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         MinecraftServer minecraftServer = this.webInterface.getCloud().getServer(serverId);
@@ -90,7 +117,11 @@ final class ServerGroupService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Stops all servers in a group
+     * @param serverGroup is used as an indicator for the minecraft servers of a group
+     * @return true is returned if the operation was successful
+     */
     public CompletableFuture<Optional<Boolean>> stopServers(String serverGroup) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         this.webInterface.getCloud().getServers().values().forEach(ms -> this.webInterface.getCloud().stopServer(ms));
@@ -98,7 +129,11 @@ final class ServerGroupService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Stops the server based on its id
+     * @param serverId is used as an indicator for the minecraft server
+     * @return true is returned if the operation was successful
+     */
     public CompletableFuture<Optional<Boolean>> stopServer(String serverId) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         this.webInterface.getCloud().stopServer(serverId);
@@ -106,7 +141,11 @@ final class ServerGroupService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Starts a server from the group
+     * @param serverGroup is used as an indicator for the group
+     * @return true is returned if the operation was successful
+     */
     public CompletableFuture<Optional<Boolean>> startServer(String serverGroup) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         int lastSize = this.webInterface.getCloud().getServers().size();
@@ -116,7 +155,12 @@ final class ServerGroupService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Starts a certain number of servers from the group
+     * @param serverGroup is used as an indicator for the group
+     * @param amount is the number of servers to start
+     * @return true is returned if the operation was successful
+     */
     public CompletableFuture<Optional<Boolean>> startServers(String serverGroup, int amount) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         int lastSize = this.webInterface.getCloud().getServers().size();
@@ -128,7 +172,11 @@ final class ServerGroupService {
         return optionalCompletableFuture;
     }
 
-    //TODO: Add documentation
+    /**
+     * Updates a server group
+     * @param serverGroup is used as an indicator for the group
+     * @return true is returned if the operation was successful
+     */
     public CompletableFuture<Optional<Boolean>> updateServerGroup(ServerGroup serverGroup) {
         CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
         this.webInterface.getCloud().getServerGroups().remove(serverGroup.getName());

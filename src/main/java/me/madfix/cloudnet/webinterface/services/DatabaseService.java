@@ -61,10 +61,17 @@ public final class DatabaseService {
         this.webInterface.getLogger().info("Creating the data source was successful!");
     }
 
+    /**
+     * @return the data source
+     */
     public Optional<HikariDataSource> getDataSource() {
         return Optional.of(this.hikariDataSource);
     }
 
+    /**
+     * Returns a connection from the pool
+     * @return a connection to use it
+     */
     public Optional<Connection> getConnection() {
         Optional<Connection> optionalConnection = Optional.empty();
         if (getDataSource().isPresent()) {
