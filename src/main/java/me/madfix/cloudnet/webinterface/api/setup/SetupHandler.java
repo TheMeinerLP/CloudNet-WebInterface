@@ -24,6 +24,19 @@ public final class SetupHandler {
                     this.webInterface.getLogger().log(Level.SEVERE, "User table procedures could not be created", e);
                 }
             });
+
+        }
+    }
+
+    public void setupPostSql() {
+        if (this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().isPresent()) {
+            this.webInterface.getDatabaseService().getConnection().ifPresent(connection -> {
+                try(PreparedStatement statement = connection.prepareStatement("CALL `create_user_table`()")) {
+                    statement.execute();
+                } catch (SQLException e) {
+                    this.webInterface.getLogger().log(Level.SEVERE, "User table procedures could not be called", e);
+                }
+            });
         }
     }
 }

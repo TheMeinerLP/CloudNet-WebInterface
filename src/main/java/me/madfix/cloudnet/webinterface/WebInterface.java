@@ -47,6 +47,7 @@ public final class WebInterface extends CoreModule {
         if (this.configurationService.getOptionalInterfaceConfiguration().isPresent()) {
             this.setupHandler = new SetupHandler(this);
             this.setupHandler.setupPreSql();
+            this.setupHandler.setupPostSql();
             this.cloudNetService = new CloudNetService(this);
         }
 
