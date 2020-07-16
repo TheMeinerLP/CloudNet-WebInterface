@@ -4,7 +4,6 @@ import me.madfix.cloudnet.webinterface.WebInterface;
 import me.madfix.cloudnet.webinterface.api.builder.PasswordGenerator;
 import me.madfix.cloudnet.webinterface.api.sql.SQLProcedure;
 
-import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;

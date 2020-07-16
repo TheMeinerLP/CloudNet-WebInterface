@@ -1,7 +1,6 @@
 package me.madfix.cloudnet.webinterface.updates;
 
 import me.madfix.cloudnet.webinterface.WebInterface;
-import me.madfix.cloudnet.webinterface.api.sql.SQLProcedure;
 import me.madfix.cloudnet.webinterface.api.update.UpdateTask;
 
 import java.sql.PreparedStatement;

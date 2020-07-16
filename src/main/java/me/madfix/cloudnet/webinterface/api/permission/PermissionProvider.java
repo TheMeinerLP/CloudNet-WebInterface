@@ -1,7 +1,6 @@
 package me.madfix.cloudnet.webinterface.api.permission;
 
 import me.madfix.cloudnet.webinterface.WebInterface;
-import me.madfix.cloudnet.webinterface.model.WebInterfaceUser;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
