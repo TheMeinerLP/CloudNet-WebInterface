@@ -17,6 +17,26 @@ public final class PermissionProvider {
         this.webInterface = webInterface;
     }
 
+
+    public CompletableFuture<Boolean> hasUserPermission(int userId, String permission){
+        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
+        if (this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().isPresent()) {
+            this.webInterface.getDatabaseService().getConnection().ifPresent(connection -> {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT permission from `user_permission` WHERE permission = ? AND userId = ?")) {
+                    statement.setString(1, permission);
+                    statement.setInt(2, userId);
+                    try (ResultSet resultSet = statement.executeQuery()) {
+                        completableFuture.complete(resultSet.next());
+                    }
+                } catch (SQLException e) {
+                    this.webInterface.getLogger().log(Level.SEVERE, "The permission for the user could not be selected from the database ", e);
+                }
+            });
+        }
+        return completableFuture;
+    }
+
+
     public CompletableFuture<Boolean> addPermission(int userId, String permission) {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         if (this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().isPresent()) {
@@ -25,7 +45,7 @@ public final class PermissionProvider {
                     statement.setString(1, permission);
                     statement.setInt(2, userId);
                     try (ResultSet resultSet = statement.executeQuery()) {
-                        if (resultSet.first()) {
+                        if (resultSet.next()) {
                             this.webInterface.getLogger().log(Level.SEVERE, "The permission already exists in the database for this user!");
                             completableFuture.cancel(true);
                         }
