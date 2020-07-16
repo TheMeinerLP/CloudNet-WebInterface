@@ -8,11 +8,13 @@ import io.sentry.event.UserBuilder;
 import me.madfix.cloudnet.webinterface.api.builder.PasswordGenerator;
 import me.madfix.cloudnet.webinterface.api.permission.PermissionProvider;
 import me.madfix.cloudnet.webinterface.api.setup.SetupHandler;
+import me.madfix.cloudnet.webinterface.api.update.UpdateHandler;
 import me.madfix.cloudnet.webinterface.api.user.UserProvider;
 import me.madfix.cloudnet.webinterface.logging.WebInterfaceLogger;
 import me.madfix.cloudnet.webinterface.services.CloudNetService;
 import me.madfix.cloudnet.webinterface.services.ConfigurationService;
 import me.madfix.cloudnet.webinterface.services.DatabaseService;
+import me.madfix.cloudnet.webinterface.updates.Update_1_9;
 
 import java.util.logging.Level;
 
@@ -27,6 +29,7 @@ public final class WebInterface extends CoreModule {
     private WebInterfaceLogger logger;
 
     private SetupHandler setupHandler;
+    private UpdateHandler updateHandler;
 
     private UserProvider userProvider;
     private PermissionProvider permissionProvider;
@@ -60,6 +63,9 @@ public final class WebInterface extends CoreModule {
             this.permissionProvider = new PermissionProvider(this);
             this.userProvider = new UserProvider(this);
             this.setupHandler.setupPreAdminUser();
+            this.updateHandler = new UpdateHandler(this);
+            this.updateHandler.addTask(1,new Update_1_9());
+            this.updateHandler.callUpdates();
             this.cloudNetService = new CloudNetService(this);
         }
 
