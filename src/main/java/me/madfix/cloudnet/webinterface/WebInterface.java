@@ -5,7 +5,6 @@ import de.dytanic.cloudnetcore.CloudNet;
 import de.dytanic.cloudnetcore.api.CoreModule;
 import io.sentry.Sentry;
 import io.sentry.event.UserBuilder;
-import me.madfix.cloudnet.webinterface.api.builder.PasswordGenerator;
 import me.madfix.cloudnet.webinterface.api.permission.PermissionProvider;
 import me.madfix.cloudnet.webinterface.api.setup.SetupHandler;
 import me.madfix.cloudnet.webinterface.api.update.UpdateHandler;
@@ -15,8 +14,6 @@ import me.madfix.cloudnet.webinterface.services.CloudNetService;
 import me.madfix.cloudnet.webinterface.services.ConfigurationService;
 import me.madfix.cloudnet.webinterface.services.DatabaseService;
 import me.madfix.cloudnet.webinterface.updates.Update_1_9;
-
-import java.util.logging.Level;
 
 
 public final class WebInterface extends CoreModule {
