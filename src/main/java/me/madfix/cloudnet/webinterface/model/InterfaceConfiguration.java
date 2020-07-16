@@ -1,22 +1,22 @@
 package me.madfix.cloudnet.webinterface.model;
 
-import java.util.Objects;
-
 public final class InterfaceConfiguration {
 
     private final int restPort;
     private final int webSocketPort;
     private final String host;
+    private final String passwordSalt;
     private final boolean mobSystem;
     private final boolean signSystem;
     private final boolean permissionSystem;
     private final DatabaseConfiguration databaseConfiguration;
 
     public InterfaceConfiguration(int restPort, int webSocketPort, String host,
-                                  boolean mobSystem, boolean signSystem, boolean permissionSystem, DatabaseConfiguration databaseConfiguration) {
+                                  String passwordSalt, boolean mobSystem, boolean signSystem, boolean permissionSystem, DatabaseConfiguration databaseConfiguration) {
         this.restPort = restPort;
         this.webSocketPort = webSocketPort;
         this.host = host;
+        this.passwordSalt = passwordSalt;
         this.mobSystem = mobSystem;
         this.signSystem = signSystem;
         this.permissionSystem = permissionSystem;
@@ -45,6 +45,10 @@ public final class InterfaceConfiguration {
 
     public boolean isPermissionSystem() {
         return permissionSystem;
+    }
+
+    public String getPasswordSalt() {
+        return passwordSalt;
     }
 
     public boolean isSignSystem() {

@@ -5,10 +5,15 @@ import de.dytanic.cloudnetcore.CloudNet;
 import de.dytanic.cloudnetcore.api.CoreModule;
 import io.sentry.Sentry;
 import io.sentry.event.UserBuilder;
+import me.madfix.cloudnet.webinterface.api.permission.PermissionProvider;
+import me.madfix.cloudnet.webinterface.api.setup.SetupHandler;
+import me.madfix.cloudnet.webinterface.api.update.UpdateHandler;
+import me.madfix.cloudnet.webinterface.api.user.UserProvider;
 import me.madfix.cloudnet.webinterface.logging.WebInterfaceLogger;
 import me.madfix.cloudnet.webinterface.services.CloudNetService;
 import me.madfix.cloudnet.webinterface.services.ConfigurationService;
 import me.madfix.cloudnet.webinterface.services.DatabaseService;
+import me.madfix.cloudnet.webinterface.updates.Update_1_9;
 
 
 public final class WebInterface extends CoreModule {
@@ -19,6 +24,12 @@ public final class WebInterface extends CoreModule {
 
     private final Gson gson = new Gson();
     private WebInterfaceLogger logger;
+
+    private SetupHandler setupHandler;
+    private UpdateHandler updateHandler;
+
+    private UserProvider userProvider;
+    private PermissionProvider permissionProvider;
 
 
     @Override
@@ -43,6 +54,15 @@ public final class WebInterface extends CoreModule {
     @Override
     public void onBootstrap() {
         if (this.configurationService.getOptionalInterfaceConfiguration().isPresent()) {
+            this.setupHandler = new SetupHandler(this);
+            this.setupHandler.setupPreSql();
+            this.setupHandler.setupPostSql();
+            this.permissionProvider = new PermissionProvider(this);
+            this.userProvider = new UserProvider(this);
+            this.setupHandler.setupPreAdminUser();
+            this.updateHandler = new UpdateHandler(this);
+            this.updateHandler.addTask(1,new Update_1_9());
+            this.updateHandler.callUpdates();
             this.cloudNetService = new CloudNetService(this);
         }
 
@@ -71,5 +91,13 @@ public final class WebInterface extends CoreModule {
 
     public CloudNetService getCloudNetService() {
         return cloudNetService;
+    }
+
+    public PermissionProvider getPermissionProvider() {
+        return permissionProvider;
+    }
+
+    public UserProvider getUserProvider() {
+        return userProvider;
     }
 }
