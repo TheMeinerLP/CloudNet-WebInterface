@@ -19,6 +19,7 @@ final class ProxyGroupService {
 
     /**
      * Returns the proxy group using the name
+     *
      * @param groupName is used to identify the group
      * @return a proxy group in an optional to avoid a null pointer exception
      */
@@ -39,6 +40,7 @@ final class ProxyGroupService {
 
     /**
      * Returns a list of proxies by the proxy group name
+     *
      * @param groupName is used to identify the group
      * @return a list of proxies in an optional to avoid a null pointer exception
      */
@@ -50,6 +52,7 @@ final class ProxyGroupService {
 
     /**
      * Returns a list of proxies
+     *
      * @return a list of proxies in an optional to avoid a null pointer exception
      */
     public CompletableFuture<Optional<Collection<ProxyServer>>> getProxies() {
@@ -60,6 +63,7 @@ final class ProxyGroupService {
 
     /**
      * Starts a screen from CloudNet using the proxy id
+     *
      * @param proxyId is used to identify the proxy
      * @return a completable future with an optional boolean that returns true if the task was successful
      */
@@ -81,6 +85,7 @@ final class ProxyGroupService {
 
     /**
      * Sends a command to the proxy console
+     *
      * @param proxyId is used to identify the proxy
      * @param command to be sent to the console
      * @return a completable future with an optional boolean that returns true if the task was successful
@@ -99,6 +104,7 @@ final class ProxyGroupService {
 
     /**
      * Stops a screen from CloudNet using the proxy id
+     *
      * @param proxyId is used to identify the proxy
      * @return a completable future with an optional boolean that returns true if the task was successful
      */
@@ -119,6 +125,7 @@ final class ProxyGroupService {
 
     /**
      * Stop all proxies of a group
+     *
      * @param proxyGroup is used to identify the group
      * @return a completable future with an optional boolean that returns true if the task was successful
      */
@@ -131,6 +138,7 @@ final class ProxyGroupService {
 
     /**
      * Stop the proxy
+     *
      * @param proxyId is used to identify the proxy
      * @return a completable future with an optional boolean that returns true if the task was successful
      */
@@ -143,6 +151,7 @@ final class ProxyGroupService {
 
     /**
      * Starts a proxy from the group
+     *
      * @param proxyGroup is used to identify the group
      * @return a completable future with an optional boolean that returns true if the task was successful
      */
@@ -157,8 +166,9 @@ final class ProxyGroupService {
 
     /**
      * Starts a fixed number of proxies from the group
+     *
      * @param proxyGroup is used to identify the group
-     * @param amount indicates the number
+     * @param amount     indicates the number
      * @return a completable future with an optional boolean that returns true if the task was successful
      */
     public CompletableFuture<Optional<Boolean>> startProxies(String proxyGroup, int amount) {
@@ -174,6 +184,7 @@ final class ProxyGroupService {
 
     /**
      * Updates a proxy group
+     *
      * @param proxyGroup is used to identify the group
      * @return a completable future with an optional boolean that returns true if the task was successful
      */

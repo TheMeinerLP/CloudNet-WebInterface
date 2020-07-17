@@ -1,6 +1,5 @@
 package me.madfix.cloudnet.webinterface.services;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
@@ -19,7 +18,6 @@ import java.util.logging.Level;
 public final class ConfigurationService {
 
     private InterfaceConfiguration optionalInterfaceConfiguration;
-    private final Gson gson = new Gson();
     private final WebInterface webInterface;
 
     public ConfigurationService(WebInterface webInterface) {
@@ -32,7 +30,7 @@ public final class ConfigurationService {
      * @return true if the file was found and loaded. If false returns no configuration file exists
      */
     public boolean loadConfigurationFile() {
-        final Path configurationFile = Paths.get("interface.json");
+        Path configurationFile = Paths.get("interface.json");
         if (!Files.exists(configurationFile)) {
             return false;
         } else {
@@ -44,7 +42,7 @@ public final class ConfigurationService {
                     this.webInterface.getLogger().log(Level.SEVERE, "[101] An unexpected error occurred while reading the configuration file ", e);
                     return false;
                 }
-                jsonConfig.ifPresent(jsonElement -> this.optionalInterfaceConfiguration = this.gson.fromJson(jsonElement, InterfaceConfiguration.class));
+                jsonConfig.ifPresent(jsonElement -> this.optionalInterfaceConfiguration = this.webInterface.getGson().fromJson(jsonElement, InterfaceConfiguration.class));
             } catch (IOException e) {
                 this.webInterface.getLogger().log(Level.SEVERE, "[102] An unexpected error occurred while reading the configuration file ", e);
                 return false;

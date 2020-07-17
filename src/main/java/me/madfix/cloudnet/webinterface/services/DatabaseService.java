@@ -58,28 +58,28 @@ public final class DatabaseService {
 
     private void createDataSource() {
         this.hikariDataSource = new HikariDataSource(this.hikariConfig);
+        this.hikariConfig.setLeakDetectionThreshold(1000);
         this.webInterface.getLogger().info("Creating the data source was successful!");
     }
 
     /**
      * @return the data source
      */
-    public Optional<HikariDataSource> getDataSource() {
-        return Optional.of(this.hikariDataSource);
+    public HikariDataSource getDataSource() {
+        return this.hikariDataSource;
     }
 
     /**
      * Returns a connection from the pool
+     *
      * @return a connection to use it
      */
     public Optional<Connection> getConnection() {
         Optional<Connection> optionalConnection = Optional.empty();
-        if (getDataSource().isPresent()) {
-            try {
-                optionalConnection = Optional.of(this.hikariDataSource.getConnection());
-            } catch (SQLException e) {
-                this.webInterface.getLogger().log(Level.SEVERE, "[201] Something went wrong while establishing an SQL connection!", e);
-            }
+        try {
+            optionalConnection = Optional.of(this.hikariDataSource.getConnection());
+        } catch (SQLException e) {
+            this.webInterface.getLogger().log(Level.SEVERE, "[201] Something went wrong while establishing an SQL connection!", e);
         }
         return optionalConnection;
     }

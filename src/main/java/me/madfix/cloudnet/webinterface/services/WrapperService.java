@@ -36,6 +36,7 @@ final class WrapperService {
 
     /**
      * Adds a wrapper to the system
+     *
      * @param wrapperMeta contains all necessary information
      * @return true is returned if the operation was successful
      */
@@ -49,6 +50,7 @@ final class WrapperService {
 
     /**
      * Removes a wrapper from the system
+     *
      * @param wrapperMeta contains all necessary information
      * @return true is returned if the operation was successful
      */
@@ -60,6 +62,7 @@ final class WrapperService {
 
     /**
      * Returns a wrapper instance by its id
+     *
      * @param wrapperId is used as an indicator for the instance
      * @return the wrapper instance as optional to avoid a null pointer exception
      */

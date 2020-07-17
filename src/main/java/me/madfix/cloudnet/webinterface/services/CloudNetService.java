@@ -2,7 +2,7 @@ package me.madfix.cloudnet.webinterface.services;
 
 import me.madfix.cloudnet.webinterface.WebInterface;
 
-public class CloudNetService {
+public final class CloudNetService {
 
     private final MobService mobService;
     private final SignService signService;

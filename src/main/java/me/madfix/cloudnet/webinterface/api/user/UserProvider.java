@@ -5,9 +5,11 @@ import me.madfix.cloudnet.webinterface.WebInterface;
 import me.madfix.cloudnet.webinterface.model.WebInterfaceUser;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
@@ -19,33 +21,39 @@ public final class UserProvider {
         this.webInterface = webInterface;
     }
 
-    public CompletableFuture<WebInterfaceUser> geUser(String username) {
+    //TODO: Add documentation
+    public CompletableFuture<WebInterfaceUser> getUser(String username) {
         CompletableFuture<WebInterfaceUser> completableFuture = new CompletableFuture<>();
         if (this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().isPresent()) {
-            this.webInterface.getDatabaseService().getConnection().ifPresent(connection -> {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT id, passwordhash from `users` WHERE username = ?")) {
+            final Optional<Connection> optionalConnection = this.webInterface.getDatabaseService().getConnection();
+            if (optionalConnection.isPresent()) {
+                try (Connection connection = optionalConnection.get();
+                     PreparedStatement statement = connection.prepareStatement("SELECT id, passwordhash from `users` WHERE username = ?")) {
                     statement.setString(1, username);
                     try (ResultSet resultSet = statement.executeQuery()) {
                         if (resultSet.first()) {
                             int id = resultSet.getInt("id");
                             byte[] passwordHash = resultSet.getBytes("passwordhash");
-                            completableFuture.complete(new WebInterfaceUser(id,username,passwordHash));
+                            completableFuture.complete(new WebInterfaceUser(id, username, passwordHash));
                         }
                     }
                 } catch (SQLException e) {
                     this.webInterface.getLogger().log(Level.SEVERE, "The user could not be selected from the database ", e);
                 }
-            });
+            }
         }
         return completableFuture;
     }
 
-    public CompletableFuture<Boolean> userExists(String username) {
+    //TODO: Add documentation
+    public CompletableFuture<Boolean> isUserExists(String username) {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
 
         if (this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().isPresent()) {
-            this.webInterface.getDatabaseService().getConnection().ifPresent(connection -> {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT username from `users` WHERE username = ?")) {
+            Optional<Connection> optionalConnection = this.webInterface.getDatabaseService().getConnection();
+            if (optionalConnection.isPresent()) {
+                try (Connection connection = optionalConnection.get();
+                     PreparedStatement statement = connection.prepareStatement("SELECT username from `users` WHERE username = ?")) {
                     statement.setString(1, username);
                     try (ResultSet resultSet = statement.executeQuery()) {
                         completableFuture.complete(resultSet.next());
@@ -54,18 +62,20 @@ public final class UserProvider {
                     this.webInterface.getLogger().log(Level.SEVERE, "The user could not be selected from the database ", e);
                     completableFuture.cancel(true);
                 }
-            });
+            }
         } else {
             completableFuture.cancel(true);
         }
         return completableFuture;
     }
 
+    //TODO: Add documentation
     public CompletableFuture<Boolean> createUser(String username, byte[] passwordHash) {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         if (this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().isPresent()) {
-            this.webInterface.getDatabaseService().getConnection().ifPresent(connection -> {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT username from `users` WHERE username = ?")) {
+            Optional<Connection> optionalConnection = this.webInterface.getDatabaseService().getConnection();
+            if (optionalConnection.isPresent()) {
+                try (PreparedStatement statement = optionalConnection.get().prepareStatement("SELECT username from `users` WHERE username = ?")) {
                     statement.setString(1, username);
                     try (ResultSet resultSet = statement.executeQuery()) {
                         if (resultSet.next()) {
@@ -76,7 +86,8 @@ public final class UserProvider {
                 } catch (SQLException e) {
                     this.webInterface.getLogger().log(Level.SEVERE, "The user could not be selected from the database ", e);
                 }
-                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO `users` (username, passwordhash) VALUES (?,?)")) {
+                try (Connection connection = optionalConnection.get();
+                     PreparedStatement statement = connection.prepareStatement("INSERT INTO `users` (username, passwordhash) VALUES (?,?)")) {
                     statement.setString(1, username);
                     statement.setBytes(2, passwordHash);
 
@@ -84,7 +95,7 @@ public final class UserProvider {
                 } catch (SQLException e) {
                     this.webInterface.getLogger().log(Level.SEVERE, "The user could not be created for the database ", e);
                 }
-            });
+            }
         }
         return completableFuture;
     }

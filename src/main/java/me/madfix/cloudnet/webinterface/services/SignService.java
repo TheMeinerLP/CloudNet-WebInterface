@@ -98,6 +98,7 @@ final class SignService {
 
     /**
      * Returns a sign based on its Id
+     *
      * @param signId is the id by which the sign can be recognized
      * @return a sign instance in an optional so that no null pointer exception occurs
      */
@@ -114,6 +115,7 @@ final class SignService {
 
     /**
      * Returns a list of signs
+     *
      * @return a sign list in an optional so that no null pointer exception occurs
      */
     public CompletableFuture<Optional<Collection<Sign>>> getSigns() {
@@ -128,6 +130,7 @@ final class SignService {
 
     /**
      * Removes a sign by its Id
+     *
      * @param signId is taken as indicator for the sign
      * @return true is returned if the operation was successful
      */
@@ -145,6 +148,7 @@ final class SignService {
 
     /**
      * Adds a sign to the system
+     *
      * @param sign what to add
      * @return true is returned if the operation was successful
      */
@@ -162,7 +166,8 @@ final class SignService {
 
     /**
      * Updates a sign in the system
-     * @param sign  what to update
+     *
+     * @param sign what to update
      * @return true is returned if the operation was successful
      */
     public CompletableFuture<Optional<Boolean>> updateSign(Sign sign) {
@@ -189,6 +194,7 @@ final class SignService {
 
     /**
      * Updates the configuration
+     *
      * @param signLayoutConfig to be updated
      * @return true is returned if the operation was successful
      */

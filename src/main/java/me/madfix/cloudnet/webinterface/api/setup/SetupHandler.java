@@ -42,7 +42,7 @@ public final class SetupHandler {
     }
 
     public void setupPreAdminUser() {
-        this.webInterface.getUserProvider().userExists("admin").thenAccept(exists -> {
+        this.webInterface.getUserProvider().isUserExists("admin").thenAccept(exists -> {
             if (!exists) {
                 PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
                         .useDigits(true)
@@ -57,8 +57,8 @@ public final class SetupHandler {
                 this.webInterface.getUserProvider().hashPassword(password).thenAccept(passwordHash -> {
                     this.webInterface.getUserProvider().createUser("admin", passwordHash).thenAccept(success -> {
                         if (success) {
-                            this.webInterface.getUserProvider().geUser("admin").thenAccept(interfaceUser -> {
-                                this.webInterface.getPermissionProvider().addPermission(interfaceUser.getId(), "*").thenAccept(permissionSuccess -> {
+                            this.webInterface.getUserProvider().getUser("admin").thenAccept(interfaceUser -> {
+                                this.webInterface.getPermissionProvider().addUserPermission(interfaceUser.getId(), "*").thenAccept(permissionSuccess -> {
                                     if (permissionSuccess) {
                                         this.webInterface.getLogger().log(Level.INFO, "The user \"admin\" was successfully created with all rights!");
                                     }
@@ -68,6 +68,38 @@ public final class SetupHandler {
                     });
                 });
             }
+        });
+    }
+
+    public void setupPreAdminGroup() {
+        this.webInterface.getGroupProvider().getGroups().thenAccept(optionalWebInterfaceGroups -> {
+            optionalWebInterfaceGroups.ifPresent(webInterfaceGroups -> {
+                if (webInterfaceGroups.size() <= 0) {
+                    this.webInterface.getLogger().log(Level.INFO, "No group was found, create a default group!");
+                    this.webInterface.getGroupProvider().createGroup("administrators").thenAccept(created -> {
+                        if (created) {
+                            this.webInterface.getLogger().log(Level.INFO, "The default administration group was created!");
+                            this.webInterface.getGroupProvider().getGroup("administrators").thenAccept(webInterfaceGroup -> {
+                                if (webInterfaceGroup != null) {
+                                    this.webInterface.getPermissionProvider().addGroupPermission(webInterfaceGroup.getId(), "*").thenAccept(added -> {
+                                        if (added) {
+                                            this.webInterface.getLogger().log(Level.INFO, "The default administration group given \"*\" rights!");
+                                            this.webInterface.getUserProvider().getUser("admin").thenAccept(webInterfaceUser -> {
+                                                this.webInterface.getGroupProvider().addUserToGroup(webInterfaceGroup, webInterfaceUser, 100).thenAccept(success -> {
+                                                    if (success) {
+                                                        this.webInterface.getLogger().log(Level.INFO, "The default administration group was created with all rights!");
+                                                        this.webInterface.getLogger().log(Level.INFO, "The user \"admin\" is now in the group \"administrators\"");
+                                                    }
+                                                });
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
         });
     }
 }

@@ -19,6 +19,7 @@ final class ServerGroupService {
 
     /**
      * Returns the group by a name
+     *
      * @param groupName is used as an indicator for the group
      * @return a server group in an optional to avoid a null pointer exception
      */
@@ -30,6 +31,7 @@ final class ServerGroupService {
 
     /**
      * Returns collection to server groups
+     *
      * @return a list of server groups in an optional to avoid a null pointer exception
      */
     public CompletableFuture<Optional<Collection<ServerGroup>>> getServerGroups() {
@@ -40,6 +42,7 @@ final class ServerGroupService {
 
     /**
      * Returns collection on servers based on the group name
+     *
      * @param groupName is used as an indicator for the minecraft servers
      * @return a list of servers from a group in an optional to avoid a null pointer exception
      */
@@ -51,6 +54,7 @@ final class ServerGroupService {
 
     /**
      * Returns collection on servers
+     *
      * @return a list of servers in an optional to avoid a null pointer exception
      */
     public CompletableFuture<Optional<Collection<MinecraftServer>>> getServers() {
@@ -61,6 +65,7 @@ final class ServerGroupService {
 
     /**
      * Starts the screen of a server
+     *
      * @param serverId is used as an indicator for the minecraft server
      * @return true is returned if the operation was successful
      */
@@ -81,8 +86,9 @@ final class ServerGroupService {
 
     /**
      * Writes a command to the console from the server
+     *
      * @param serverId is used as an indicator for the minecraft server
-     * @param command is the relevant command to be transmitted
+     * @param command  is the relevant command to be transmitted
      * @return true is returned if the operation was successful
      */
     public CompletableFuture<Optional<Boolean>> writeCommand(String serverId, String command) {
@@ -99,6 +105,7 @@ final class ServerGroupService {
 
     /**
      * Stop a screen from a server
+     *
      * @param serverId is used as an indicator for the minecraft server
      * @return true is returned if the operation was successful
      */
@@ -119,6 +126,7 @@ final class ServerGroupService {
 
     /**
      * Stops all servers in a group
+     *
      * @param serverGroup is used as an indicator for the minecraft servers of a group
      * @return true is returned if the operation was successful
      */
@@ -131,6 +139,7 @@ final class ServerGroupService {
 
     /**
      * Stops the server based on its id
+     *
      * @param serverId is used as an indicator for the minecraft server
      * @return true is returned if the operation was successful
      */
@@ -143,6 +152,7 @@ final class ServerGroupService {
 
     /**
      * Starts a server from the group
+     *
      * @param serverGroup is used as an indicator for the group
      * @return true is returned if the operation was successful
      */
@@ -157,8 +167,9 @@ final class ServerGroupService {
 
     /**
      * Starts a certain number of servers from the group
+     *
      * @param serverGroup is used as an indicator for the group
-     * @param amount is the number of servers to start
+     * @param amount      is the number of servers to start
      * @return true is returned if the operation was successful
      */
     public CompletableFuture<Optional<Boolean>> startServers(String serverGroup, int amount) {
@@ -174,6 +185,7 @@ final class ServerGroupService {
 
     /**
      * Updates a server group
+     *
      * @param serverGroup is used as an indicator for the group
      * @return true is returned if the operation was successful
      */

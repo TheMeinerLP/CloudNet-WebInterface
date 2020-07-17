@@ -21,7 +21,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -104,6 +109,7 @@ final class CloudPermissionService {
 
     /**
      * Returns an offline player instance by its UUID
+     *
      * @param uniquePlayerId is the unique id of mojang to identify the player
      * @return a completeable future with an optional to avoid null pointer exceptions
      */
@@ -120,6 +126,7 @@ final class CloudPermissionService {
 
     /**
      * Returns an offline player instance by its in game name
+     *
      * @param playerName is the in game name of the player
      * @return a completeable future with an optional to avoid null pointer exceptions
      */
@@ -141,6 +148,7 @@ final class CloudPermissionService {
 
     /**
      * Creates and updates a group
+     *
      * @param permissionGroup to be updated or created
      * @return a completable future with an optional boolean that returns true if the task was successful
      */
@@ -162,6 +170,7 @@ final class CloudPermissionService {
 
     /**
      * Updates a player in the database and also online when he is online
+     *
      * @param offlinePlayer to be updated
      * @return a completable future with an optional boolean that returns true if the task was successful
      */
@@ -195,6 +204,7 @@ final class CloudPermissionService {
 
     /**
      * Removes a permission group from the system
+     *
      * @param name identifies the name of the group
      * @return a completable future with an optional boolean that returns true if the task was successful
      */

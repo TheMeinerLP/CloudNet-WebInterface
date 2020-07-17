@@ -22,6 +22,7 @@ public final class Update_1_9 extends UpdateTask {
             "\tCREATE TABLE IF NOT EXISTS `user_groups` (id INT(32) PRIMARY KEY AUTO_INCREMENT, potency INT(32), gId INT(32), uId INT(32), FOREIGN KEY (gId) REFERENCES groups(id), FOREIGN KEY (uId) REFERENCES users(id));\n" +
             "END";
     private static final String CALL_UPDATE_1_9_PROCEDURE = "CALL `update_1_9_create_tables`";
+
     public Update_1_9() {
         super("1.9.0");
     }

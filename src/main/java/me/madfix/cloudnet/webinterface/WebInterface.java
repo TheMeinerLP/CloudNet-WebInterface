@@ -5,6 +5,7 @@ import de.dytanic.cloudnetcore.CloudNet;
 import de.dytanic.cloudnetcore.api.CoreModule;
 import io.sentry.Sentry;
 import io.sentry.event.UserBuilder;
+import me.madfix.cloudnet.webinterface.api.group.GroupProvider;
 import me.madfix.cloudnet.webinterface.api.permission.PermissionProvider;
 import me.madfix.cloudnet.webinterface.api.setup.SetupHandler;
 import me.madfix.cloudnet.webinterface.api.update.UpdateHandler;
@@ -30,6 +31,7 @@ public final class WebInterface extends CoreModule {
 
     private UserProvider userProvider;
     private PermissionProvider permissionProvider;
+    private GroupProvider groupProvider;
 
 
     @Override
@@ -61,8 +63,10 @@ public final class WebInterface extends CoreModule {
             this.userProvider = new UserProvider(this);
             this.setupHandler.setupPreAdminUser();
             this.updateHandler = new UpdateHandler(this);
-            this.updateHandler.addTask(1,new Update_1_9());
+            this.updateHandler.addTask(1, new Update_1_9());
             this.updateHandler.callUpdates();
+            this.groupProvider  = new GroupProvider(this);
+            this.setupHandler.setupPreAdminGroup();
             this.cloudNetService = new CloudNetService(this);
         }
 
@@ -100,4 +104,9 @@ public final class WebInterface extends CoreModule {
     public UserProvider getUserProvider() {
         return userProvider;
     }
+
+    public GroupProvider getGroupProvider() {
+        return groupProvider;
+    }
+
 }
