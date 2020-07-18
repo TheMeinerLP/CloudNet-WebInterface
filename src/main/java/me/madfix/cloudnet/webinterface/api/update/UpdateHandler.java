@@ -1,6 +1,8 @@
 package me.madfix.cloudnet.webinterface.api.update;
 
 import me.madfix.cloudnet.webinterface.WebInterface;
+import me.madfix.cloudnet.webinterface.api.sql.SQLInsert;
+import me.madfix.cloudnet.webinterface.api.sql.SQLSelect;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -74,7 +76,7 @@ public final class UpdateHandler {
         if (this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().isPresent()) {
             this.webInterface.getDatabaseService().getConnection().ifPresent(connection -> {
                 try (Connection c = connection;
-                     PreparedStatement statement = c.prepareStatement("INSERT INTO `update` (versionname,apply) VALUE (?,?)")) {
+                     PreparedStatement statement = c.prepareStatement(SQLInsert.INSERT_UPDATE)) {
                     statement.setString(1, version);
                     statement.setBoolean(2, apply);
                     installed.complete(statement.executeUpdate() > 0);
@@ -92,7 +94,7 @@ public final class UpdateHandler {
         if (this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().isPresent()) {
             this.webInterface.getDatabaseService().getConnection().ifPresent(connection -> {
                 try (Connection c = connection;
-                     PreparedStatement statement = c.prepareStatement("SELECT apply from `update` WHERE versionname = ?")) {
+                     PreparedStatement statement = c.prepareStatement(SQLSelect.SELECT_UPDATE)) {
                     statement.setString(1, version);
                     try (ResultSet resultSet = statement.executeQuery()) {
                         if (resultSet.next()) {

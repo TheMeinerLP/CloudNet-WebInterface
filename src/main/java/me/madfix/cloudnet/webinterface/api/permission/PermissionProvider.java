@@ -1,6 +1,8 @@
 package me.madfix.cloudnet.webinterface.api.permission;
 
 import me.madfix.cloudnet.webinterface.WebInterface;
+import me.madfix.cloudnet.webinterface.api.sql.SQLInsert;
+import me.madfix.cloudnet.webinterface.api.sql.SQLSelect;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,7 +29,7 @@ public final class PermissionProvider {
             final Optional<Connection> optionalConnection = this.webInterface.getDatabaseService().getConnection();
             if (optionalConnection.isPresent()) {
                 try (Connection connection = optionalConnection.get();
-                     PreparedStatement statement = connection.prepareStatement("SELECT permission from `group_permission` WHERE gId = ?")) {
+                     PreparedStatement statement = connection.prepareStatement(SQLSelect.SELECT_PERMISSION_FROM_GROUP)) {
                     statement.setInt(1, groupid);
                     List<String> permissions = new ArrayList<>();
                     try (ResultSet resultSet = statement.executeQuery()) {
@@ -50,7 +52,7 @@ public final class PermissionProvider {
             final Optional<Connection> optionalConnection = this.webInterface.getDatabaseService().getConnection();
             if (optionalConnection.isPresent()) {
                 try (Connection connection = optionalConnection.get();
-                     PreparedStatement statement = connection.prepareStatement("SELECT permission from `user_permission` WHERE userId = ?")) {
+                     PreparedStatement statement = connection.prepareStatement(SQLSelect.SELECT_PERMISSION_FROM_USER)) {
                     statement.setInt(1, userId);
                     List<String> permissions = new ArrayList<>();
                     try (ResultSet resultSet = statement.executeQuery()) {
@@ -72,7 +74,7 @@ public final class PermissionProvider {
         if (this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().isPresent()) {
             final Optional<Connection> optionalConnection = this.webInterface.getDatabaseService().getConnection();
             if (optionalConnection.isPresent()) {
-                try (PreparedStatement statement = optionalConnection.get().prepareStatement("SELECT permission from `group_permission` WHERE permission = ? AND gId = ?")) {
+                try (PreparedStatement statement = optionalConnection.get().prepareStatement(SQLSelect.SELECT_PERMISSION_IN_GROUP)) {
                     statement.setString(1, permission);
                     statement.setInt(2, groupId);
                     try (ResultSet resultSet = statement.executeQuery()) {
@@ -85,7 +87,7 @@ public final class PermissionProvider {
                     this.webInterface.getLogger().log(Level.SEVERE, "The permission for the group could not be selected from the database ", e);
                 }
                 try (Connection connection = optionalConnection.get();
-                     PreparedStatement statement = connection.prepareStatement("INSERT INTO `group_permission` (gId, permission) VALUES (?,?)")) {
+                     PreparedStatement statement = connection.prepareStatement(SQLInsert.INSERT_GROUP_PERMISSION)) {
                     statement.setInt(1, groupId);
                     statement.setString(2, permission);
                     completableFuture.complete(statement.executeUpdate() > 0);
@@ -102,7 +104,7 @@ public final class PermissionProvider {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         if (this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().isPresent()) {
             this.webInterface.getDatabaseService().getConnection().ifPresent(connection -> {
-                try (PreparedStatement statement = connection.prepareStatement("SELECT permission from `user_permission` WHERE permission = ? AND userId = ?")) {
+                try (PreparedStatement statement = connection.prepareStatement(SQLSelect.SELECT_PERMISSION_IN_USER)) {
                     statement.setString(1, permission);
                     statement.setInt(2, userId);
                     try (ResultSet resultSet = statement.executeQuery()) {
@@ -114,7 +116,7 @@ public final class PermissionProvider {
                 } catch (SQLException e) {
                     this.webInterface.getLogger().log(Level.SEVERE, "The permission for the user could not be selected from the database ", e);
                 }
-                try (PreparedStatement statement = connection.prepareStatement("INSERT INTO `user_permission` (userId, permission) VALUES (?,?)")) {
+                try (PreparedStatement statement = connection.prepareStatement(SQLInsert.INSERT_USER_PERMISSION)) {
                     statement.setInt(1, userId);
                     statement.setString(2, permission);
                     completableFuture.complete(statement.execute());
