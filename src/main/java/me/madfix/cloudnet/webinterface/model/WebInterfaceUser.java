@@ -1,6 +1,6 @@
 package me.madfix.cloudnet.webinterface.model;
 
-public final class WebInterfaceUser {
+public class WebInterfaceUser {
 
     private final int id;
     private final String username;
