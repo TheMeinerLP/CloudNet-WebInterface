@@ -55,14 +55,14 @@ final class SignService {
      *
      * @return the database itself
      */
-    public CompletableFuture<Optional<SignDatabase>> geSignDatabase() {
-        CompletableFuture<Optional<SignDatabase>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<SignDatabase> geSignDatabase() {
+        CompletableFuture<SignDatabase> completableFuture = new CompletableFuture<>();
         if (this.enable) {
-            optionalCompletableFuture.complete(Optional.ofNullable(this.signDatabase));
+            completableFuture.complete(this.signDatabase);
         } else {
-            optionalCompletableFuture.cancel(true);
+            completableFuture.cancel(true);
         }
-        return optionalCompletableFuture;
+        return completableFuture;
     }
 
     /**
@@ -70,62 +70,64 @@ final class SignService {
      *
      * @return contains everything about layout information
      */
-    public CompletableFuture<Optional<SignLayoutConfig>> getSignConfig() {
-        CompletableFuture<Optional<SignLayoutConfig>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<SignLayoutConfig> getSignConfig() {
+        CompletableFuture<SignLayoutConfig> completableFuture = new CompletableFuture<>();
         if (this.enable) {
             try (BufferedReader bufferedReader = Files.newBufferedReader(this.signConfigurationFile,
                     StandardCharsets.UTF_8)) {
-                Optional<JsonElement> jsonConfig = Optional.empty();
+                JsonElement jsonConfig = null;
                 try {
-                    jsonConfig = Optional.of(JsonParser.parseReader(bufferedReader));
+                    jsonConfig = JsonParser.parseReader(bufferedReader);
                 } catch (JsonSyntaxException e) {
                     this.enable = false;
                     CloudNet.getLogger().severe("[401] Sign service is deactivated to prevent errors. Please fix the errors and try the function again.");
                     CloudNet.getLogger().log(Level.SEVERE, "[401] An unexpected error occurred while reading the configuration file.", e);
                 }
-                jsonConfig.ifPresent(jsonElement -> optionalCompletableFuture.complete(Optional.of(this.webInterface.getGson()
-                        .fromJson(jsonElement, TypeToken.get(SignLayoutConfig.class).getType()))));
+                if (jsonConfig != null) {
+                    completableFuture.complete(this.webInterface.getGson()
+                            .fromJson(jsonConfig, TypeToken.get(SignLayoutConfig.class).getType()));
+                }
             } catch (IOException e) {
                 this.enable = false;
                 CloudNet.getLogger().severe("[402] Sign service is deactivated to prevent errors. Please fix the errors and try the function again.");
                 CloudNet.getLogger().log(Level.SEVERE, "[402] An unexpected error occurred while reading the configuration file.", e);
             }
         } else {
-            optionalCompletableFuture.cancel(true);
+            completableFuture.cancel(true);
         }
-        return optionalCompletableFuture;
+        return completableFuture;
     }
 
     /**
      * Returns a sign based on its Id
      *
      * @param signId is the id by which the sign can be recognized
-     * @return a sign instance in an optional so that no null pointer exception occurs
+     * @return a sign instance
      */
-    public CompletableFuture<Optional<Sign>> getSign(UUID signId) {
-        CompletableFuture<Optional<Sign>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<Sign> getSign(UUID signId) {
+        CompletableFuture<Sign> completableFuture = new CompletableFuture<>();
         if (this.enable && this.signDatabase != null) {
-            optionalCompletableFuture.complete(this.signDatabase.loadAll().values()
-                    .stream().filter(s -> s.getUniqueId().equals(signId)).findFirst());
+            this.signDatabase.loadAll().values()
+                    .stream().filter(s -> s.getUniqueId().equals(signId)).findFirst().ifPresent(completableFuture::complete);
         } else {
-            optionalCompletableFuture.cancel(true);
+            completableFuture.cancel(true);
         }
-        return optionalCompletableFuture;
+        return completableFuture;
     }
 
     /**
      * Returns a list of signs
      *
-     * @return a sign list in an optional so that no null pointer exception occurs
+     * @return a sign list
      */
-    public CompletableFuture<Optional<Collection<Sign>>> getSigns() {
-        CompletableFuture<Optional<Collection<Sign>>> collectionCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<Collection<Sign>> getSigns() {
+        CompletableFuture<Collection<Sign>> completableFuture = new CompletableFuture<>();
         if (this.enable && this.signDatabase != null) {
-            collectionCompletableFuture.complete(Optional.of(this.signDatabase.loadAll().values()));
+            completableFuture.complete(this.signDatabase.loadAll().values());
         } else {
-            collectionCompletableFuture.cancel(true);
+            completableFuture.cancel(true);
         }
-        return collectionCompletableFuture;
+        return completableFuture;
     }
 
     /**
@@ -134,16 +136,16 @@ final class SignService {
      * @param signId is taken as indicator for the sign
      * @return true is returned if the operation was successful
      */
-    public CompletableFuture<Optional<Boolean>> removeSign(UUID signId) {
-        CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<Boolean> removeSign(UUID signId) {
+        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         if (this.enable && this.signDatabase != null) {
             this.signDatabase.removeSign(signId);
             CloudNet.getInstance().getNetworkManager().updateAll();
-            optionalCompletableFuture.complete(Optional.of(true));
+            completableFuture.complete(true);
         } else {
-            optionalCompletableFuture.cancel(true);
+            completableFuture.cancel(true);
         }
-        return optionalCompletableFuture;
+        return completableFuture;
     }
 
     /**
@@ -152,16 +154,16 @@ final class SignService {
      * @param sign what to add
      * @return true is returned if the operation was successful
      */
-    public CompletableFuture<Optional<Boolean>> addSign(Sign sign) {
-        CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<Boolean> addSign(Sign sign) {
+        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         if (this.enable && this.signDatabase != null) {
             this.signDatabase.add(sign);
             CloudNet.getInstance().getNetworkManager().updateAll();
-            optionalCompletableFuture.complete(Optional.of(true));
+            completableFuture.complete(true);
         } else {
-            optionalCompletableFuture.cancel(true);
+            completableFuture.cancel(true);
         }
-        return optionalCompletableFuture;
+        return completableFuture;
     }
 
     /**
@@ -170,26 +172,26 @@ final class SignService {
      * @param sign what to update
      * @return true is returned if the operation was successful
      */
-    public CompletableFuture<Optional<Boolean>> updateSign(Sign sign) {
-        CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<Boolean> updateSign(Sign sign) {
+        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         if (this.enable && this.signDatabase != null) {
             removeSign(sign.getUniqueId()).thenAccept(success -> {
-                if (success.isPresent() && success.get()) {
+                if (success) {
                     addSign(sign).thenAccept(addSignSuccess -> {
-                        if (addSignSuccess.isPresent() && addSignSuccess.get()) {
-                            optionalCompletableFuture.complete(Optional.of(true));
+                        if (addSignSuccess) {
+                            completableFuture.complete(true);
                         } else {
-                            optionalCompletableFuture.cancel(true);
+                            completableFuture.cancel(true);
                         }
                     });
                 } else {
-                    optionalCompletableFuture.cancel(true);
+                    completableFuture.cancel(true);
                 }
             });
         } else {
-            optionalCompletableFuture.cancel(true);
+            completableFuture.cancel(true);
         }
-        return optionalCompletableFuture;
+        return completableFuture;
     }
 
     /**
@@ -198,18 +200,18 @@ final class SignService {
      * @param signLayoutConfig to be updated
      * @return true is returned if the operation was successful
      */
-    public CompletableFuture<Optional<Boolean>> updateSignConfig(SignLayoutConfig signLayoutConfig) {
-        CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<Boolean> updateSignConfig(SignLayoutConfig signLayoutConfig) {
+        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         if (this.enable) {
             Document document = new Document();
             document.append("layout_config", this.webInterface.getGson().toJsonTree(signLayoutConfig,
                     TypeToken.get(SignLayoutConfig.class).getType()));
             document.saveAsConfig(this.signConfigurationFile);
             CloudNet.getInstance().getNetworkManager().updateAll();
-            optionalCompletableFuture.complete(Optional.of(true));
+            completableFuture.complete(true);
         } else {
-            optionalCompletableFuture.cancel(true);
+            completableFuture.cancel(true);
         }
-        return optionalCompletableFuture;
+        return completableFuture;
     }
 }

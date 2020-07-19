@@ -19,18 +19,18 @@ final class WrapperService {
     /**
      * @return all wrapper names as collection
      */
-    public CompletableFuture<Optional<Collection<String>>> getWrapperNames() {
-        CompletableFuture<Optional<Collection<String>>> optionalCompletableFuture = new CompletableFuture<>();
-        optionalCompletableFuture.complete(Optional.of(this.webInterface.getCloud().getWrappers().keySet()));
+    public CompletableFuture<Collection<String>> getWrapperNames() {
+        CompletableFuture<Collection<String>> optionalCompletableFuture = new CompletableFuture<>();
+        optionalCompletableFuture.complete(this.webInterface.getCloud().getWrappers().keySet());
         return optionalCompletableFuture;
     }
 
     /**
      * @return all wrapper instances as collection
      */
-    public CompletableFuture<Optional<Collection<Wrapper>>> getWrappers() {
-        CompletableFuture<Optional<Collection<Wrapper>>> optionalCompletableFuture = new CompletableFuture<>();
-        optionalCompletableFuture.complete(Optional.of(this.webInterface.getCloud().getWrappers().values()));
+    public CompletableFuture<Collection<Wrapper>> getWrappers() {
+        CompletableFuture<Collection<Wrapper>> optionalCompletableFuture = new CompletableFuture<>();
+        optionalCompletableFuture.complete(this.webInterface.getCloud().getWrappers().values());
         return optionalCompletableFuture;
     }
 
@@ -40,11 +40,11 @@ final class WrapperService {
      * @param wrapperMeta contains all necessary information
      * @return true is returned if the operation was successful
      */
-    public CompletableFuture<Optional<Boolean>> createWrapper(WrapperMeta wrapperMeta) {
-        CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<Boolean> createWrapper(WrapperMeta wrapperMeta) {
+        CompletableFuture<Boolean> optionalCompletableFuture = new CompletableFuture<>();
         this.webInterface.getCloud().getConfig().createWrapper(wrapperMeta);
-        optionalCompletableFuture.complete(Optional.of(this.webInterface.getCloud()
-                .getConfig().getWrappers().contains(wrapperMeta)));
+        optionalCompletableFuture.complete(this.webInterface.getCloud()
+                .getConfig().getWrappers().contains(wrapperMeta));
         return optionalCompletableFuture;
     }
 
@@ -54,8 +54,8 @@ final class WrapperService {
      * @param wrapperMeta contains all necessary information
      * @return true is returned if the operation was successful
      */
-    public CompletableFuture<Optional<Boolean>> deleteWrapper(WrapperMeta wrapperMeta) {
-        CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<Boolean> deleteWrapper(WrapperMeta wrapperMeta) {
+        CompletableFuture<Boolean> optionalCompletableFuture = new CompletableFuture<>();
         this.webInterface.getCloud().getConfig().deleteWrapper(wrapperMeta);
         return optionalCompletableFuture;
     }
@@ -66,9 +66,9 @@ final class WrapperService {
      * @param wrapperId is used as an indicator for the instance
      * @return the wrapper instance as optional to avoid a null pointer exception
      */
-    public CompletableFuture<Optional<Wrapper>> getWrapper(String wrapperId) {
-        CompletableFuture<Optional<Wrapper>> optionalCompletableFuture = new CompletableFuture<>();
-        optionalCompletableFuture.complete(Optional.of(this.webInterface.getCloud().getWrappers().get(wrapperId)));
+    public CompletableFuture<Wrapper> getWrapper(String wrapperId) {
+        CompletableFuture<Wrapper> optionalCompletableFuture = new CompletableFuture<>();
+        optionalCompletableFuture.complete(this.webInterface.getCloud().getWrappers().get(wrapperId));
         return optionalCompletableFuture;
     }
 }

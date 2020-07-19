@@ -18,7 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
@@ -49,8 +48,8 @@ final class MobService {
      *
      * @return true will return if the system is active
      */
-    public CompletableFuture<Optional<Boolean>> isEnabled() {
-        return CompletableFuture.completedFuture(Optional.of(this.enable));
+    public CompletableFuture<Boolean> isEnabled() {
+        return CompletableFuture.completedFuture(this.enable);
     }
 
     /**
@@ -58,12 +57,12 @@ final class MobService {
      *
      * @return the database itself
      */
-    public CompletableFuture<Optional<MobDatabase>> getMobDatabase() {
-        CompletableFuture<Optional<MobDatabase>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<MobDatabase> getMobDatabase() {
+        CompletableFuture<MobDatabase> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable) {
-            optionalCompletableFuture.complete(Optional.ofNullable(this.mobDatabase));
+            optionalCompletableFuture.complete(this.mobDatabase);
         } else {
-            optionalCompletableFuture.cancel(true);
+            optionalCompletableFuture.completeExceptionally(new RuntimeException("The Mob System is not active!"));
         }
         return optionalCompletableFuture;
     }
@@ -73,28 +72,30 @@ final class MobService {
      *
      * @return contains everything about inventory information
      */
-    public CompletableFuture<Optional<MobConfig>> getMobConfig() {
-        CompletableFuture<Optional<MobConfig>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<MobConfig> getMobConfig() {
+        CompletableFuture<MobConfig> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable) {
             try (BufferedReader bufferedReader = Files.newBufferedReader(this.mobConfigurationFile,
                     StandardCharsets.UTF_8)) {
-                Optional<JsonElement> jsonConfig = Optional.empty();
+                JsonElement jsonConfig = null;
                 try {
-                    jsonConfig = Optional.of(JsonParser.parseReader(bufferedReader));
+                    jsonConfig = JsonParser.parseReader(bufferedReader);
                 } catch (JsonSyntaxException e) {
                     this.enable = false;
                     CloudNet.getLogger().severe("[301] Mob service is deactivated to prevent errors. Please fix the errors and try the function again.");
                     CloudNet.getLogger().log(Level.SEVERE, "[301] An unexpected error occurred while reading the configuration file.", e);
                 }
-                jsonConfig.ifPresent(jsonElement -> optionalCompletableFuture.complete(Optional.of(this.webInterface.getGson()
-                        .fromJson(jsonElement, TypeToken.get(MobConfig.class).getType()))));
+                if (jsonConfig != null) {
+                    optionalCompletableFuture.complete(this.webInterface.getGson()
+                            .fromJson(jsonConfig, TypeToken.get(MobConfig.class).getType()));
+                }
             } catch (IOException e) {
                 this.enable = false;
                 CloudNet.getLogger().severe("[302] Mob service is deactivated to prevent errors. Please fix the errors and try the function again.");
                 CloudNet.getLogger().log(Level.SEVERE, "[302] An unexpected error occurred while reading the configuration file.", e);
             }
         } else {
-            optionalCompletableFuture.cancel(true);
+            optionalCompletableFuture.completeExceptionally(new RuntimeException("The Mob System is not active!"));
         }
         return optionalCompletableFuture;
     }
@@ -105,15 +106,15 @@ final class MobService {
      * @param mobId is used to identify the mob
      * @return is the mob object class with all necessary information about the mob
      */
-    public CompletableFuture<Optional<ServerMob>> getServerMob(UUID mobId) {
-        CompletableFuture<Optional<ServerMob>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<ServerMob> getServerMob(UUID mobId) {
+        CompletableFuture<ServerMob> completableFuture = new CompletableFuture<>();
         if (this.enable && this.mobDatabase != null) {
-            optionalCompletableFuture.complete(this.mobDatabase.loadAll().values().stream()
-                    .filter(serverMob -> serverMob.getUniqueId().equals(mobId)).findFirst());
+            this.mobDatabase.loadAll().values().stream()
+                    .filter(serverMob -> serverMob.getUniqueId().equals(mobId)).findFirst().ifPresent(completableFuture::complete);
         } else {
-            optionalCompletableFuture.cancel(true);
+            completableFuture.completeExceptionally(new RuntimeException("The Mob System is not active!"));
         }
-        return optionalCompletableFuture;
+        return completableFuture;
     }
 
     /**
@@ -121,14 +122,14 @@ final class MobService {
      *
      * @return the list with all mob objects including their information
      */
-    public CompletableFuture<Optional<Collection<ServerMob>>> getMobs() {
-        CompletableFuture<Optional<Collection<ServerMob>>> collectionCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<Collection<ServerMob>> getMobs() {
+        CompletableFuture<Collection<ServerMob>> completableFuture = new CompletableFuture<>();
         if (this.enable && this.mobDatabase != null) {
-            collectionCompletableFuture.complete(Optional.of(this.mobDatabase.loadAll().values()));
+            completableFuture.complete(this.mobDatabase.loadAll().values());
         } else {
-            collectionCompletableFuture.cancel(true);
+            completableFuture.completeExceptionally(new RuntimeException("The Mob System is not active!"));
         }
-        return collectionCompletableFuture;
+        return completableFuture;
     }
 
 
@@ -138,18 +139,14 @@ final class MobService {
      * @param mobId is used as an indicator for the mob
      * @return true is returned if the operation was successful
      */
-    public CompletableFuture<Optional<Boolean>> removeMob(UUID mobId) {
-        CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
-        if (this.enable) {
-            if (this.mobDatabase != null) {
-                this.mobDatabase.remove(mobId);
-                CloudNet.getInstance().getNetworkManager().updateAll();
-                optionalCompletableFuture.complete(Optional.of(true));
-            } else {
-                optionalCompletableFuture.cancel(true);
-            }
+    public CompletableFuture<Boolean> removeMob(UUID mobId) {
+        CompletableFuture<Boolean> optionalCompletableFuture = new CompletableFuture<>();
+        if (this.enable && this.mobDatabase != null) {
+            this.mobDatabase.remove(mobId);
+            CloudNet.getInstance().getNetworkManager().updateAll();
+            optionalCompletableFuture.complete(true);
         } else {
-            optionalCompletableFuture.cancel(true);
+            optionalCompletableFuture.completeExceptionally(new RuntimeException("The Mob System is not active!"));
         }
         return optionalCompletableFuture;
     }
@@ -160,20 +157,16 @@ final class MobService {
      * @param serverMob is the specified mob to be added
      * @return true is returned if the operation was successful
      */
-    public CompletableFuture<Optional<Boolean>> addMob(ServerMob serverMob) {
-        CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
-        if (this.enable) {
-            if (this.mobDatabase != null) {
-                this.mobDatabase.add(serverMob);
-                CloudNet.getInstance().getNetworkManager().updateAll();
-                optionalCompletableFuture.complete(Optional.of(true));
-            } else {
-                optionalCompletableFuture.cancel(true);
-            }
+    public CompletableFuture<Boolean> addMob(ServerMob serverMob) {
+        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
+        if (this.enable && this.mobDatabase != null) {
+            this.mobDatabase.add(serverMob);
+            CloudNet.getInstance().getNetworkManager().updateAll();
+            completableFuture.complete(true);
         } else {
-            optionalCompletableFuture.cancel(true);
+            completableFuture.completeExceptionally(new RuntimeException("The Mob System is not active!"));
         }
-        return optionalCompletableFuture;
+        return completableFuture;
     }
 
     /**
@@ -182,15 +175,15 @@ final class MobService {
      * @param serverMob is the one to be updated
      * @return true is returned if the operation was successful
      */
-    public CompletableFuture<Optional<Boolean>> updateMob(ServerMob serverMob) {
-        CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<Boolean> updateMob(ServerMob serverMob) {
+        CompletableFuture<Boolean> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable) {
             if (this.mobDatabase != null) {
                 removeMob(serverMob.getUniqueId()).thenAccept(success -> {
-                    if (success.isPresent() && success.get()) {
+                    if (success) {
                         addMob(serverMob).thenAccept(addMobSuccess -> {
-                            if (addMobSuccess.isPresent() && addMobSuccess.get()) {
-                                optionalCompletableFuture.complete(Optional.of(true));
+                            if (addMobSuccess) {
+                                optionalCompletableFuture.complete(true);
                             } else {
                                 optionalCompletableFuture.cancel(true);
                             }
@@ -203,7 +196,7 @@ final class MobService {
                 optionalCompletableFuture.cancel(true);
             }
         } else {
-            optionalCompletableFuture.cancel(true);
+            optionalCompletableFuture.completeExceptionally(new RuntimeException("The Mob System is not active!"));
         }
         return optionalCompletableFuture;
     }
@@ -214,18 +207,18 @@ final class MobService {
      * @param mobConfig is updated
      * @return true is returned if the operation was successful
      */
-    public CompletableFuture<Optional<Boolean>> updateMobConfig(MobConfig mobConfig) {
-        CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<Boolean> updateMobConfig(MobConfig mobConfig) {
+        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         if (this.enable) {
             Document document = new Document();
             document.append("mobConfig",
                     this.webInterface.getGson().toJsonTree(mobConfig, TypeToken.get(MobConfig.class).getType()));
             document.saveAsConfig(this.mobConfigurationFile);
             CloudNet.getInstance().getNetworkManager().updateAll();
-            optionalCompletableFuture.complete(Optional.of(true));
+            completableFuture.complete(true);
         } else {
-            optionalCompletableFuture.cancel(true);
+            completableFuture.completeExceptionally(new RuntimeException("The Mob System is not active!"));
         }
-        return optionalCompletableFuture;
+        return completableFuture;
     }
 }

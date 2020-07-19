@@ -60,8 +60,8 @@ final class CloudPermissionService {
      *
      * @return true will return if the system is active
      */
-    public CompletableFuture<Optional<Boolean>> isEnabled() {
-        return CompletableFuture.completedFuture(Optional.of(this.enable));
+    public CompletableFuture<Boolean> isEnabled() {
+        return CompletableFuture.completedFuture(this.enable);
     }
 
     /**
@@ -69,91 +69,91 @@ final class CloudPermissionService {
      *
      * @return the pool itself
      */
-    public CompletableFuture<Optional<PermissionPool>> getPermissionPool() {
-        CompletableFuture<Optional<PermissionPool>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<PermissionPool> getPermissionPool() {
+        CompletableFuture<PermissionPool> completableFuture = new CompletableFuture<>();
         if (this.enable && this.permissionPool.isAvailable()) {
-            optionalCompletableFuture.complete(Optional.of(this.permissionPool));
+            completableFuture.complete(this.permissionPool);
         } else {
-            optionalCompletableFuture.cancel(true);
+            completableFuture.completeExceptionally(new RuntimeException("Cloud permission is not active"));
         }
-        return optionalCompletableFuture;
+        return completableFuture;
     }
 
     /**
      * Returns a group by the name
      *
-     * @return the group instance as a completable future with an optional zero prevention
+     * @return the group instance as a completable future
      */
-    public CompletableFuture<Optional<PermissionGroup>> getGroup(String groupName) {
-        CompletableFuture<Optional<PermissionGroup>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<PermissionGroup> getGroup(String groupName) {
+        CompletableFuture<PermissionGroup> completableFuture = new CompletableFuture<>();
         if (this.enable && this.permissionPool.isAvailable()) {
-            optionalCompletableFuture.complete(Optional.of(this.permissionPool.getGroups().get(groupName)));
+            completableFuture.complete(this.permissionPool.getGroups().get(groupName));
         } else {
-            optionalCompletableFuture.cancel(true);
+            completableFuture.completeExceptionally(new RuntimeException("Cloud permission is not active"));
         }
-        return optionalCompletableFuture;
+        return completableFuture;
     }
 
     /**
      * @return returns a collection of groups from the system
      */
-    public CompletableFuture<Optional<Collection<PermissionGroup>>> getGroups() {
-        CompletableFuture<Optional<Collection<PermissionGroup>>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<Collection<PermissionGroup>> getGroups() {
+        CompletableFuture<Collection<PermissionGroup>> completableFuture = new CompletableFuture<>();
         if (this.enable && this.permissionPool.isAvailable()) {
-            optionalCompletableFuture.complete(Optional.of(this.permissionPool.getGroups().values()));
+            completableFuture.complete(this.permissionPool.getGroups().values());
         } else {
-            optionalCompletableFuture.cancel(true);
+            completableFuture.completeExceptionally(new RuntimeException("Cloud permission is not active"));
         }
-        return optionalCompletableFuture;
+        return completableFuture;
     }
 
     /**
      * Returns an offline player instance by its UUID
      *
      * @param uniquePlayerId is the unique id of mojang to identify the player
-     * @return a completeable future with an optional to avoid null pointer exceptions
+     * @return a completeable future with the offline player
      */
-    public CompletableFuture<Optional<OfflinePlayer>> getPlayer(UUID uniquePlayerId) {
-        CompletableFuture<Optional<OfflinePlayer>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<OfflinePlayer> getPlayer(UUID uniquePlayerId) {
+        CompletableFuture<OfflinePlayer> completableFuture = new CompletableFuture<>();
         if (this.enable && this.permissionPool.isAvailable()) {
-            optionalCompletableFuture.complete(Optional
-                    .of(this.webInterface.getCloud().getDbHandlers().getPlayerDatabase().getPlayer(uniquePlayerId)));
+            completableFuture.complete(
+                    this.webInterface.getCloud().getDbHandlers().getPlayerDatabase().getPlayer(uniquePlayerId));
         } else {
-            optionalCompletableFuture.cancel(true);
+            completableFuture.completeExceptionally(new RuntimeException("Cloud permission is not active"));
         }
-        return optionalCompletableFuture;
+        return completableFuture;
     }
 
     /**
      * Returns an offline player instance by its in game name
      *
      * @param playerName is the in game name of the player
-     * @return a completeable future with an optional to avoid null pointer exceptions
+     * @return a completable future with the offline player
      */
-    public CompletableFuture<Optional<OfflinePlayer>> getPlayer(String playerName) {
-        CompletableFuture<Optional<OfflinePlayer>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<OfflinePlayer> getPlayer(String playerName) {
+        CompletableFuture<OfflinePlayer> completableFuture = new CompletableFuture<>();
         if (this.enable && this.permissionPool.isAvailable()) {
             UUID uuid = this.webInterface.getCloud().getDbHandlers().getNameToUUIDDatabase().get(playerName);
             if (uuid != null) {
-                optionalCompletableFuture.complete(Optional
-                        .of(this.webInterface.getCloud().getDbHandlers().getPlayerDatabase().getPlayer(uuid)));
+                completableFuture.complete(
+                        this.webInterface.getCloud().getDbHandlers().getPlayerDatabase().getPlayer(uuid));
             } else {
-                optionalCompletableFuture.cancel(true);
+                completableFuture.completeExceptionally(new NullPointerException("The UUID is null or was not found in the CloudNet database"));
             }
         } else {
-            optionalCompletableFuture.cancel(true);
+            completableFuture.completeExceptionally(new RuntimeException("Cloud permission is not active"));
         }
-        return optionalCompletableFuture;
+        return completableFuture;
     }
 
     /**
      * Creates and updates a group
      *
      * @param permissionGroup to be updated or created
-     * @return a completable future with an optional boolean that returns true if the task was successful
+     * @return a completable future with an boolean that returns true if the task was successful
      */
-    public CompletableFuture<Optional<Boolean>> updateGroup(PermissionGroup permissionGroup) {
-        CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<Boolean> updateGroup(PermissionGroup permissionGroup) {
+        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         if (this.enable && this.permissionPool.isAvailable()) {
             updatePermissionGroup(permissionGroup);
             NetworkUtils.addAll(this.permissionPool.getGroups(),
@@ -161,21 +161,21 @@ final class CloudPermissionService {
             this.webInterface.getCloud().getNetworkManager().getModuleProperties().append("permissionPool",
                     this.permissionPool);
             this.webInterface.getCloud().getNetworkManager().updateAll();
-            optionalCompletableFuture.complete(Optional.of(true));
+            completableFuture.complete(true);
         } else {
-            optionalCompletableFuture.cancel(true);
+            completableFuture.completeExceptionally(new RuntimeException("Cloud permission is not active"));
         }
-        return optionalCompletableFuture;
+        return completableFuture;
     }
 
     /**
      * Updates a player in the database and also online when he is online
      *
      * @param offlinePlayer to be updated
-     * @return a completable future with an optional boolean that returns true if the task was successful
+     * @return a completable future with an boolean that returns true if the task was successful
      */
-    public CompletableFuture<Optional<Boolean>> updatePlayer(OfflinePlayer offlinePlayer) {
-        CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<Boolean> updatePlayer(OfflinePlayer offlinePlayer) {
+        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         if (this.enable && this.permissionPool.isAvailable()) {
             this.webInterface.getCloud().getDbHandlers().getPlayerDatabase()
                     .updatePermissionEntity(offlinePlayer
@@ -195,31 +195,32 @@ final class CloudPermissionService {
                         .sendAllUpdate(new PacketOutUpdatePlayer(onlinePlayer));
             }
             this.webInterface.getCloud().getNetworkManager().updateAll();
-            optionalCompletableFuture.complete(Optional.of(true));
+            completableFuture.complete(true);
         } else {
-            optionalCompletableFuture.cancel(true);
+            completableFuture.completeExceptionally(new RuntimeException("Cloud permission is not active"));
         }
-        return optionalCompletableFuture;
+        return completableFuture;
     }
 
     /**
      * Removes a permission group from the system
      *
      * @param name identifies the name of the group
-     * @return a completable future with an optional boolean that returns true if the task was successful
+     * @return a completable future with an boolean that returns true if the task was successful
      */
-    public CompletableFuture<Optional<Boolean>> removeGroup(String name) {
-        CompletableFuture<Optional<Boolean>> optionalCompletableFuture = new CompletableFuture<>();
+    public CompletableFuture<Boolean> removeGroup(String name) {
+        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         if (this.enable && this.permissionPool.isAvailable()) {
             // Maybe remove from file ?
             this.permissionPool.getGroups().remove(name);
             this.webInterface.getCloud().getNetworkManager().getModuleProperties().append("permissionPool",
                     this.permissionPool);
             this.webInterface.getCloud().getNetworkManager().updateAll();
+            completableFuture.complete(true);
         } else {
-            optionalCompletableFuture.cancel(true);
+            completableFuture.completeExceptionally(new RuntimeException("Cloud permission is not active"));
         }
-        return optionalCompletableFuture;
+        return completableFuture;
     }
 
     private void updatePermissionGroup(PermissionGroup permissionGroup) {
