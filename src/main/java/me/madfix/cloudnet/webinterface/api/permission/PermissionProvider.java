@@ -136,6 +136,7 @@ public final class PermissionProvider extends Provider {
                         completableFuture.complete(statement.execute());
                     } catch (SQLException e) {
                         this.webInterface.getLogger().log(Level.SEVERE, "The permission could not be created for the database ", e);
+                        completableFuture.completeExceptionally(e);
                     }
                 });
             }

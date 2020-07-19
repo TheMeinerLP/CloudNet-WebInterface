@@ -3,8 +3,10 @@ package me.madfix.cloudnet.webinterface.api.provider;
 import me.madfix.cloudnet.webinterface.WebInterface;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public abstract class Provider {
 
@@ -20,6 +22,13 @@ public abstract class Provider {
         if (this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().isPresent()) {
             Optional<Connection> optionalConnection = this.webInterface.getDatabaseService().getConnection();
             optionalConnection.ifPresent(future::complete);
+            optionalConnection.orElseThrow(() -> {
+                NullPointerException nullPointerException = new NullPointerException("The SQL connection is empty");
+                future.completeExceptionally(nullPointerException);
+                return nullPointerException;
+            });
+        } else {
+            future.completeExceptionally(new NullPointerException("The interface configuration is empty"));
         }
         return future;
     }
