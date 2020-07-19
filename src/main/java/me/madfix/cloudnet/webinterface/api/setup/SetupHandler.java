@@ -72,34 +72,32 @@ public final class SetupHandler {
     }
 
     public void setupPreAdminGroup() {
-        this.webInterface.getGroupProvider().getGroups().thenAccept(optionalWebInterfaceGroups -> {
-            optionalWebInterfaceGroups.ifPresent(webInterfaceGroups -> {
-                if (webInterfaceGroups.size() <= 0) {
-                    this.webInterface.getLogger().log(Level.INFO, "No group was found, create a default group!");
-                    this.webInterface.getGroupProvider().createGroup("administrators").thenAccept(created -> {
-                        if (created) {
-                            this.webInterface.getLogger().log(Level.INFO, "The default administration group was created!");
-                            this.webInterface.getGroupProvider().getGroup("administrators").thenAccept(webInterfaceGroup -> {
-                                if (webInterfaceGroup != null) {
-                                    this.webInterface.getPermissionProvider().addGroupPermission(webInterfaceGroup.getId(), "*").thenAccept(added -> {
-                                        if (added) {
-                                            this.webInterface.getLogger().log(Level.INFO, "The default administration group given \"*\" rights!");
-                                            this.webInterface.getUserProvider().getUser("admin").thenAccept(webInterfaceUser -> {
-                                                this.webInterface.getGroupProvider().addUserToGroup(webInterfaceGroup, webInterfaceUser, 100).thenAccept(success -> {
-                                                    if (success) {
-                                                        this.webInterface.getLogger().log(Level.INFO, "The default administration group was created with all rights!");
-                                                        this.webInterface.getLogger().log(Level.INFO, "The user \"admin\" is now in the group \"administrators\"");
-                                                    }
-                                                });
+        this.webInterface.getGroupProvider().getGroups().thenAccept(interfaceGroups -> {
+            if (interfaceGroups.size() <= 0) {
+                this.webInterface.getLogger().log(Level.INFO, "No group was found, create a default group!");
+                this.webInterface.getGroupProvider().createGroup("administrators").thenAccept(created -> {
+                    if (created) {
+                        this.webInterface.getLogger().log(Level.INFO, "The default administration group was created!");
+                        this.webInterface.getGroupProvider().getGroup("administrators").thenAccept(webInterfaceGroup -> {
+                            if (webInterfaceGroup != null) {
+                                this.webInterface.getPermissionProvider().addGroupPermission(webInterfaceGroup.getId(), "*").thenAccept(added -> {
+                                    if (added) {
+                                        this.webInterface.getLogger().log(Level.INFO, "The default administration group given \"*\" rights!");
+                                        this.webInterface.getUserProvider().getUser("admin").thenAccept(webInterfaceUser -> {
+                                            this.webInterface.getGroupProvider().addUserToGroup(webInterfaceGroup, webInterfaceUser, 100).thenAccept(success -> {
+                                                if (success) {
+                                                    this.webInterface.getLogger().log(Level.INFO, "The default administration group was created with all rights!");
+                                                    this.webInterface.getLogger().log(Level.INFO, "The user \"admin\" is now in the group \"administrators\"");
+                                                }
                                             });
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-            });
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
         });
     }
 }
