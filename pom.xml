@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <name>CloudNet-WebInterface-RESTfulAPI</name>
-    <artifactId>cloudnet-webinterface-restapi</artifactId>
+    <artifactId>cloudnet-webinterface-restfulapi</artifactId>
     <groupId>me.madfix</groupId>
 
     <version>1.9.16-SNAPSHOT</version>
