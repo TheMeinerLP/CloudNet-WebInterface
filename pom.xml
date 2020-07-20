@@ -13,12 +13,12 @@
 
     <scm>
         <tag>HEAD</tag>
-        <connection>scm:git:ssh://git@github.com:TheMadfixLab/CloudNet-WebInterface.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:TheMadfixLab/CloudNet-WebInterface.git</developerConnection>
+        <connection>scm:git:ssh://git@github.com:TheMadfixLab/CloudNet-WebInterface-RESTfulAPI.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:TheMadfixLab/CloudNet-WebInterface-RESTfulAPI.git</developerConnection>
     </scm>
 
     <issueManagement>
-        <url>https://github.com/TheMadfixLab/CloudNet-WebInterface/issues</url>
+        <url>https://github.com/TheMadfixLab/CloudNet-WebInterface-RESTfulAPI/issues</url>
         <system>Github</system>
     </issueManagement>
 
