@@ -22,15 +22,12 @@ public final class UpdateHandler {
         this.webInterface = webInterface;
     }
 
-    public CompletableFuture<UpdateTask> addTask(int order, UpdateTask task) {
-        CompletableFuture<UpdateTask> taskCompletableFuture = new CompletableFuture<>();
-        taskCompletableFuture.complete(this.taskTreeMap.putIfAbsent(order, task));
+    public void addTask(int order, UpdateTask task) {
+        this.taskTreeMap.putIfAbsent(order, task);
         this.webInterface.getLogger().log(Level.INFO, "The update {0} was added!", new Object[]{task.getVersion()});
-        return taskCompletableFuture;
     }
 
-    public CompletableFuture<Boolean> callUpdates() {
-        CompletableFuture<Boolean> successful = new CompletableFuture<>();
+    public void callUpdates() {
         taskTreeMap.forEach((key, task) -> {
             isUpdateInstalled(task.getVersion()).thenAccept(check -> {
                 if (!check) {
@@ -67,8 +64,6 @@ public final class UpdateHandler {
                 }
             });
         });
-        successful.complete(true);
-        return successful;
     }
 
     private CompletableFuture<Boolean> setUpdateInstalled(String version, boolean apply) {

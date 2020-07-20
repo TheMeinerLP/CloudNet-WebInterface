@@ -12,7 +12,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
@@ -83,6 +82,7 @@ public final class UserProvider extends Provider {
         return completableFuture;
     }
 
+    //TODO: Add documentation
     public CompletableFuture<byte[]> hashPassword(String password) {
         CompletableFuture<byte[]> completableFuture = new CompletableFuture<>();
         this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().ifPresent(cfg -> {

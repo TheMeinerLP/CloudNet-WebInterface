@@ -23,6 +23,7 @@ public final class GroupProvider extends Provider {
         super(webInterface);
     }
 
+    //TODO: Add documentation
     public CompletableFuture<Boolean> isGroupExists(String name) {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         createConnection().thenAccept(conn -> {
@@ -40,6 +41,7 @@ public final class GroupProvider extends Provider {
         return completableFuture;
     }
 
+    //TODO: Add documentation
     public CompletableFuture<List<WebInterfaceGroup>> getGroups() {
         CompletableFuture<List<WebInterfaceGroup>> completableFuture = new CompletableFuture<>();
         createConnection().thenAccept(conn -> {
@@ -60,6 +62,7 @@ public final class GroupProvider extends Provider {
         return completableFuture;
     }
 
+    //TODO: Add documentation
     public CompletableFuture<WebInterfaceGroup> getGroup(String name) {
         CompletableFuture<WebInterfaceGroup> completableFuture = new CompletableFuture<>();
         isGroupExists(name).thenAccept(exists -> {
@@ -88,6 +91,7 @@ public final class GroupProvider extends Provider {
         return completableFuture;
     }
 
+    //TODO: Add documentation
     public CompletableFuture<Boolean> addUserToGroup(WebInterfaceGroup group, WebInterfaceUser user, int potency) {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         isGroupExists(group.getName()).thenAccept(exists -> {
@@ -112,6 +116,7 @@ public final class GroupProvider extends Provider {
         return completableFuture;
     }
 
+    //TODO: Add documentation
     public CompletableFuture<Boolean> createGroup(String name) {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         isGroupExists(name).thenAccept(exists -> {

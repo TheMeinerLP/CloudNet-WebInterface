@@ -21,6 +21,7 @@ public final class PermissionProvider extends Provider {
     }
 
 
+    //TODO: Add documentation
     public CompletableFuture<List<String>> getGroupPermissions(int groupId) {
         CompletableFuture<List<String>> completableFuture = new CompletableFuture<>();
         createConnection().thenAccept(conn -> {
@@ -42,6 +43,7 @@ public final class PermissionProvider extends Provider {
         return completableFuture;
     }
 
+    //TODO: Add documentation
     public CompletableFuture<List<String>> getUserPermissions(int userId) {
         CompletableFuture<List<String>> completableFuture = new CompletableFuture<>();
         createConnection().thenAccept(conn -> {
@@ -64,6 +66,7 @@ public final class PermissionProvider extends Provider {
     }
 
 
+    //TODO: Add documentation
     public CompletableFuture<Boolean> hasGroupPermission(int groupId, String permission) {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         createConnection().thenAccept(conn -> {
@@ -84,6 +87,7 @@ public final class PermissionProvider extends Provider {
         return completableFuture;
     }
 
+    //TODO: Add documentation
     public CompletableFuture<Boolean> addGroupPermission(int groupId, String permission) {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         hasGroupPermission(groupId, permission).thenAccept(hasPermission -> {
@@ -104,6 +108,7 @@ public final class PermissionProvider extends Provider {
         return completableFuture;
     }
 
+    //TODO: Add documentation
     public CompletableFuture<Boolean> hasUserPermission(int userId, String permission) {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         createConnection().thenAccept(conn -> {
@@ -124,6 +129,7 @@ public final class PermissionProvider extends Provider {
         return completableFuture;
     }
 
+    //TODO: Add documentation
     public CompletableFuture<Boolean> addUserPermission(int userId, String permission) {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         hasUserPermission(userId, permission).thenAccept(hasPermission -> {

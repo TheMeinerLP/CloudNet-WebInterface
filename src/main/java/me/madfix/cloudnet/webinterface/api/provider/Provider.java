@@ -3,10 +3,8 @@ package me.madfix.cloudnet.webinterface.api.provider;
 import me.madfix.cloudnet.webinterface.WebInterface;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 public abstract class Provider {
 
