@@ -86,9 +86,9 @@ public final class UserProvider extends Provider {
     public CompletableFuture<byte[]> hashPassword(String password) {
         CompletableFuture<byte[]> completableFuture = new CompletableFuture<>();
         this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().ifPresent(cfg -> {
-            byte[] passwordHash = BCrypt.withDefaults().hash(6,
+            byte[] passwordHash = new String(BCrypt.withDefaults().hash(6,
                     cfg.getPasswordSalt().getBytes(StandardCharsets.UTF_8),
-                    password.getBytes(StandardCharsets.UTF_8));
+                    password.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8).trim().getBytes(StandardCharsets.UTF_8);
             completableFuture.complete(passwordHash);
         });
         return completableFuture;
