@@ -7,6 +7,7 @@ import io.sentry.Sentry;
 import io.sentry.event.UserBuilder;
 import me.madfix.cloudnet.webinterface.api.group.GroupProvider;
 import me.madfix.cloudnet.webinterface.api.permission.PermissionProvider;
+import me.madfix.cloudnet.webinterface.api.rest.RestfulAPIService;
 import me.madfix.cloudnet.webinterface.api.setup.SetupHandler;
 import me.madfix.cloudnet.webinterface.api.update.UpdateHandler;
 import me.madfix.cloudnet.webinterface.api.user.UserProvider;
@@ -22,6 +23,7 @@ public final class WebInterface extends CoreModule {
     private ConfigurationService configurationService;
     private DatabaseService databaseService;
     private CloudNetService cloudNetService;
+    private RestfulAPIService restfulAPIService;
 
     private final Gson gson = new Gson();
     private WebInterfaceLogger logger;
@@ -68,6 +70,8 @@ public final class WebInterface extends CoreModule {
             this.groupProvider  = new GroupProvider(this);
             this.setupHandler.setupPreAdminGroup();
             this.cloudNetService = new CloudNetService(this);
+            this.restfulAPIService = new RestfulAPIService(this);
+            this.restfulAPIService.startRestApi();
         }
 
 
