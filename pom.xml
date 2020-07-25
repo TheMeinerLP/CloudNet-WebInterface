@@ -9,12 +9,16 @@
     <artifactId>cloudnet-webinterface-restfulapi</artifactId>
     <groupId>me.madfix</groupId>
 
-    <version>1.9.16-SNAPSHOT</version>
+    <version>1.10.2-SNAPSHOT</version>
+
+    <url>https://github.com/TheMadfixLab/CloudNet-WebInterface-RESTfulAPI</url>
+
+
 
     <scm>
         <tag>HEAD</tag>
-        <connection>scm:git:ssh://git@github.com:TheMadfixLab/CloudNet-WebInterface-RESTfulAPI.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:TheMadfixLab/CloudNet-WebInterface-RESTfulAPI.git</developerConnection>
+        <connection>scm:git:https://github.com/TheMadfixLab/CloudNet-WebInterface-RESTfulAPI.git</connection>
+        <developerConnection>scm:git:https://github.com/TheMadfixLab/CloudNet-WebInterface-RESTfulAPI.git</developerConnection>
     </scm>
 
     <issueManagement>
@@ -42,6 +46,47 @@
         <!-- Settings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changes-plugin</artifactId>
+                <version>2.12.1</version>
+                <configuration>
+                    <githubAPIScheme>https</githubAPIScheme>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.1.0</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>dependencies</report>
+                            <report>team</report>
+                            <report>mailing-lists</report>
+                            <report>ci-management</report>
+                            <report>issue-management</report>
+                            <report>licenses</report>
+                            <report>scm</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changelog-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <type>range</type>
+                    <range>30</range>
+                    <headingDateFormat>dd MMM, yyyy</headingDateFormat>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 
     <repositories>
         <repository>
@@ -111,9 +156,9 @@
                         <filter>
                             <artifact>*:*</artifact>
                             <excludes>
-                                <exclude>META-INF/*.SF</exclude>
+                                <!--<exclude>META-INF/*.SF</exclude>
                                 <exclude>META-INF/*.DSA</exclude>
-                                <exclude>META-INF/*.RSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>-->
                                 <exclude>META-INF/services/*</exclude>
                                 <exclude>META-INF/*.MF</exclude>
                             </excludes>
@@ -129,6 +174,28 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>unpack-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <excludeScope>system</excludeScope>
+                            <excludes>META-INF/*.SF</excludes>
+                            <excludes>META-INF/*.DSA</excludes>
+                            <excludes>META-INF/*.RSA</excludes>
+                            <excludeGroupIds>junit,org.mockito,org.hamcrest</excludeGroupIds>
+                            <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -145,6 +212,14 @@
                         <version>${plugin.jupiter.version}</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.7.1</version>
+                <configuration>
+                    <locales>en,de</locales>
+                </configuration>
             </plugin>
         </plugins>
         <resources>
@@ -212,6 +287,17 @@
             <groupId>io.javalin</groupId>
             <artifactId>javalin</artifactId>
             <version>${dependency.javalin.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.10.3</version>
         </dependency>
     </dependencies>
 
