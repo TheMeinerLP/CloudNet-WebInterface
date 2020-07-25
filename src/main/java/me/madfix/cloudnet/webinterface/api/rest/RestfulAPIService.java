@@ -50,19 +50,6 @@ public final class RestfulAPIService {
             BasicAuthCredentials authCredentials = context.basicAuthCredentials();
             this.webInterface.getUserProvider().getUser(authCredentials.getUsername()).thenAccept(webInterfaceUser -> {
                 String pwdHash = new String(webInterfaceUser.getPasswordHash(), StandardCharsets.UTF_8);
-                System.out.println(authCredentials.getPassword());
-                System.out.println(pwdHash);
-                System.out.println(pwdHash.equals(authCredentials.getPassword()));
-
-                boolean isSame = true;
-                int i = 0;
-                while(i < pwdHash.length() && isSame) {
-                    isSame = pwdHash.charAt(i) == authCredentials.getPassword().charAt(i);
-                    i++;
-                }
-
-                System.out.println("isSame: " + isSame + " Index is: " + i);
-
                 if (pwdHash.equals(authCredentials.getPassword())) {
                     context.status(200);
                 } else {

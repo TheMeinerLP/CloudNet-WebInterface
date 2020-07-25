@@ -9,7 +9,7 @@
     <artifactId>cloudnet-webinterface-restfulapi</artifactId>
     <groupId>me.madfix</groupId>
 
-    <version>1.10.2-SNAPSHOT</version>
+    <version>1.10.3-SNAPSHOT</version>
 
     <url>https://github.com/TheMadfixLab/CloudNet-WebInterface-RESTfulAPI</url>
 
