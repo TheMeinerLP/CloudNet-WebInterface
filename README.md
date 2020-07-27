@@ -21,6 +21,11 @@
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/b86ae50e79d443f8963365596139a3c0)](https://www.codacy.com/gh/TheMadfixLab/CloudNet-WebInterface?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=TheMadfixLab/CloudNet-WebInterface&amp;utm_campaign=Badge_Grade)
 
+**Codefactor**
+
+[![CodeFactor](https://www.codefactor.io/repository/github/themadfixlab/cloudnet-webinterface-restfulapi/badge)](https://www.codefactor.io/repository/github/themadfixlab/cloudnet-webinterface-restfulapi)
+
+
 ## Description
 The Material Design Web Interface has all the features you need to manage your Cloud Simple and easy.
 We pay attention to quality, stability and future-proof approaches.
