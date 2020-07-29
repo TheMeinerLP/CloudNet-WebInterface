@@ -12,6 +12,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
@@ -20,6 +22,28 @@ public final class UserProvider extends Provider {
 
     public UserProvider(WebInterface webInterface) {
         super(webInterface);
+    }
+
+    public CompletableFuture<List<WebInterfaceUser>> getUsers() {
+        CompletableFuture<List<WebInterfaceUser>> completableFuture = new CompletableFuture<>();
+        createConnection().thenAccept(conn -> {
+            try (Connection connection = conn;
+                 PreparedStatement statement = connection.prepareStatement(SQLSelect.SELECT_USERS_IN_USERS)) {
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    List<WebInterfaceUser> webInterfaceUsers = new ArrayList<>();
+                    while (resultSet.next()) {
+                        int id = resultSet.getInt("id");
+                        String username = resultSet.getString("username");
+                        byte[] passwordHash = resultSet.getBytes("passwordhash");
+                        webInterfaceUsers.add(new WebInterfaceUser(id,username,passwordHash));
+                    }
+                    completableFuture.complete(webInterfaceUsers);
+                }
+            } catch (SQLException e) {
+                this.webInterface.getLogger().log(Level.SEVERE, "Users could not be selected from the database ", e);
+            }
+        });
+        return completableFuture;
     }
 
     //TODO: Add documentation
@@ -86,10 +110,8 @@ public final class UserProvider extends Provider {
     public CompletableFuture<byte[]> hashPassword(String password) {
         CompletableFuture<byte[]> completableFuture = new CompletableFuture<>();
         this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().ifPresent(cfg -> {
-            byte[] passwordHash = new String(BCrypt.withDefaults().hash(6,
-                    cfg.getPasswordSalt().getBytes(StandardCharsets.UTF_8),
-                    password.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8).trim().getBytes(StandardCharsets.UTF_8);
-            completableFuture.complete(passwordHash);
+            completableFuture.complete(BCrypt.withDefaults().hash(6,
+                    password.getBytes(StandardCharsets.UTF_8)));
         });
         return completableFuture;
     }
