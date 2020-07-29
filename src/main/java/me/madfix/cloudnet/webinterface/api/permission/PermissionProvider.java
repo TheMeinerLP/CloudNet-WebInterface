@@ -4,6 +4,8 @@ import me.madfix.cloudnet.webinterface.WebInterface;
 import me.madfix.cloudnet.webinterface.api.provider.Provider;
 import me.madfix.cloudnet.webinterface.api.sql.SQLInsert;
 import me.madfix.cloudnet.webinterface.api.sql.SQLSelect;
+import me.madfix.cloudnet.webinterface.model.PermissionUser;
+import me.madfix.cloudnet.webinterface.model.WebInterfaceUser;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -37,6 +39,28 @@ public final class PermissionProvider extends Provider {
                 }
             } catch (SQLException e) {
                 this.webInterface.getLogger().log(Level.SEVERE, "The permission for the group could not be selected from the database ", e);
+                completableFuture.completeExceptionally(e);
+            }
+        });
+        return completableFuture;
+    }
+
+    public CompletableFuture<PermissionUser> getPermissionUser(WebInterfaceUser webInterfaceUser) {
+        CompletableFuture<PermissionUser> completableFuture = new CompletableFuture<>();
+        createConnection().thenAccept(conn -> {
+            try (Connection connection = conn;
+                 PreparedStatement statement = connection.prepareStatement(SQLSelect.SELECT_PERMISSION_FROM_USER)) {
+                statement.setInt(1, webInterfaceUser.getId());
+                List<String> permissions = new ArrayList<>();
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        permissions.add(resultSet.getString("permission"));
+                    }
+                    PermissionUser permissionUser = new PermissionUser(webInterfaceUser.getId(),webInterfaceUser.getUsername(),webInterfaceUser.getPasswordHash(),permissions);
+                    completableFuture.complete(permissionUser);
+                }
+            } catch (SQLException e) {
+                this.webInterface.getLogger().log(Level.SEVERE, "The permission for the user could not be selected from the database ", e);
                 completableFuture.completeExceptionally(e);
             }
         });
