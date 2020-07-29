@@ -10,6 +10,7 @@ public final class SQLSelect {
 
     public static final String SELECT_USERNAME_IN_USERS = "SELECT username from `users` WHERE username = ?";
     public static final String SELECT_USER_IN_USERS = "SELECT id, passwordhash from `users` WHERE username = ?";
+    public static final String SELECT_USERS_IN_USERS = "SELECT id, username, passwordhash from `users`";
 
     public static final String SELECT_GROUP_NAME_IN_GROUPS = "SELECT groupname from `groups` WHERE groupname = ?";
     public static final String SELECT_GROUPS_IN_GROUPS = "SELECT id,groupname from `groups`";
