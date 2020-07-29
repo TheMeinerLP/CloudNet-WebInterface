@@ -18,7 +18,6 @@ public class PermissionUser extends WebInterfaceUser implements Permissible {
 
     @Override
     public boolean hasPermission(String permission) {
-        boolean has = false;
         if (isNumberPermission(permission)) {
             List<String> numberPermissions = permissions.stream().filter(this::isNumberPermission).collect(Collectors.toList());
             String numberPermissionPrefix = numberPermissionPrefix(permission);
@@ -28,17 +27,29 @@ public class PermissionUser extends WebInterfaceUser implements Permissible {
                 Optional<String> optional = permissions.stream().filter(this::isNumberPermission).filter(s -> s.startsWith(numberPermissionPrefix)).findFirst();
                 if (optional.isPresent()) {
                     int permissionValueList = getPermissionValue(optional.get());
-                    if (permissionValue >= permissionValueList) {
-                        has = true;
-                    }
+                    return permissionValue >= permissionValueList;
+                }
+            }
+        } else
+        if (!isAsteriskPermission(permission)) {
+            List<String> asteriskPermissions = permissions.stream().filter(this::isAsteriskPermission).map(this::permissionPrefix).collect(Collectors.toList());
+            for (String asteriskPermission : asteriskPermissions) {
+                if (permissionPrefix(permission).equals(asteriskPermission)) {
+                    return true;
                 }
             }
         } else {
-            if (permissions.contains(permission)) {
-                has = true;
-            }
+            return permissions.contains(permission);
         }
-        return has;
+        return false;
+    }
+
+    private boolean isAsteriskPermission(String permission) {
+        return permission.matches("(([A-Za-z.]+)([.])([*]))");
+    }
+
+    private String permissionPrefix(String permission) {
+        return permission.substring(0, permission.lastIndexOf("."));
     }
 
     private String numberPermissionPrefix(String permission) {
