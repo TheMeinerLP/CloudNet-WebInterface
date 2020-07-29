@@ -9,7 +9,7 @@ public final class SQLProcedure {
             "SQL SECURITY DEFINER\n" +
             "COMMENT 'Create the table for all user logins'\n" +
             "BEGIN\n" +
-            "CREATE TABLE IF NOT EXISTS `users` (id INT(32) PRIMARY KEY AUTO_INCREMENT, username VARCHAR(16) NOT NULL, passwordhash BINARY(64) NOT NULL);\n" +
+            "CREATE TABLE IF NOT EXISTS `users` (id INT(32) PRIMARY KEY AUTO_INCREMENT, username VARCHAR(16) NOT NULL, passwordhash VARBINARY(60) NOT NULL);\n" + // Only 60 Bytes allowed for bcrypt bytes
             "CREATE TABLE IF NOT EXISTS `update` (versionname VARCHAR(16) PRIMARY KEY NOT NULL, apply BOOL);\n" +
             "CREATE TABLE IF NOT EXISTS `user_permission` (id INT(32) PRIMARY KEY AUTO_INCREMENT, userId INT(32), permission VARCHAR(255), FOREIGN KEY (userId) REFERENCES users(id));\n" +
             "END";
