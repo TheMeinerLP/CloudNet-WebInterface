@@ -49,7 +49,7 @@
         <plugin.reports.version>3.1.0</plugin.reports.version>
         <plugin.changelog.version>2.3</plugin.changelog.version>
         <plugin.gitflow.version>1.14.0</plugin.gitflow.version>
-        <plugin.site.version>3.7.1</plugin.site.version>
+        <plugin.site.version>3.9.1</plugin.site.version>
         <!-- Settings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
