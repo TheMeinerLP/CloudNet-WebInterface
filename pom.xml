@@ -31,7 +31,7 @@
         <dependency.cloudnet.version>2.1.17</dependency.cloudnet.version>
         <dependency.hikaricp.version>3.4.5</dependency.hikaricp.version>
         <dependency.h2.version>1.4.200</dependency.h2.version>
-        <dependency.mssql.version>8.3.1.jre14-preview</dependency.mssql.version>
+        <dependency.mssql.version>8.4.0.jre14</dependency.mssql.version>
         <dependency.mariadb.version>2.6.2</dependency.mariadb.version>
         <dependency.slf4j.version>1.7.25</dependency.slf4j.version>
         <dependency.sentry.version>1.7.30</dependency.sentry.version>
