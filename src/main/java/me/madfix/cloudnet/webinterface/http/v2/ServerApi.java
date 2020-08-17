@@ -5,7 +5,7 @@ import me.madfix.cloudnet.webinterface.http.v2.utils.HttpUser;
 import me.madfix.cloudnet.webinterface.http.v2.utils.JsonUtil;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Request;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Response;
-import me.madfix.cloudnet.webinterface.ProjectMain;
+import me.madfix.cloudnet.webinterface.WebInterface;
 import de.dytanic.cloudnet.lib.server.ServerGroup;
 import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
@@ -25,17 +25,17 @@ import java.util.stream.Collectors;
 
 public final class ServerApi extends MethodWebHandlerAdapter {
 
-  private final ProjectMain projectMain;
+  private final WebInterface webInterface;
 
   /**
    * Imitated the class.
    * @param cloudNet the main class of cloudnet
-   * @param projectMain the main class of the project
+   * @param webInterface the main class of the project
    */
-  public ServerApi(CloudNet cloudNet, ProjectMain projectMain) {
+  public ServerApi(CloudNet cloudNet, WebInterface webInterface) {
     super("/cloudnet/api/v2/servergroup");
     cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
-    this.projectMain = projectMain;
+    this.webInterface = webInterface;
   }
 
   @SuppressWarnings("deprecation")
@@ -68,8 +68,8 @@ public final class ServerApi extends MethodWebHandlerAdapter {
               .containsKey(server.getServiceId().getServerId())) {
             server.getWrapper().enableScreen(server.getServerInfo());
           }
-          if (projectMain.getScreenInfos().containsKey(server.getServiceId().getServerId())) {
-            resp.append("response", projectMain.getScreenInfos().get(
+          if (webInterface.getScreenInfos().containsKey(server.getServiceId().getServerId())) {
+            resp.append("response", webInterface.getScreenInfos().get(
                 server.getServiceId().getServerId()));
           }
           return Response.success(fullHttpResponse, resp);

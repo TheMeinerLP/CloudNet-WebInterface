@@ -1,5 +1,6 @@
 package me.madfix.cloudnet.webinterface;
 
+import com.google.gson.Gson;
 import me.madfix.cloudnet.webinterface.http.v2.AuthenticationApi;
 import me.madfix.cloudnet.webinterface.http.v2.CPermsApi;
 import me.madfix.cloudnet.webinterface.http.v2.DashboardApi;
@@ -12,7 +13,7 @@ import me.madfix.cloudnet.webinterface.http.v2.SignApi;
 import me.madfix.cloudnet.webinterface.http.v2.UserApi;
 import me.madfix.cloudnet.webinterface.http.v2.UtilsApi;
 import me.madfix.cloudnet.webinterface.http.v2.WrapperApi;
-import me.madfix.cloudnet.webinterface.mob.MobDatabase;
+import me.madfix.cloudnet.webinterface.database.MobDatabase;
 import me.madfix.cloudnet.webinterface.services.ConfigurationService;
 import me.madfix.cloudnet.webinterface.services.DatabaseService;
 import me.madfix.cloudnet.webinterface.sign.SignDatabase;
@@ -25,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class ProjectMain extends CoreModule {
+public final class WebInterface extends CoreModule {
 
   private ConfigurationService configurationService;
   private DatabaseService databaseService;
@@ -35,6 +36,7 @@ public final class ProjectMain extends CoreModule {
   private Map<String, List<String>> screenInfos = new HashMap<>();
   private SignDatabase signDatabase;
   private MobDatabase mobDatabase;
+  private final Gson gson = new Gson();
 
   @Override
   public void onLoad() {
@@ -126,5 +128,13 @@ public final class ProjectMain extends CoreModule {
 
   public ConfigurationService getConfigurationService() {
     return configurationService;
+  }
+
+  public DatabaseService getDatabaseService() {
+    return databaseService;
+  }
+
+  public Gson getGson() {
+    return gson;
   }
 }

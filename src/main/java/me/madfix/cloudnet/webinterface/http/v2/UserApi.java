@@ -5,7 +5,7 @@ import me.madfix.cloudnet.webinterface.http.v2.utils.HttpUser;
 import me.madfix.cloudnet.webinterface.http.v2.utils.JsonUtil;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Request;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Response;
-import me.madfix.cloudnet.webinterface.ProjectMain;
+import me.madfix.cloudnet.webinterface.WebInterface;
 import de.dytanic.cloudnet.lib.hash.DyHash;
 import de.dytanic.cloudnet.lib.user.BasicUser;
 import de.dytanic.cloudnet.lib.user.User;
@@ -27,17 +27,17 @@ import java.util.stream.Collectors;
 @SuppressWarnings("ALL")
 public final class UserApi extends MethodWebHandlerAdapter {
 
-  private final ProjectMain projectMain;
+  private final WebInterface webInterface;
 
   /**
    * Initiated the class.
    * @param cloudNet The main class of cloudnet
-   * @param projectMain The main class of the project
+   * @param webInterface The main class of the project
    */
-  public UserApi(CloudNet cloudNet, ProjectMain projectMain) {
+  public UserApi(CloudNet cloudNet, WebInterface webInterface) {
     super("/cloudnet/api/v2/userapi");
     cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
-    this.projectMain = projectMain;
+    this.webInterface = webInterface;
   }
 
   @SuppressWarnings("deprecation")
@@ -108,7 +108,7 @@ public final class UserApi extends MethodWebHandlerAdapter {
           if (oldUser.isPresent()) {
             CloudNet.getInstance().getUsers().remove(oldUser.get());
             CloudNet.getInstance().getUsers().add(newUser);
-            this.projectMain.getCloud().getConfig().save(projectMain.getCloud().getUsers());
+            this.webInterface.getCloud().getConfig().save(webInterface.getCloud().getUsers());
             return Response.success(fullHttpResponse, new Document());
           } else {
             return Response.badRequest(fullHttpResponse, new Document());
@@ -147,7 +147,7 @@ public final class UserApi extends MethodWebHandlerAdapter {
               .filter(u -> u.getName().equals(username1)).findAny();
           if (oldUser.isPresent()) {
             CloudNet.getInstance().getUsers().remove(oldUser.get());
-            this.projectMain.getCloud().getConfig().save(projectMain.getCloud().getUsers());
+            this.webInterface.getCloud().getConfig().save(webInterface.getCloud().getUsers());
             return Response.success(fullHttpResponse, new Document());
           } else {
             return Response.badRequest(fullHttpResponse, new Document());

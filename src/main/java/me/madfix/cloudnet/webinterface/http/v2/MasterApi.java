@@ -4,7 +4,7 @@ import me.madfix.cloudnet.webinterface.http.v2.utils.Http;
 import me.madfix.cloudnet.webinterface.http.v2.utils.HttpUser;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Request;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Response;
-import me.madfix.cloudnet.webinterface.ProjectMain;
+import me.madfix.cloudnet.webinterface.WebInterface;
 import de.dytanic.cloudnet.lib.NetworkUtils;
 import de.dytanic.cloudnet.lib.user.User;
 import de.dytanic.cloudnet.lib.utility.document.Document;
@@ -20,17 +20,17 @@ import java.util.Locale;
 
 public final class MasterApi extends MethodWebHandlerAdapter {
 
-  private final ProjectMain projectMain;
+  private final WebInterface webInterface;
 
   /**
    * Manage request about master.
    * @param cloudNet The main class of cloudnet
-   * @param projectMain The main class of the project
+   * @param webInterface The main class of the project
    */
-  public MasterApi(CloudNet cloudNet, ProjectMain projectMain) {
+  public MasterApi(CloudNet cloudNet, WebInterface webInterface) {
     super("/cloudnet/api/v2/master");
     cloudNet.getWebServer().getWebServerProvider().registerHandler(this);
-    this.projectMain = projectMain;
+    this.webInterface = webInterface;
   }
 
   @SuppressWarnings("deprecation")
@@ -42,11 +42,11 @@ public final class MasterApi extends MethodWebHandlerAdapter {
     Document document = new Document();
     switch (Request.headerValue(httpRequest, "-Xmessage").toLowerCase(Locale.ENGLISH)) {
       case "corelog":
-        document.append("response", projectMain.getConsoleLines());
+        document.append("response", webInterface.getConsoleLines());
         return Response.success(fullHttpResponse, document);
 
       case "commands":
-        document.append("response", projectMain.getCloud().getCommandManager().getCommands());
+        document.append("response", webInterface.getCloud().getCommandManager().getCommands());
         return Response.success(fullHttpResponse, document);
 
       default:
@@ -139,7 +139,7 @@ public final class MasterApi extends MethodWebHandlerAdapter {
               "cloudnet.web.master.command." + command)) {
             return Response.permissionDenied(fullHttpResponse);
           }
-          projectMain.getCloud().getCommandManager().dispatchCommand(command);
+          webInterface.getCloud().getCommandManager().dispatchCommand(command);
           return Response.success(fullHttpResponse, document);
         } else {
           return Response.valueFieldNotFound(fullHttpResponse);

@@ -5,7 +5,7 @@ import me.madfix.cloudnet.webinterface.http.v2.utils.HttpUser;
 import me.madfix.cloudnet.webinterface.http.v2.utils.JsonUtil;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Request;
 import me.madfix.cloudnet.webinterface.http.v2.utils.Response;
-import me.madfix.cloudnet.webinterface.ProjectMain;
+import me.madfix.cloudnet.webinterface.WebInterface;
 import de.dytanic.cloudnet.lib.NetworkUtils;
 import de.dytanic.cloudnet.lib.player.CloudPlayer;
 import de.dytanic.cloudnet.lib.player.OfflinePlayer;
@@ -29,18 +29,18 @@ import java.util.stream.Collectors;
 
 public final class CPermsApi extends MethodWebHandlerAdapter {
 
-  private final ProjectMain projectMain;
+  private final WebInterface webInterface;
   private PermissionPool pool;
 
   /**
    * Initiated the class.
-   * @param projectMain The main class of the project
+   * @param webInterface The main class of the project
    */
-  public CPermsApi(ProjectMain projectMain) {
+  public CPermsApi(WebInterface webInterface) {
     super("/cloudnet/api/v2/cperms");
-    this.projectMain = projectMain;
-    projectMain.getCloud().getWebServer().getWebServerProvider().registerHandler(this);
-    pool = projectMain.getCloud().getNetworkManager().getModuleProperties()
+    this.webInterface = webInterface;
+    webInterface.getCloud().getWebServer().getWebServerProvider().registerHandler(this);
+    pool = webInterface.getCloud().getNetworkManager().getModuleProperties()
         .getObject("permissionPool",
             PermissionPool.TYPE);
   }
@@ -50,7 +50,7 @@ public final class CPermsApi extends MethodWebHandlerAdapter {
   public FullHttpResponse get(ChannelHandlerContext channelHandlerContext,
       QueryDecoder queryDecoder,
       PathProvider pathProvider, HttpRequest httpRequest) {
-    pool = projectMain.getCloud().getNetworkManager().getModuleProperties()
+    pool = webInterface.getCloud().getNetworkManager().getModuleProperties()
         .getObject("permissionPool",
             PermissionPool.TYPE);
     FullHttpResponse fullHttpResponse = Http.simpleCheck(httpRequest);
@@ -112,12 +112,12 @@ public final class CPermsApi extends MethodWebHandlerAdapter {
             }
             if (userUuid.matches(
                 "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")) {
-              document.append("response", JsonUtil.getGson().toJson(this.projectMain.getCloud()
+              document.append("response", JsonUtil.getGson().toJson(this.webInterface.getCloud()
                   .getDbHandlers().getPlayerDatabase().getPlayer(UUID.fromString(userUuid))));
             } else {
               UUID id = CloudNet.getInstance().getDbHandlers().getNameToUUIDDatabase()
                   .get(userUuid);
-              document.append("response", JsonUtil.getGson().toJson(this.projectMain.getCloud()
+              document.append("response", JsonUtil.getGson().toJson(this.webInterface.getCloud()
                   .getDbHandlers().getPlayerDatabase().getPlayer(id)));
             }
             return Response.success(fullHttpResponse,  document);
@@ -163,8 +163,8 @@ public final class CPermsApi extends MethodWebHandlerAdapter {
             "cloudnet.web.cperms.group.save." + permissionGroup.getName())) {
           return Response.permissionDenied(fullHttpResponse);
         }
-        this.projectMain.getConfigPermission().updatePermissionGroup(permissionGroup);
-        NetworkUtils.addAll(pool.getGroups(), this.projectMain.getConfigPermission().loadAll());
+        this.webInterface.getConfigPermission().updatePermissionGroup(permissionGroup);
+        NetworkUtils.addAll(pool.getGroups(), this.webInterface.getConfigPermission().loadAll());
 
         CloudNet.getInstance().getNetworkManager().getModuleProperties().append("permissionPool",
             this.pool);

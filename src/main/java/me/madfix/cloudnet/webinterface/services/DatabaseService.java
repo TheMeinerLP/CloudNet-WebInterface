@@ -6,25 +6,24 @@ import de.dytanic.cloudnetcore.CloudNet;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
-import me.madfix.cloudnet.webinterface.ProjectMain;
+import me.madfix.cloudnet.webinterface.WebInterface;
 import me.madfix.cloudnet.webinterface.model.InterfaceConfiguration;
-import org.graalvm.compiler.nodes.calc.IntegerDivRemNode.Op;
 
 public final class DatabaseService {
 
-  private final ProjectMain projectMain;
+  private final WebInterface webInterface;
   private final HikariConfig hikariConfig = new HikariConfig();
   private HikariDataSource hikariDataSource;
 
-  public DatabaseService(ProjectMain projectMain) {
-    this.projectMain = projectMain;
+  public DatabaseService(WebInterface webInterface) {
+    this.webInterface = webInterface;
     loadConfig();
   }
 
   private void loadConfig() {
-    if (this.projectMain.getConfigurationService()
+    if (this.webInterface.getConfigurationService()
         .getOptionalInterfaceConfiguration().isPresent()) {
-      final InterfaceConfiguration interfaceConfiguration = this.projectMain
+      final InterfaceConfiguration interfaceConfiguration = this.webInterface
           .getConfigurationService().getOptionalInterfaceConfiguration().get();
       this.hikariConfig
           .setUsername(interfaceConfiguration.getDatabaseConfiguration().getUsername());

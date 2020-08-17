@@ -19,12 +19,13 @@ public class WrapperInfoAdpater implements JsonDeserializer<WrapperInfo>,
     JsonObject object = jsonElement.getAsJsonObject();
     String serverId = object.get("serverId").getAsString();
     String hostName = object.get("hostName").getAsString();
+    String version = object.get("version").getAsString();
     boolean ready = object.get("ready").getAsBoolean();
     int availableProcessors = object.get("availableProcessors").getAsInt();
     int startPort = object.get("startPort").getAsInt();
     int processQueueSize = object.get("process_queue_size").getAsInt();
     int memory = object.get("memory").getAsInt();
-    return new WrapperInfo(serverId, hostName, ready, availableProcessors, startPort,
+    return new WrapperInfo(serverId, hostName, version,ready, availableProcessors, startPort,
         processQueueSize, memory);
   }
 
@@ -34,6 +35,7 @@ public class WrapperInfoAdpater implements JsonDeserializer<WrapperInfo>,
     JsonObject object = new JsonObject();
     object.addProperty("serverId", wrapperInfo.getServerId());
     object.addProperty("hostName", wrapperInfo.getHostName());
+    object.addProperty("version", wrapperInfo.getVersion());
     object.addProperty("ready", wrapperInfo.isReady());
     object.addProperty("availableProcessors", wrapperInfo.getAvailableProcessors());
     object.addProperty("startPort", wrapperInfo.getStartPort());
