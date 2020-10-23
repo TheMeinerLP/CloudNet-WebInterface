@@ -33,7 +33,7 @@
         <dependency.h2.version>1.4.200</dependency.h2.version>
         <dependency.mssql.version>8.4.0.jre14</dependency.mssql.version>
         <dependency.mariadb.version>2.6.2</dependency.mariadb.version>
-        <dependency.slf4j.version>1.7.25</dependency.slf4j.version>
+        <dependency.slf4j.version>1.7.30</dependency.slf4j.version>
         <dependency.sentry.version>1.7.30</dependency.sentry.version>
         <dependency.bcyrpt.version>0.9.0</dependency.bcyrpt.version>
         <dependency.javalin.version>3.9.1</dependency.javalin.version>
