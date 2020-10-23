@@ -6,7 +6,6 @@ import de.dytanic.cloudnetcore.network.components.Wrapper;
 import me.madfix.cloudnet.webinterface.WebInterface;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 final class ProxyGroupService {
@@ -71,12 +70,14 @@ final class ProxyGroupService {
         CompletableFuture<Boolean> optionalCompletableFuture = new CompletableFuture<>();
         ProxyServer proxy = this.webInterface.getCloud().getProxy(proxyId);
         if (proxy != null) {
-            this.webInterface.getCloud().getScreenProvider().handleEnableScreen(proxy.getServiceId(),
-                    proxy.getWrapper());
+            this.webInterface.getCloud()
+                             .getScreenProvider()
+                             .handleEnableScreen(proxy.getServiceId(), proxy.getWrapper());
             proxy.getWrapper().enableScreen(proxy.getLastProxyInfo());
-            optionalCompletableFuture.complete(
-                    this.webInterface.getCloud().getScreenProvider().getScreens()
-                            .containsKey(proxy.getServiceId().getServerId()));
+            optionalCompletableFuture.complete(this.webInterface.getCloud()
+                                                                .getScreenProvider()
+                                                                .getScreens()
+                                                                .containsKey(proxy.getServiceId().getServerId()));
         } else {
             optionalCompletableFuture.cancel(true);
         }
@@ -114,9 +115,10 @@ final class ProxyGroupService {
         if (proxy != null) {
             proxy.getWrapper().disableScreen(proxy.getLastProxyInfo());
             this.webInterface.getCloud().getScreenProvider().disableScreen(proxy.getServiceId().getServerId());
-            optionalCompletableFuture.complete(!
-                    this.webInterface.getCloud().getScreenProvider().getScreens()
-                            .containsKey(proxy.getServiceId().getServerId()));
+            optionalCompletableFuture.complete(!this.webInterface.getCloud()
+                                                                 .getScreenProvider()
+                                                                 .getScreens()
+                                                                 .containsKey(proxy.getServiceId().getServerId()));
         } else {
             optionalCompletableFuture.cancel(true);
         }

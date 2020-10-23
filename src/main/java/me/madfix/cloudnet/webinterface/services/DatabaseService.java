@@ -22,35 +22,37 @@ public final class DatabaseService {
     }
 
     private void loadConfig() {
-        if (this.webInterface.getConfigurationService()
-                .getOptionalInterfaceConfiguration().isPresent()) {
-            final InterfaceConfiguration interfaceConfiguration = this.webInterface
-                    .getConfigurationService().getOptionalInterfaceConfiguration().get();
+        if (this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().isPresent()) {
+            final InterfaceConfiguration interfaceConfiguration =
+                    this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().get();
             try {
                 Class.forName(interfaceConfiguration.getDatabaseConfiguration().getDriverClassName());
             } catch (ClassNotFoundException e) {
-                this.webInterface.getLogger().log(Level.SEVERE, "[200] An unexpected error occurred while loading the SQL driver", e);
+                this.webInterface.getLogger()
+                                 .log(Level.SEVERE,
+                                      "[200] An unexpected error occurred while loading the SQL driver",
+                                      e);
             }
-            this.hikariConfig.setDriverClassName(interfaceConfiguration.getDatabaseConfiguration().getDriverClassName());
-            this.hikariConfig
-                    .setUsername(interfaceConfiguration.getDatabaseConfiguration().getUsername());
-            this.hikariConfig
-                    .setPassword(interfaceConfiguration.getDatabaseConfiguration().getPassword());
+            this.hikariConfig.setDriverClassName(interfaceConfiguration.getDatabaseConfiguration()
+                                                                       .getDriverClassName());
+            this.hikariConfig.setUsername(interfaceConfiguration.getDatabaseConfiguration().getUsername());
+            this.hikariConfig.setPassword(interfaceConfiguration.getDatabaseConfiguration().getPassword());
             this.hikariConfig.setJdbcUrl(interfaceConfiguration.getDatabaseConfiguration().getJdbcUrl());
-            this.hikariConfig.setConnectionTimeout(
-                    interfaceConfiguration.getDatabaseConfiguration().getConnectionTimeout());
-            this.hikariConfig
-                    .setMinimumIdle(interfaceConfiguration.getDatabaseConfiguration().getMinimumIdle());
-            this.hikariConfig.setMaximumPoolSize(
-                    interfaceConfiguration.getDatabaseConfiguration().getMaximumPoolSize());
-            this.hikariConfig
-                    .setMaxLifetime(interfaceConfiguration.getDatabaseConfiguration().getMaxLifetime());
+            this.hikariConfig.setConnectionTimeout(interfaceConfiguration.getDatabaseConfiguration()
+                                                                         .getConnectionTimeout());
+            this.hikariConfig.setMinimumIdle(interfaceConfiguration.getDatabaseConfiguration().getMinimumIdle());
+            this.hikariConfig.setMaximumPoolSize(interfaceConfiguration.getDatabaseConfiguration()
+                                                                       .getMaximumPoolSize());
+            this.hikariConfig.setMaxLifetime(interfaceConfiguration.getDatabaseConfiguration().getMaxLifetime());
             this.hikariConfig.addDataSourceProperty("cachePrepStmts",
-                    interfaceConfiguration.getDatabaseConfiguration().isCachePrepStmts());
+                                                    interfaceConfiguration.getDatabaseConfiguration()
+                                                                          .isCachePrepStmts());
             this.hikariConfig.addDataSourceProperty("prepStmtCacheSize",
-                    interfaceConfiguration.getDatabaseConfiguration().getPrepStmtCacheSize());
+                                                    interfaceConfiguration.getDatabaseConfiguration()
+                                                                          .getPrepStmtCacheSize());
             this.hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit",
-                    interfaceConfiguration.getDatabaseConfiguration().getPrepStmtCacheSqlLimit());
+                                                    interfaceConfiguration.getDatabaseConfiguration()
+                                                                          .getPrepStmtCacheSqlLimit());
             this.webInterface.getLogger().info("The loading of the database configuration was successful!");
             createDataSource();
         }
@@ -79,7 +81,8 @@ public final class DatabaseService {
         try {
             optionalConnection = Optional.of(this.hikariDataSource.getConnection());
         } catch (SQLException e) {
-            this.webInterface.getLogger().log(Level.SEVERE, "[201] Something went wrong while establishing an SQL connection!", e);
+            this.webInterface.getLogger()
+                             .log(Level.SEVERE, "[201] Something went wrong while establishing an SQL connection!", e);
         }
         return optionalConnection;
     }

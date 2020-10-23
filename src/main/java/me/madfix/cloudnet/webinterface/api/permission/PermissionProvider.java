@@ -38,7 +38,10 @@ public final class PermissionProvider extends Provider {
                     completableFuture.complete(permissions);
                 }
             } catch (SQLException e) {
-                this.webInterface.getLogger().log(Level.SEVERE, "The permission for the group could not be selected from the database ", e);
+                this.webInterface.getLogger()
+                                 .log(Level.SEVERE,
+                                      "The permission for the group could not be selected from the database ",
+                                      e);
                 completableFuture.completeExceptionally(e);
             }
         });
@@ -56,11 +59,17 @@ public final class PermissionProvider extends Provider {
                     while (resultSet.next()) {
                         permissions.add(resultSet.getString("permission"));
                     }
-                    PermissionUser permissionUser = new PermissionUser(webInterfaceUser.getId(),webInterfaceUser.getUsername(),webInterfaceUser.getPasswordHash(),permissions);
+                    PermissionUser permissionUser = new PermissionUser(webInterfaceUser.getId(),
+                                                                       webInterfaceUser.getUsername(),
+                                                                       webInterfaceUser.getPasswordHash(),
+                                                                       permissions);
                     completableFuture.complete(permissionUser);
                 }
             } catch (SQLException e) {
-                this.webInterface.getLogger().log(Level.SEVERE, "The permission for the user could not be selected from the database ", e);
+                this.webInterface.getLogger()
+                                 .log(Level.SEVERE,
+                                      "The permission for the user could not be selected from the database ",
+                                      e);
                 completableFuture.completeExceptionally(e);
             }
         });
@@ -82,7 +91,10 @@ public final class PermissionProvider extends Provider {
                     completableFuture.complete(permissions);
                 }
             } catch (SQLException e) {
-                this.webInterface.getLogger().log(Level.SEVERE, "The permission for the user could not be selected from the database ", e);
+                this.webInterface.getLogger()
+                                 .log(Level.SEVERE,
+                                      "The permission for the user could not be selected from the database ",
+                                      e);
                 completableFuture.completeExceptionally(e);
             }
         });
@@ -104,7 +116,10 @@ public final class PermissionProvider extends Provider {
                     }
                 }
             } catch (SQLException e) {
-                this.webInterface.getLogger().log(Level.SEVERE, "The permission for the group could not be selected from the database ", e);
+                this.webInterface.getLogger()
+                                 .log(Level.SEVERE,
+                                      "The permission for the group could not be selected from the database ",
+                                      e);
                 completableFuture.completeExceptionally(e);
             }
         });
@@ -123,7 +138,8 @@ public final class PermissionProvider extends Provider {
                         statement.setString(2, permission);
                         completableFuture.complete(statement.executeUpdate() > 0);
                     } catch (SQLException e) {
-                        this.webInterface.getLogger().log(Level.SEVERE, "The permission could not be created for the database ", e);
+                        this.webInterface.getLogger()
+                                         .log(Level.SEVERE, "The permission could not be created for the database ", e);
                         completableFuture.completeExceptionally(e);
                     }
                 });
@@ -146,7 +162,10 @@ public final class PermissionProvider extends Provider {
                     }
                 }
             } catch (SQLException e) {
-                this.webInterface.getLogger().log(Level.SEVERE, "The permission for the user could not be selected from the database ", e);
+                this.webInterface.getLogger()
+                                 .log(Level.SEVERE,
+                                      "The permission for the user could not be selected from the database ",
+                                      e);
                 completableFuture.completeExceptionally(e);
             }
         });
@@ -165,7 +184,8 @@ public final class PermissionProvider extends Provider {
                         statement.setString(2, permission);
                         completableFuture.complete(statement.execute());
                     } catch (SQLException e) {
-                        this.webInterface.getLogger().log(Level.SEVERE, "The permission could not be created for the database ", e);
+                        this.webInterface.getLogger()
+                                         .log(Level.SEVERE, "The permission could not be created for the database ", e);
                         completableFuture.completeExceptionally(e);
                     }
                 });

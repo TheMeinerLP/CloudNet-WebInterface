@@ -28,42 +28,58 @@ public final class UpdateHandler {
     }
 
     public void callUpdates() {
-        taskTreeMap.forEach((key, task) -> {
-            isUpdateInstalled(task.getVersion()).thenAccept(check -> {
-                if (!check) {
-                    task.preUpdateStep(this.webInterface).thenAccept(stepOne -> {
-                        long start = System.currentTimeMillis();
-                        if (stepOne) {
-                            task.updateStep(this.webInterface).thenAccept(stepTwo -> {
-                                if (stepTwo) {
-                                    task.postUpdateStep(this.webInterface).thenAccept(stepThree -> {
-                                        if (stepThree) {
-                                            setUpdateInstalled(task.getVersion(), true).thenAccept(successfulInstalled -> {
-                                                if (successfulInstalled) {
-                                                    long end = System.currentTimeMillis();
-                                                    long diff = end - start;
-                                                    this.webInterface.getLogger().log(Level.INFO, "The update {0} could be applied and took {1} milliseconds", new Object[]{task.getVersion(), diff});
-                                                } else {
-                                                    this.webInterface.getLogger().log(Level.WARNING, "The update {0} could not be applied", new Object[]{task.getVersion()});
-                                                }
-                                            });
-                                        } else {
-                                            this.webInterface.getLogger().log(Level.WARNING, "The update {0} could not be applied", new Object[]{task.getVersion()});
-                                        }
-                                    });
-                                } else {
-                                    this.webInterface.getLogger().log(Level.WARNING, "The update {0} could not be applied", new Object[]{task.getVersion()});
-                                }
-                            });
-                        } else {
-                            this.webInterface.getLogger().log(Level.WARNING, "The update {0} could not be applied", new Object[]{task.getVersion()});
-                        }
-                    });
-                } else {
-                    this.webInterface.getLogger().log(Level.INFO, "Update {0} already installed. Skip Update!", new Object[]{task.getVersion()});
-                }
-            });
-        });
+        taskTreeMap.forEach((key, task) -> isUpdateInstalled(task.getVersion()).thenAccept(check -> {
+            if (!check) {
+                task.preUpdateStep(this.webInterface).thenAccept(stepOne -> {
+                    long start = System.currentTimeMillis();
+                    if (stepOne) {
+                        task.updateStep(this.webInterface).thenAccept(stepTwo -> {
+                            if (stepTwo) {
+                                task.postUpdateStep(this.webInterface).thenAccept(stepThree -> {
+                                    if (stepThree) {
+                                        setUpdateInstalled(task.getVersion(), true).thenAccept(successfulInstalled -> {
+                                            if (successfulInstalled) {
+                                                long end = System.currentTimeMillis();
+                                                long diff = end - start;
+                                                this.webInterface.getLogger()
+                                                                 .log(Level.INFO,
+                                                                      "The update {0} could be applied and took {1} milliseconds",
+                                                                      new Object[]{task.getVersion(), diff});
+                                            } else {
+                                                this.webInterface.getLogger()
+                                                                 .log(Level.WARNING,
+                                                                      "The update {0} could not be applied",
+                                                                      new Object[]{task.getVersion()});
+                                            }
+                                        });
+                                    } else {
+                                        this.webInterface.getLogger()
+                                                         .log(Level.WARNING,
+                                                              "The update {0} could not be applied",
+                                                              new Object[]{task.getVersion()});
+                                    }
+                                });
+                            } else {
+                                this.webInterface.getLogger()
+                                                 .log(Level.WARNING,
+                                                      "The update {0} could not be applied",
+                                                      new Object[]{task.getVersion()});
+                            }
+                        });
+                    } else {
+                        this.webInterface.getLogger()
+                                         .log(Level.WARNING,
+                                              "The update {0} could not be applied",
+                                              new Object[]{task.getVersion()});
+                    }
+                });
+            } else {
+                this.webInterface.getLogger()
+                                 .log(Level.INFO,
+                                      "Update {0} already installed. Skip Update!",
+                                      new Object[]{task.getVersion()});
+            }
+        }));
     }
 
     private CompletableFuture<Boolean> setUpdateInstalled(String version, boolean apply) {
@@ -76,7 +92,10 @@ public final class UpdateHandler {
                     statement.setBoolean(2, apply);
                     installed.complete(statement.executeUpdate() > 0);
                 } catch (SQLException e) {
-                    this.webInterface.getLogger().log(Level.SEVERE, "The update for the user could not be selected from the database",e);
+                    this.webInterface.getLogger()
+                                     .log(Level.SEVERE,
+                                          "The update for the user could not be selected from the database",
+                                          e);
                     installed.cancel(true);
                 }
             });
@@ -99,7 +118,10 @@ public final class UpdateHandler {
                         }
                     }
                 } catch (SQLException e) {
-                    this.webInterface.getLogger().log(Level.SEVERE, "The update for the user could not be selected from the database ", e);
+                    this.webInterface.getLogger()
+                                     .log(Level.SEVERE,
+                                          "The update for the user could not be selected from the database ",
+                                          e);
                     installed.cancel(true);
                 }
             });

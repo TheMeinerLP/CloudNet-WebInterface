@@ -32,13 +32,16 @@ final class SignService {
 
     public SignService(WebInterface webInterface) {
         this.webInterface = webInterface;
-        this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().ifPresent(interfaceConfiguration -> {
-            this.enable = interfaceConfiguration.isSignSystem();
-            if (this.enable) {
-                this.signDatabase = new SignDatabase(
-                        webInterface.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
-            }
-        });
+        this.webInterface.getConfigurationService()
+                         .getOptionalInterfaceConfiguration()
+                         .ifPresent(interfaceConfiguration -> {
+                             this.enable = interfaceConfiguration.isSignSystem();
+                             if (this.enable) {
+                                 this.signDatabase = new SignDatabase(webInterface.getCloud()
+                                                                                  .getDatabaseManager()
+                                                                                  .getDatabase("cloud_internal_cfg"));
+                             }
+                         });
     }
 
     /**
@@ -74,23 +77,33 @@ final class SignService {
         CompletableFuture<SignLayoutConfig> completableFuture = new CompletableFuture<>();
         if (this.enable) {
             try (BufferedReader bufferedReader = Files.newBufferedReader(this.signConfigurationFile,
-                    StandardCharsets.UTF_8)) {
+                                                                         StandardCharsets.UTF_8)) {
                 JsonElement jsonConfig = null;
                 try {
                     jsonConfig = JsonParser.parseReader(bufferedReader);
                 } catch (JsonSyntaxException e) {
                     this.enable = false;
-                    CloudNet.getLogger().severe("[401] Sign service is deactivated to prevent errors. Please fix the errors and try the function again.");
-                    CloudNet.getLogger().log(Level.SEVERE, "[401] An unexpected error occurred while reading the configuration file.", e);
+                    CloudNet.getLogger()
+                            .severe("[401] Sign service is deactivated to prevent errors. Please fix the errors and try the function again.");
+                    CloudNet.getLogger()
+                            .log(Level.SEVERE,
+                                 "[401] An unexpected error occurred while reading the configuration file.",
+                                 e);
                 }
                 if (jsonConfig != null) {
                     completableFuture.complete(this.webInterface.getGson()
-                            .fromJson(jsonConfig, TypeToken.get(SignLayoutConfig.class).getType()));
+                                                                .fromJson(jsonConfig,
+                                                                          TypeToken.get(SignLayoutConfig.class)
+                                                                                   .getType()));
                 }
             } catch (IOException e) {
                 this.enable = false;
-                CloudNet.getLogger().severe("[402] Sign service is deactivated to prevent errors. Please fix the errors and try the function again.");
-                CloudNet.getLogger().log(Level.SEVERE, "[402] An unexpected error occurred while reading the configuration file.", e);
+                CloudNet.getLogger()
+                        .severe("[402] Sign service is deactivated to prevent errors. Please fix the errors and try the function again.");
+                CloudNet.getLogger()
+                        .log(Level.SEVERE,
+                             "[402] An unexpected error occurred while reading the configuration file.",
+                             e);
             }
         } else {
             completableFuture.cancel(true);
@@ -107,8 +120,12 @@ final class SignService {
     public CompletableFuture<Sign> getSign(UUID signId) {
         CompletableFuture<Sign> completableFuture = new CompletableFuture<>();
         if (this.enable && this.signDatabase != null) {
-            this.signDatabase.loadAll().values()
-                    .stream().filter(s -> s.getUniqueId().equals(signId)).findFirst().ifPresent(completableFuture::complete);
+            this.signDatabase.loadAll()
+                             .values()
+                             .stream()
+                             .filter(s -> s.getUniqueId().equals(signId))
+                             .findFirst()
+                             .ifPresent(completableFuture::complete);
         } else {
             completableFuture.cancel(true);
         }
@@ -204,8 +221,10 @@ final class SignService {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         if (this.enable) {
             Document document = new Document();
-            document.append("layout_config", this.webInterface.getGson().toJsonTree(signLayoutConfig,
-                    TypeToken.get(SignLayoutConfig.class).getType()));
+            document.append("layout_config",
+                            this.webInterface.getGson()
+                                             .toJsonTree(signLayoutConfig,
+                                                         TypeToken.get(SignLayoutConfig.class).getType()));
             document.saveAsConfig(this.signConfigurationFile);
             CloudNet.getInstance().getNetworkManager().updateAll();
             completableFuture.complete(true);

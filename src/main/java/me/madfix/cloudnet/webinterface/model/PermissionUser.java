@@ -16,23 +16,29 @@ public class PermissionUser extends WebInterfaceUser implements Permissible {
         this.permissions = permissions;
     }
 
-    @Override
-    public boolean hasPermission(String permission) {
+    @Override public boolean hasPermission(String permission) {
         if (isNumberPermission(permission)) {
-            List<String> numberPermissions = permissions.stream().filter(this::isNumberPermission).collect(Collectors.toList());
+            List<String> numberPermissions =
+                    permissions.stream().filter(this::isNumberPermission).collect(Collectors.toList());
             String numberPermissionPrefix = numberPermissionPrefix(permission);
-            List<String> numberPermissionsPrefix = numberPermissions.stream().map(this::numberPermissionPrefix).collect(Collectors.toList());
+            List<String> numberPermissionsPrefix =
+                    numberPermissions.stream().map(this::numberPermissionPrefix).collect(Collectors.toList());
             if (numberPermissionsPrefix.contains(numberPermissionPrefix)) {
                 int permissionValue = getPermissionValue(permission);
-                Optional<String> optional = permissions.stream().filter(this::isNumberPermission).filter(s -> s.startsWith(numberPermissionPrefix)).findFirst();
+                Optional<String> optional = permissions.stream()
+                                                       .filter(this::isNumberPermission)
+                                                       .filter(s -> s.startsWith(numberPermissionPrefix))
+                                                       .findFirst();
                 if (optional.isPresent()) {
                     int permissionValueList = getPermissionValue(optional.get());
                     return permissionValue >= permissionValueList;
                 }
             }
-        } else
-        if (!isAsteriskPermission(permission)) {
-            List<String> asteriskPermissions = permissions.stream().filter(this::isAsteriskPermission).map(this::permissionPrefix).collect(Collectors.toList());
+        } else if (!isAsteriskPermission(permission)) {
+            List<String> asteriskPermissions = permissions.stream()
+                                                          .filter(this::isAsteriskPermission)
+                                                          .map(this::permissionPrefix)
+                                                          .collect(Collectors.toList());
             for (String asteriskPermission : asteriskPermissions) {
                 if (permissionPrefix(permission).equals(asteriskPermission)) {
                     return true;

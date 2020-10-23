@@ -11,8 +11,14 @@ public final class InterfaceConfiguration {
     private final boolean permissionSystem;
     private final DatabaseConfiguration databaseConfiguration;
 
-    public InterfaceConfiguration(int restPort, int webSocketPort, String host,
-                                  String passwordSalt, boolean mobSystem, boolean signSystem, boolean permissionSystem, DatabaseConfiguration databaseConfiguration) {
+    public InterfaceConfiguration(int restPort,
+                                  int webSocketPort,
+                                  String host,
+                                  String passwordSalt,
+                                  boolean mobSystem,
+                                  boolean signSystem,
+                                  boolean permissionSystem,
+                                  DatabaseConfiguration databaseConfiguration) {
         this.restPort = restPort;
         this.webSocketPort = webSocketPort;
         this.host = host;

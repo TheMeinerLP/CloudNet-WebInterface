@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
@@ -34,7 +33,8 @@ public final class GroupProvider extends Provider {
                     completableFuture.complete(resultSet.next());
                 }
             } catch (SQLException e) {
-                this.webInterface.getLogger().log(Level.SEVERE, "The group could not be selected from the database ", e);
+                this.webInterface.getLogger()
+                                 .log(Level.SEVERE, "The group could not be selected from the database ", e);
                 completableFuture.completeExceptionally(e);
             }
         });
@@ -55,7 +55,8 @@ public final class GroupProvider extends Provider {
                     completableFuture.complete(groups);
                 }
             } catch (SQLException e) {
-                this.webInterface.getLogger().log(Level.SEVERE, "The groups could not be selected from the database", e);
+                this.webInterface.getLogger()
+                                 .log(Level.SEVERE, "The groups could not be selected from the database", e);
                 completableFuture.completeExceptionally(e);
             }
         });
@@ -73,14 +74,16 @@ public final class GroupProvider extends Provider {
                         statement.setString(1, name);
                         try (ResultSet resultSet = statement.executeQuery()) {
                             if (resultSet.next()) {
-                                WebInterfaceGroup interfaceGroup = new WebInterfaceGroup(resultSet.getInt("id"), resultSet.getString("groupname"));
+                                WebInterfaceGroup interfaceGroup =
+                                        new WebInterfaceGroup(resultSet.getInt("id"), resultSet.getString("groupname"));
                                 completableFuture.complete(interfaceGroup);
                             } else {
                                 completableFuture.cancel(true);
                             }
                         }
                     } catch (SQLException e) {
-                        this.webInterface.getLogger().log(Level.SEVERE, "The group could not be created into the database", e);
+                        this.webInterface.getLogger()
+                                         .log(Level.SEVERE, "The group could not be created into the database", e);
                         completableFuture.completeExceptionally(e);
                     }
                 });
@@ -105,7 +108,8 @@ public final class GroupProvider extends Provider {
 
                         completableFuture.complete(statement.executeUpdate() > 0);
                     } catch (SQLException e) {
-                        this.webInterface.getLogger().log(Level.SEVERE, "The user could not be linked to group in the database", e);
+                        this.webInterface.getLogger()
+                                         .log(Level.SEVERE, "The user could not be linked to group in the database", e);
                         completableFuture.completeExceptionally(e);
                     }
                 });
@@ -127,7 +131,8 @@ public final class GroupProvider extends Provider {
                         statement.setString(1, name);
                         completableFuture.complete(statement.executeUpdate() > 0);
                     } catch (SQLException e) {
-                        this.webInterface.getLogger().log(Level.SEVERE, "The group could not be created into the database", e);
+                        this.webInterface.getLogger()
+                                         .log(Level.SEVERE, "The group could not be created into the database", e);
                         completableFuture.cancel(true);
                     }
                 });

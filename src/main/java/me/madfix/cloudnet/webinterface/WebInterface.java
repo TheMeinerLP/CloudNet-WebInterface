@@ -36,27 +36,32 @@ public final class WebInterface extends CoreModule {
     private GroupProvider groupProvider;
 
 
-    @Override
-    public void onLoad() {
+    @Override public void onLoad() {
         Sentry.init("https://08a4da2c621c4b8f9f16f345d829825b@o419044.ingest.sentry.io/5327070");
-        Sentry.getContext().setUser(new UserBuilder()
-                .setIpAddress(CloudNet.getInstance().getConfig().getConfig().getString("server.hostaddress"))
-                .setId(CloudNet.getInstance().getConfig().getConfig().getString("cloudnet-statistics.uuid"))
-                .build());
+        Sentry.getContext()
+              .setUser(new UserBuilder().setIpAddress(CloudNet.getInstance()
+                                                              .getConfig()
+                                                              .getConfig()
+                                                              .getString("server.hostaddress"))
+                                        .setId(CloudNet.getInstance()
+                                                       .getConfig()
+                                                       .getConfig()
+                                                       .getString("cloudnet-statistics.uuid"))
+                                        .build());
         this.logger = new WebInterfaceLogger();
         this.configurationService = new ConfigurationService(this);
         if (!this.configurationService.loadConfigurationFile()) {
             this.logger.severe("[100] No configuration file was found with the name: interface.json.");
             this.logger.severe("[100] Web interface will not start!");
-            this.logger.severe("[100] Please create your configuration file under X and follow the instructions on the website. ");
+            this.logger.severe(
+                    "[100] Please create your configuration file under X and follow the instructions on the website. ");
         }
         if (this.configurationService.getOptionalInterfaceConfiguration().isPresent()) {
             this.databaseService = new DatabaseService(this);
         }
     }
 
-    @Override
-    public void onBootstrap() {
+    @Override public void onBootstrap() {
         if (this.configurationService.getOptionalInterfaceConfiguration().isPresent()) {
             this.setupHandler = new SetupHandler(this);
             this.setupHandler.setupPreSql();
@@ -67,7 +72,7 @@ public final class WebInterface extends CoreModule {
             this.updateHandler = new UpdateHandler(this);
             this.updateHandler.addTask(1, new Update_1_9());
             this.updateHandler.callUpdates();
-            this.groupProvider  = new GroupProvider(this);
+            this.groupProvider = new GroupProvider(this);
             this.setupHandler.setupPreAdminGroup();
             this.cloudNetService = new CloudNetService(this);
             this.restfulAPIService = new RestfulAPIService(this);
@@ -77,8 +82,7 @@ public final class WebInterface extends CoreModule {
 
     }
 
-    @Override
-    public void onShutdown() {
+    @Override public void onShutdown() {
     }
 
     public WebInterfaceLogger getLogger() {

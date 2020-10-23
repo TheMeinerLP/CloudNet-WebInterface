@@ -38,8 +38,7 @@ public class WebInterfaceLogger extends Logger {
         addHandler(new SentryHandler());
     }
 
-    @Override
-    public void log(LogRecord record) {
+    @Override public void log(LogRecord record) {
         record.setMessage(String.format("[%s] %s", "WI", record.getMessage()));
         super.log(record);
     }

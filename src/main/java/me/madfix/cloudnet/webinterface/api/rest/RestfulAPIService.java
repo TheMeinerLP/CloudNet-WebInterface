@@ -2,7 +2,6 @@ package me.madfix.cloudnet.webinterface.api.rest;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import io.javalin.Javalin;
-import io.javalin.apibuilder.ApiBuilder;
 import io.javalin.core.security.BasicAuthCredentials;
 import io.javalin.http.Context;
 import io.javalin.plugin.openapi.OpenApiOptions;
@@ -16,8 +15,6 @@ import me.madfix.cloudnet.webinterface.model.InterfaceConfiguration;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -31,16 +28,16 @@ public final class RestfulAPIService {
     }
 
     public void startRestApi() {
-        Optional<InterfaceConfiguration> interfaceConfiguration = this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration();
+        Optional<InterfaceConfiguration> interfaceConfiguration =
+                this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration();
         if (interfaceConfiguration.isPresent()) {
             final InterfaceConfiguration configuration = interfaceConfiguration.get();
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             Thread.currentThread().setContextClassLoader(RestfulAPIService.class.getClassLoader());
-            this.restServer = Javalin.create(config -> {
-                config.registerPlugin(new OpenApiPlugin(getOpenApiOptions()));
-            }).start(configuration.getHost(),configuration.getRestPort());
+            this.restServer = Javalin.create(config -> config.registerPlugin(new OpenApiPlugin(getOpenApiOptions())))
+                                     .start(configuration.getHost(), configuration.getRestPort());
             this.restServer.routes(() -> {
-                
+
             });
             Thread.currentThread().setContextClassLoader(classLoader);
         }
@@ -53,6 +50,7 @@ public final class RestfulAPIService {
             }
         });
     }
+
     private CompletableFuture<Boolean> hasPermission(Context context, Permissions permission) {
         return hasPermission(context, permission.getPermissionString());
     }
@@ -61,9 +59,11 @@ public final class RestfulAPIService {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         if (context.basicAuthCredentialsExist()) {
             BasicAuthCredentials authCredentials = context.basicAuthCredentials();
-            this.webInterface.getUserProvider().getUser(authCredentials.getUsername()).thenCompose((user) -> this.webInterface.getPermissionProvider().getPermissionUser(user)).thenAccept(permissionUser -> {
-                completableFuture.complete(permissionUser.hasPermission(permission));
-            });
+            this.webInterface.getUserProvider()
+                             .getUser(authCredentials.getUsername())
+                             .thenCompose((user) -> this.webInterface.getPermissionProvider().getPermissionUser(user))
+                             .thenAccept(permissionUser -> completableFuture.complete(permissionUser.hasPermission(
+                                     permission)));
         } else {
             completableFuture.complete(false);
         }
@@ -74,12 +74,14 @@ public final class RestfulAPIService {
         if (context.basicAuthCredentialsExist()) {
             BasicAuthCredentials authCredentials = context.basicAuthCredentials();
             this.webInterface.getUserProvider().getUser(authCredentials.getUsername()).thenAccept(webInterfaceUser -> {
-                BCrypt.Result result = BCrypt.verifyer().verify(authCredentials.getPassword().getBytes(StandardCharsets.UTF_8), webInterfaceUser.getPasswordHash());
+                BCrypt.Result result = BCrypt.verifyer()
+                                             .verify(authCredentials.getPassword().getBytes(StandardCharsets.UTF_8),
+                                                     webInterfaceUser.getPasswordHash());
                 if (result.verified && result.validFormat) {
                     context.status(200);
                 } else {
                     try {
-                        context.res.sendError(401,result.formatErrorMessage);
+                        context.res.sendError(401, result.formatErrorMessage);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -87,7 +89,7 @@ public final class RestfulAPIService {
             });
         } else {
             try {
-                context.res.sendError(401,"Unauthorized");
+                context.res.sendError(401, "Unauthorized");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -104,10 +106,10 @@ public final class RestfulAPIService {
     }
 
     private OpenApiOptions getOpenApiOptions() {
-        Info applicationInfo = new Info()
-                .version("1.0")
-                .description("My Application");
-        return new OpenApiOptions(applicationInfo).path("/swagger-docs").swagger(new SwaggerOptions("/swagger")).reDoc(new ReDocOptions("/redoc"));
+        Info applicationInfo = new Info().version("1.0").description("My Application");
+        return new OpenApiOptions(applicationInfo).path("/swagger-docs")
+                                                  .swagger(new SwaggerOptions("/swagger"))
+                                                  .reDoc(new ReDocOptions("/redoc"));
     }
 
 }

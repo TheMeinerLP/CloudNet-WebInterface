@@ -5,7 +5,6 @@ import de.dytanic.cloudnetcore.network.components.WrapperMeta;
 import me.madfix.cloudnet.webinterface.WebInterface;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 final class WrapperService {
@@ -44,7 +43,9 @@ final class WrapperService {
         CompletableFuture<Boolean> optionalCompletableFuture = new CompletableFuture<>();
         this.webInterface.getCloud().getConfig().createWrapper(wrapperMeta);
         optionalCompletableFuture.complete(this.webInterface.getCloud()
-                .getConfig().getWrappers().contains(wrapperMeta));
+                                                            .getConfig()
+                                                            .getWrappers()
+                                                            .contains(wrapperMeta));
         return optionalCompletableFuture;
     }
 

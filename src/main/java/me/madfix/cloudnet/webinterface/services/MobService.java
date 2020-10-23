@@ -34,13 +34,16 @@ final class MobService {
 
     public MobService(WebInterface webInterface) {
         this.webInterface = webInterface;
-        this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().ifPresent(interfaceConfiguration -> {
-            this.enable = interfaceConfiguration.isMobSystem();
-            if (this.enable) {
-                this.mobDatabase = new MobDatabase(
-                        webInterface.getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
-            }
-        });
+        this.webInterface.getConfigurationService()
+                         .getOptionalInterfaceConfiguration()
+                         .ifPresent(interfaceConfiguration -> {
+                             this.enable = interfaceConfiguration.isMobSystem();
+                             if (this.enable) {
+                                 this.mobDatabase = new MobDatabase(webInterface.getCloud()
+                                                                                .getDatabaseManager()
+                                                                                .getDatabase("cloud_internal_cfg"));
+                             }
+                         });
     }
 
     /**
@@ -76,23 +79,33 @@ final class MobService {
         CompletableFuture<MobConfig> optionalCompletableFuture = new CompletableFuture<>();
         if (this.enable) {
             try (BufferedReader bufferedReader = Files.newBufferedReader(this.mobConfigurationFile,
-                    StandardCharsets.UTF_8)) {
+                                                                         StandardCharsets.UTF_8)) {
                 JsonElement jsonConfig = null;
                 try {
                     jsonConfig = JsonParser.parseReader(bufferedReader);
                 } catch (JsonSyntaxException e) {
                     this.enable = false;
-                    CloudNet.getLogger().severe("[301] Mob service is deactivated to prevent errors. Please fix the errors and try the function again.");
-                    CloudNet.getLogger().log(Level.SEVERE, "[301] An unexpected error occurred while reading the configuration file.", e);
+                    CloudNet.getLogger()
+                            .severe("[301] Mob service is deactivated to prevent errors. Please fix the errors and try the function again.");
+                    CloudNet.getLogger()
+                            .log(Level.SEVERE,
+                                 "[301] An unexpected error occurred while reading the configuration file.",
+                                 e);
                 }
                 if (jsonConfig != null) {
                     optionalCompletableFuture.complete(this.webInterface.getGson()
-                            .fromJson(jsonConfig, TypeToken.get(MobConfig.class).getType()));
+                                                                        .fromJson(jsonConfig,
+                                                                                  TypeToken.get(MobConfig.class)
+                                                                                           .getType()));
                 }
             } catch (IOException e) {
                 this.enable = false;
-                CloudNet.getLogger().severe("[302] Mob service is deactivated to prevent errors. Please fix the errors and try the function again.");
-                CloudNet.getLogger().log(Level.SEVERE, "[302] An unexpected error occurred while reading the configuration file.", e);
+                CloudNet.getLogger()
+                        .severe("[302] Mob service is deactivated to prevent errors. Please fix the errors and try the function again.");
+                CloudNet.getLogger()
+                        .log(Level.SEVERE,
+                             "[302] An unexpected error occurred while reading the configuration file.",
+                             e);
             }
         } else {
             optionalCompletableFuture.completeExceptionally(new RuntimeException("The Mob System is not active!"));
@@ -109,8 +122,12 @@ final class MobService {
     public CompletableFuture<ServerMob> getServerMob(UUID mobId) {
         CompletableFuture<ServerMob> completableFuture = new CompletableFuture<>();
         if (this.enable && this.mobDatabase != null) {
-            this.mobDatabase.loadAll().values().stream()
-                    .filter(serverMob -> serverMob.getUniqueId().equals(mobId)).findFirst().ifPresent(completableFuture::complete);
+            this.mobDatabase.loadAll()
+                            .values()
+                            .stream()
+                            .filter(serverMob -> serverMob.getUniqueId().equals(mobId))
+                            .findFirst()
+                            .ifPresent(completableFuture::complete);
         } else {
             completableFuture.completeExceptionally(new RuntimeException("The Mob System is not active!"));
         }
@@ -212,7 +229,8 @@ final class MobService {
         if (this.enable) {
             Document document = new Document();
             document.append("mobConfig",
-                    this.webInterface.getGson().toJsonTree(mobConfig, TypeToken.get(MobConfig.class).getType()));
+                            this.webInterface.getGson()
+                                             .toJsonTree(mobConfig, TypeToken.get(MobConfig.class).getType()));
             document.saveAsConfig(this.mobConfigurationFile);
             CloudNet.getInstance().getNetworkManager().updateAll();
             completableFuture.complete(true);

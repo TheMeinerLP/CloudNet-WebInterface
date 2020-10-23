@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
@@ -36,23 +35,24 @@ final class CloudPermissionService {
     private final WebInterface webInterface;
     private boolean enable;
     private PermissionPool permissionPool;
-    private final Path permissionConfigurationFile = Paths.get("local",
-            "perms.yml");
+    private final Path permissionConfigurationFile = Paths.get("local", "perms.yml");
     private Configuration cache;
 
     CloudPermissionService(WebInterface webInterface) {
         this.webInterface = webInterface;
-        this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration()
-                .ifPresent(interfaceConfiguration -> {
-                    this.enable = interfaceConfiguration.isPermissionSystem();
-                    if (this.enable) {
-                        this.permissionPool =
-                                this.webInterface.getCloud().getNetworkManager().getModuleProperties()
-                                        .getObject("permissionPool",
-                                                PermissionPool.TYPE);
-                        this.loadCache();
-                    }
-                });
+        this.webInterface.getConfigurationService()
+                         .getOptionalInterfaceConfiguration()
+                         .ifPresent(interfaceConfiguration -> {
+                             this.enable = interfaceConfiguration.isPermissionSystem();
+                             if (this.enable) {
+                                 this.permissionPool = this.webInterface.getCloud()
+                                                                        .getNetworkManager()
+                                                                        .getModuleProperties()
+                                                                        .getObject("permissionPool",
+                                                                                   PermissionPool.TYPE);
+                                 this.loadCache();
+                             }
+                         });
     }
 
     /**
@@ -116,8 +116,10 @@ final class CloudPermissionService {
     public CompletableFuture<OfflinePlayer> getPlayer(UUID uniquePlayerId) {
         CompletableFuture<OfflinePlayer> completableFuture = new CompletableFuture<>();
         if (this.enable && this.permissionPool.isAvailable()) {
-            completableFuture.complete(
-                    this.webInterface.getCloud().getDbHandlers().getPlayerDatabase().getPlayer(uniquePlayerId));
+            completableFuture.complete(this.webInterface.getCloud()
+                                                        .getDbHandlers()
+                                                        .getPlayerDatabase()
+                                                        .getPlayer(uniquePlayerId));
         } else {
             completableFuture.completeExceptionally(new RuntimeException("Cloud permission is not active"));
         }
@@ -135,10 +137,13 @@ final class CloudPermissionService {
         if (this.enable && this.permissionPool.isAvailable()) {
             UUID uuid = this.webInterface.getCloud().getDbHandlers().getNameToUUIDDatabase().get(playerName);
             if (uuid != null) {
-                completableFuture.complete(
-                        this.webInterface.getCloud().getDbHandlers().getPlayerDatabase().getPlayer(uuid));
+                completableFuture.complete(this.webInterface.getCloud()
+                                                            .getDbHandlers()
+                                                            .getPlayerDatabase()
+                                                            .getPlayer(uuid));
             } else {
-                completableFuture.completeExceptionally(new NullPointerException("The UUID is null or was not found in the CloudNet database"));
+                completableFuture.completeExceptionally(new NullPointerException(
+                        "The UUID is null or was not found in the CloudNet database"));
             }
         } else {
             completableFuture.completeExceptionally(new RuntimeException("Cloud permission is not active"));
@@ -156,10 +161,11 @@ final class CloudPermissionService {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         if (this.enable && this.permissionPool.isAvailable()) {
             updatePermissionGroup(permissionGroup);
-            NetworkUtils.addAll(this.permissionPool.getGroups(),
-                    loadAll());
-            this.webInterface.getCloud().getNetworkManager().getModuleProperties().append("permissionPool",
-                    this.permissionPool);
+            NetworkUtils.addAll(this.permissionPool.getGroups(), loadAll());
+            this.webInterface.getCloud()
+                             .getNetworkManager()
+                             .getModuleProperties()
+                             .append("permissionPool", this.permissionPool);
             this.webInterface.getCloud().getNetworkManager().updateAll();
             completableFuture.complete(true);
         } else {
@@ -177,22 +183,23 @@ final class CloudPermissionService {
     public CompletableFuture<Boolean> updatePlayer(OfflinePlayer offlinePlayer) {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         if (this.enable && this.permissionPool.isAvailable()) {
-            this.webInterface.getCloud().getDbHandlers().getPlayerDatabase()
-                    .updatePermissionEntity(offlinePlayer
-                                    .getUniqueId(),
-                            offlinePlayer.getPermissionEntity());
+            this.webInterface.getCloud()
+                             .getDbHandlers()
+                             .getPlayerDatabase()
+                             .updatePermissionEntity(offlinePlayer.getUniqueId(), offlinePlayer.getPermissionEntity());
 
-            this.webInterface.getCloud().getNetworkManager()
-                    .sendAllUpdate(new PacketOutUpdateOfflinePlayer(this.webInterface.getCloud().getDbHandlers()
-                            .getPlayerDatabase()
-                            .getPlayer(offlinePlayer.getUniqueId())));
+            this.webInterface.getCloud()
+                             .getNetworkManager()
+                             .sendAllUpdate(new PacketOutUpdateOfflinePlayer(this.webInterface.getCloud()
+                                                                                              .getDbHandlers()
+                                                                                              .getPlayerDatabase()
+                                                                                              .getPlayer(offlinePlayer.getUniqueId())));
 
-            CloudPlayer onlinePlayer = this.webInterface.getCloud().getNetworkManager()
-                    .getOnlinePlayer(offlinePlayer.getUniqueId());
+            CloudPlayer onlinePlayer =
+                    this.webInterface.getCloud().getNetworkManager().getOnlinePlayer(offlinePlayer.getUniqueId());
             if (onlinePlayer != null) {
                 onlinePlayer.setPermissionEntity(offlinePlayer.getPermissionEntity());
-                this.webInterface.getCloud().getNetworkManager()
-                        .sendAllUpdate(new PacketOutUpdatePlayer(onlinePlayer));
+                this.webInterface.getCloud().getNetworkManager().sendAllUpdate(new PacketOutUpdatePlayer(onlinePlayer));
             }
             this.webInterface.getCloud().getNetworkManager().updateAll();
             completableFuture.complete(true);
@@ -213,8 +220,10 @@ final class CloudPermissionService {
         if (this.enable && this.permissionPool.isAvailable()) {
             // Maybe remove from file ?
             this.permissionPool.getGroups().remove(name);
-            this.webInterface.getCloud().getNetworkManager().getModuleProperties().append("permissionPool",
-                    this.permissionPool);
+            this.webInterface.getCloud()
+                             .getNetworkManager()
+                             .getModuleProperties()
+                             .append("permissionPool", this.permissionPool);
             this.webInterface.getCloud().getNetworkManager().updateAll();
             completableFuture.complete(true);
         } else {
@@ -225,18 +234,15 @@ final class CloudPermissionService {
 
     private void updatePermissionGroup(PermissionGroup permissionGroup) {
         if (this.enable) {
-            this.write(permissionGroup,
-                    this.cache);
-            try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(
-                    Files.newOutputStream(this.permissionConfigurationFile),
-                    StandardCharsets.UTF_8)) {
-                ConfigurationProvider.getProvider(YamlConfiguration.class)
-                        .save(this.cache,
-                                outputStreamWriter);
+            this.write(permissionGroup, this.cache);
+            try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(Files.newOutputStream(this.permissionConfigurationFile),
+                                                                                StandardCharsets.UTF_8)) {
+                ConfigurationProvider.getProvider(YamlConfiguration.class).save(this.cache, outputStreamWriter);
             } catch (IOException e) {
-                this.webInterface.getLogger().log(Level.SEVERE,
-                        "An unexpected error occurred while writing the permission file",
-                        e);
+                this.webInterface.getLogger()
+                                 .log(Level.SEVERE,
+                                      "An unexpected error occurred while writing the permission file",
+                                      e);
             }
         }
     }
@@ -248,14 +254,13 @@ final class CloudPermissionService {
     private void loadCache() {
         if (this.enable) {
             try (InputStream inputStream = Files.newInputStream(this.permissionConfigurationFile);
-                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream,
-                         StandardCharsets.UTF_8)) {
-                this.cache = ConfigurationProvider.getProvider(YamlConfiguration.class)
-                        .load(inputStreamReader);
+                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+                this.cache = ConfigurationProvider.getProvider(YamlConfiguration.class).load(inputStreamReader);
             } catch (IOException e) {
-                this.webInterface.getLogger().log(Level.SEVERE,
-                        "An unexpected error occurred while reading the permission file ",
-                        e);
+                this.webInterface.getLogger()
+                                 .log(Level.SEVERE,
+                                      "An unexpected error occurred while reading the permission file ",
+                                      e);
             }
         }
     }
@@ -263,40 +268,30 @@ final class CloudPermissionService {
     private void write(PermissionGroup permissionGroup, Configuration configuration) {
         if (this.enable) {
             Configuration group = new Configuration();
-            group.set("prefix",
-                    permissionGroup.getPrefix());
-            group.set("suffix",
-                    permissionGroup.getSuffix());
-            group.set("display",
-                    permissionGroup.getDisplay());
-            group.set("tagId",
-                    permissionGroup.getTagId());
-            group.set("joinPower",
-                    permissionGroup.getJoinPower());
-            group.set("defaultGroup",
-                    permissionGroup.isDefaultGroup());
+            group.set("prefix", permissionGroup.getPrefix());
+            group.set("suffix", permissionGroup.getSuffix());
+            group.set("display", permissionGroup.getDisplay());
+            group.set("tagId", permissionGroup.getTagId());
+            group.set("joinPower", permissionGroup.getJoinPower());
+            group.set("defaultGroup", permissionGroup.isDefaultGroup());
             group.set("permissions",
-                    permissionGroup.getPermissions().entrySet().stream().map((entry) ->
-                            (entry.getValue() ? "" : "-") + entry.getKey()).collect(Collectors.toList()));
+                      permissionGroup.getPermissions()
+                                     .entrySet()
+                                     .stream()
+                                     .map((entry) -> (entry.getValue() ? "" : "-") + entry.getKey())
+                                     .collect(Collectors.toList()));
             Configuration permsCfg = new Configuration();
-            for (Map.Entry<String, List<String>> keys : permissionGroup.getServerGroupPermissions()
-                    .entrySet()) {
-                permsCfg.set(keys.getKey(),
-                        keys.getValue());
+            for (Map.Entry<String, List<String>> keys : permissionGroup.getServerGroupPermissions().entrySet()) {
+                permsCfg.set(keys.getKey(), keys.getValue());
             }
-            group.set("serverGroupPermissions",
-                    permsCfg);
+            group.set("serverGroupPermissions", permsCfg);
             if (permissionGroup.getOptions().size() == 0) {
-                permissionGroup.getOptions().put("test_option",
-                        true);
+                permissionGroup.getOptions().put("test_option", true);
             }
-            group.set("options",
-                    permissionGroup.getOptions());
-            group.set("implements",
-                    permissionGroup.getImplementGroups());
+            group.set("options", permissionGroup.getOptions());
+            group.set("implements", permissionGroup.getImplementGroups());
             Configuration section = configuration.getSection("groups");
-            section.set(permissionGroup.getName(),
-                    group);
+            section.set(permissionGroup.getName(), group);
         }
     }
 
@@ -309,30 +304,27 @@ final class CloudPermissionService {
                 HashMap<String, Boolean> permissions = new HashMap<>();
                 List<String> permissionSection = group.getStringList("permissions");
                 for (String permissionEntry : permissionSection) {
-                    permissions.put(permissionEntry.replaceFirst("-",
-                            ""),
-                            !permissionEntry.startsWith("-"));
+                    permissions.put(permissionEntry.replaceFirst("-", ""), !permissionEntry.startsWith("-"));
                 }
                 HashMap<String, List<String>> permissionsGroups = new HashMap<>();
                 Configuration permissionSectionGroups = group.getSection("serverGroupPermissions");
                 for (String permissionGroupEntry : permissionSectionGroups.getKeys()) {
                     permissionsGroups.put(permissionGroupEntry,
-                            permissionSectionGroups.getStringList(permissionGroupEntry));
+                                          permissionSectionGroups.getStringList(permissionGroupEntry));
                 }
                 PermissionGroup permissionGroup = new PermissionGroup(key,
-                        group.getString("prefix"),
-                        group.getString("color"),
-                        group.getString("suffix"),
-                        group.getString("display"),
-                        group.getInt("tagId"),
-                        group.getInt("joinPower"),
-                        group.getBoolean("defaultGroup"),
-                        permissions,
-                        permissionsGroups,
-                        group.getSection("options").self,
-                        group.getStringList("implements"));
-                maps.put(permissionGroup.getName(),
-                        permissionGroup);
+                                                                      group.getString("prefix"),
+                                                                      group.getString("color"),
+                                                                      group.getString("suffix"),
+                                                                      group.getString("display"),
+                                                                      group.getInt("tagId"),
+                                                                      group.getInt("joinPower"),
+                                                                      group.getBoolean("defaultGroup"),
+                                                                      permissions,
+                                                                      permissionsGroups,
+                                                                      group.getSection("options").self,
+                                                                      group.getStringList("implements"));
+                maps.put(permissionGroup.getName(), permissionGroup);
             }
         }
         return maps;

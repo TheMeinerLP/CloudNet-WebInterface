@@ -37,8 +37,7 @@ public final class MobDatabase extends DatabaseUsable {
      * @param serverMob the mob to add
      */
     public void add(ServerMob serverMob) {
-        this.selectorMobs
-                .append(serverMob.getUniqueId().toString(), Document.GSON.toJsonTree(serverMob));
+        this.selectorMobs.append(serverMob.getUniqueId().toString(), Document.GSON.toJsonTree(serverMob));
         this.database.insert(this.selectorMobs);
     }
 
@@ -59,11 +58,17 @@ public final class MobDatabase extends DatabaseUsable {
      */
     public Map<UUID, ServerMob> loadAll() {
         HashMap<UUID, ServerMob> mobMap = gson.fromJson(this.selectorMobs.get("mobs"),
-                TypeToken.getParameterized(HashMap.class, UUID.class, ServerMob.class).getType());
-        mobMap.values().stream().filter(serverMob -> serverMob.getItemId() == null)
-                .forEach(serverMob -> serverMob.setItemId(138));
-        mobMap.values().stream().filter(serverMob -> serverMob.getAutoJoin() == null)
-                .forEach(serverMob -> serverMob.setAutoJoin(false));
+                                                        TypeToken.getParameterized(HashMap.class,
+                                                                                   UUID.class,
+                                                                                   ServerMob.class).getType());
+        mobMap.values()
+              .stream()
+              .filter(serverMob -> serverMob.getItemId() == null)
+              .forEach(serverMob -> serverMob.setItemId(138));
+        mobMap.values()
+              .stream()
+              .filter(serverMob -> serverMob.getAutoJoin() == null)
+              .forEach(serverMob -> serverMob.setAutoJoin(false));
         return mobMap;
     }
 }

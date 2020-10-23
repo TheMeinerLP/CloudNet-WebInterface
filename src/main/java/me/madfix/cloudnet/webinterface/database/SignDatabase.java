@@ -60,9 +60,11 @@ public final class SignDatabase extends DatabaseUsable {
      * @return the map of signs
      */
     public Map<UUID, Sign> loadAll() {
-        return this.selectorSigns.keys().stream().collect(Collectors
-                .toMap(UUID::fromString,
-                        s -> this.gson.fromJson(this.selectorSigns.get(s), Sign.class)));
+        return this.selectorSigns.keys()
+                                 .stream()
+                                 .collect(Collectors.toMap(UUID::fromString,
+                                                           s -> this.gson.fromJson(this.selectorSigns.get(s),
+                                                                                   Sign.class)));
     }
 
 }

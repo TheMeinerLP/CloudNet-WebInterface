@@ -35,7 +35,7 @@ public final class UserProvider extends Provider {
                         int id = resultSet.getInt("id");
                         String username = resultSet.getString("username");
                         byte[] passwordHash = resultSet.getBytes("passwordhash");
-                        webInterfaceUsers.add(new WebInterfaceUser(id,username,passwordHash));
+                        webInterfaceUsers.add(new WebInterfaceUser(id, username, passwordHash));
                     }
                     completableFuture.complete(webInterfaceUsers);
                 }
@@ -98,7 +98,8 @@ public final class UserProvider extends Provider {
 
                         completableFuture.complete(statement.executeUpdate() > 0);
                     } catch (SQLException e) {
-                        this.webInterface.getLogger().log(Level.SEVERE, "The user could not be created for the database ", e);
+                        this.webInterface.getLogger()
+                                         .log(Level.SEVERE, "The user could not be created for the database ", e);
                     }
                 });
             }
@@ -110,8 +111,7 @@ public final class UserProvider extends Provider {
     public CompletableFuture<byte[]> hashPassword(String password) {
         CompletableFuture<byte[]> completableFuture = new CompletableFuture<>();
         this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().ifPresent(cfg -> {
-            completableFuture.complete(BCrypt.withDefaults().hash(6,
-                    password.getBytes(StandardCharsets.UTF_8)));
+            completableFuture.complete(BCrypt.withDefaults().hash(6, password.getBytes(StandardCharsets.UTF_8)));
         });
         return completableFuture;
     }

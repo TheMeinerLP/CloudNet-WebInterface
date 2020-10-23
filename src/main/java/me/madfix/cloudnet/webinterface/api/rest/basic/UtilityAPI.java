@@ -9,18 +9,22 @@ import java.util.concurrent.CompletableFuture;
 
 public final class UtilityAPI {
 
-    public static CompletableFuture<Boolean> hasPermission(WebInterface webInterface, Context context, Permissions permission) {
+    public static CompletableFuture<Boolean> hasPermission(WebInterface webInterface,
+                                                           Context context,
+                                                           Permissions permission) {
         return hasPermission(webInterface, context, permission.getPermissionString());
     }
 
-    public static CompletableFuture<Boolean> hasPermission(WebInterface webInterface, Context context, String permission) {
+    public static CompletableFuture<Boolean> hasPermission(WebInterface webInterface,
+                                                           Context context,
+                                                           String permission) {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         if (context.basicAuthCredentialsExist()) {
             BasicAuthCredentials authCredentials = context.basicAuthCredentials();
             webInterface.getUserProvider()
-                    .getUser(authCredentials.getUsername())
-                    .thenCompose((user) -> webInterface.getPermissionProvider().getPermissionUser(user))
-                    .thenAccept(permissionUser -> completableFuture.complete(permissionUser.hasPermission(permission)));
+                        .getUser(authCredentials.getUsername())
+                        .thenCompose((user) -> webInterface.getPermissionProvider().getPermissionUser(user))
+                        .thenAccept(permissionUser -> completableFuture.complete(permissionUser.hasPermission(permission)));
         } else {
             completableFuture.complete(false);
         }

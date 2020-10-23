@@ -34,17 +34,25 @@ public final class ConfigurationService {
         if (!Files.exists(configurationFile)) {
             return false;
         } else {
-            try (BufferedReader configurationReader = Files.newBufferedReader(configurationFile, StandardCharsets.UTF_8)) { // Is needed to close the reader properly after reading the file
+            try (BufferedReader configurationReader = Files.newBufferedReader(configurationFile,
+                                                                              StandardCharsets.UTF_8)) { // Is needed to close the reader properly after reading the file
                 Optional<JsonElement> jsonConfig;
                 try {
                     jsonConfig = Optional.of(JsonParser.parseReader(configurationReader));
                 } catch (JsonSyntaxException e) {
-                    this.webInterface.getLogger().log(Level.SEVERE, "[101] An unexpected error occurred while reading the configuration file ", e);
+                    this.webInterface.getLogger()
+                                     .log(Level.SEVERE,
+                                          "[101] An unexpected error occurred while reading the configuration file ",
+                                          e);
                     return false;
                 }
-                jsonConfig.ifPresent(jsonElement -> this.optionalInterfaceConfiguration = this.webInterface.getGson().fromJson(jsonElement, InterfaceConfiguration.class));
+                jsonConfig.ifPresent(jsonElement -> this.optionalInterfaceConfiguration =
+                        this.webInterface.getGson().fromJson(jsonElement, InterfaceConfiguration.class));
             } catch (IOException e) {
-                this.webInterface.getLogger().log(Level.SEVERE, "[102] An unexpected error occurred while reading the configuration file ", e);
+                this.webInterface.getLogger()
+                                 .log(Level.SEVERE,
+                                      "[102] An unexpected error occurred while reading the configuration file ",
+                                      e);
                 return false;
             }
         }

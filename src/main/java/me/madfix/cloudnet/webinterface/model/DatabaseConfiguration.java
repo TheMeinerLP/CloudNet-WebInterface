@@ -91,45 +91,43 @@ public final class DatabaseConfiguration {
         return driverClassName;
     }
 
-    @Override
-    public String toString() {
-        return "DatabaseConfiguration{" +
-                "jdbcUrl='" + jdbcUrl + '\'' +
-                ", driverClassName='" + driverClassName + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", minimumIdle=" + minimumIdle +
-                ", maximumPoolSize=" + maximumPoolSize +
-                ", prepStmtCacheSize=" + prepStmtCacheSize +
-                ", prepStmtCacheSqlLimit=" + prepStmtCacheSqlLimit +
-                ", cachePrepStmts=" + cachePrepStmts +
-                ", connectionTimeout=" + connectionTimeout +
-                ", idleTimeout=" + idleTimeout +
-                ", maxLifetime=" + maxLifetime +
-                '}';
+    @Override public String toString() {
+        return "DatabaseConfiguration{" + "jdbcUrl='" + jdbcUrl + '\'' + ", driverClassName='" + driverClassName +
+               '\'' + ", username='" + username + '\'' + ", password='" + password + '\'' + ", minimumIdle=" +
+               minimumIdle + ", maximumPoolSize=" + maximumPoolSize + ", prepStmtCacheSize=" + prepStmtCacheSize +
+               ", prepStmtCacheSqlLimit=" + prepStmtCacheSqlLimit + ", cachePrepStmts=" + cachePrepStmts +
+               ", connectionTimeout=" + connectionTimeout + ", idleTimeout=" + idleTimeout + ", maxLifetime=" +
+               maxLifetime + '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    @Override public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         DatabaseConfiguration that = (DatabaseConfiguration) o;
-        return minimumIdle == that.minimumIdle &&
-                maximumPoolSize == that.maximumPoolSize &&
-                prepStmtCacheSize == that.prepStmtCacheSize &&
-                prepStmtCacheSqlLimit == that.prepStmtCacheSqlLimit &&
-                cachePrepStmts == that.cachePrepStmts &&
-                connectionTimeout == that.connectionTimeout &&
-                idleTimeout == that.idleTimeout &&
-                maxLifetime == that.maxLifetime &&
-                Objects.equals(jdbcUrl, that.jdbcUrl) &&
-                Objects.equals(driverClassName, that.driverClassName) &&
-                Objects.equals(username, that.username) &&
-                Objects.equals(password, that.password);
+        return minimumIdle == that.minimumIdle && maximumPoolSize == that.maximumPoolSize &&
+               prepStmtCacheSize == that.prepStmtCacheSize && prepStmtCacheSqlLimit == that.prepStmtCacheSqlLimit &&
+               cachePrepStmts == that.cachePrepStmts && connectionTimeout == that.connectionTimeout &&
+               idleTimeout == that.idleTimeout && maxLifetime == that.maxLifetime &&
+               Objects.equals(jdbcUrl, that.jdbcUrl) && Objects.equals(driverClassName, that.driverClassName) &&
+               Objects.equals(username, that.username) && Objects.equals(password, that.password);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(jdbcUrl, driverClassName, username, password, minimumIdle, maximumPoolSize, prepStmtCacheSize, prepStmtCacheSqlLimit, cachePrepStmts, connectionTimeout, idleTimeout, maxLifetime);
+    @Override public int hashCode() {
+        return Objects.hash(jdbcUrl,
+                            driverClassName,
+                            username,
+                            password,
+                            minimumIdle,
+                            maximumPoolSize,
+                            prepStmtCacheSize,
+                            prepStmtCacheSqlLimit,
+                            cachePrepStmts,
+                            connectionTimeout,
+                            idleTimeout,
+                            maxLifetime);
     }
 }

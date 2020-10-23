@@ -6,7 +6,6 @@ import de.dytanic.cloudnetcore.network.components.Wrapper;
 import me.madfix.cloudnet.webinterface.WebInterface;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 final class ServerGroupService {
@@ -73,10 +72,14 @@ final class ServerGroupService {
         CompletableFuture<Boolean> optionalCompletableFuture = new CompletableFuture<>();
         MinecraftServer server = this.webInterface.getCloud().getServer(serverId);
         if (server != null) {
-            this.webInterface.getCloud().getScreenProvider().handleEnableScreen(server.getServiceId(), server.getWrapper());
+            this.webInterface.getCloud()
+                             .getScreenProvider()
+                             .handleEnableScreen(server.getServiceId(), server.getWrapper());
             server.getWrapper().enableScreen(server.getLastServerInfo());
-            optionalCompletableFuture.complete(this.webInterface.getCloud().getScreenProvider().getScreens()
-                            .containsKey(server.getServiceId().getServerId()));
+            optionalCompletableFuture.complete(this.webInterface.getCloud()
+                                                                .getScreenProvider()
+                                                                .getScreens()
+                                                                .containsKey(server.getServiceId().getServerId()));
         } else {
             optionalCompletableFuture.cancel(true);
         }
@@ -113,10 +116,14 @@ final class ServerGroupService {
         MinecraftServer minecraftServer = this.webInterface.getCloud().getServer(serverId);
         if (minecraftServer != null) {
             minecraftServer.getWrapper().disableScreen(minecraftServer.getLastServerInfo());
-            this.webInterface.getCloud().getScreenProvider().disableScreen(minecraftServer.getServiceId().getServerId());
-            optionalCompletableFuture.complete(!
-                    this.webInterface.getCloud().getScreenProvider().getScreens()
-                            .containsKey(minecraftServer.getServiceId().getServerId()));
+            this.webInterface.getCloud()
+                             .getScreenProvider()
+                             .disableScreen(minecraftServer.getServiceId().getServerId());
+            optionalCompletableFuture.complete(!this.webInterface.getCloud()
+                                                                 .getScreenProvider()
+                                                                 .getScreens()
+                                                                 .containsKey(minecraftServer.getServiceId()
+                                                                                             .getServerId()));
         } else {
             optionalCompletableFuture.cancel(true);
         }
