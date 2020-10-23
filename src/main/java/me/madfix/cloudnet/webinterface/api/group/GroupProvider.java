@@ -2,7 +2,7 @@ package me.madfix.cloudnet.webinterface.api.group;
 
 import me.madfix.cloudnet.webinterface.WebInterface;
 import me.madfix.cloudnet.webinterface.api.provider.Provider;
-import me.madfix.cloudnet.webinterface.api.sql.SQLInsert;
+import me.madfix.cloudnet.webinterface.api.sql.SQLInsertConstants;
 import me.madfix.cloudnet.webinterface.api.sql.SQLSelect;
 import me.madfix.cloudnet.webinterface.model.WebInterfaceGroup;
 import me.madfix.cloudnet.webinterface.model.WebInterfaceUser;
@@ -101,7 +101,7 @@ public final class GroupProvider extends Provider {
             if (exists) {
                 createConnection().thenAccept(conn -> {
                     try (Connection connection = conn;
-                         PreparedStatement statement = connection.prepareStatement(SQLInsert.INSERT_USER_IN_GROUP)) {
+                         PreparedStatement statement = connection.prepareStatement(SQLInsertConstants.INSERT_USER_IN_GROUP)) {
                         statement.setInt(1, group.getId());
                         statement.setInt(2, user.getId());
                         statement.setInt(3, potency);
@@ -127,7 +127,7 @@ public final class GroupProvider extends Provider {
             if (!exists) {
                 createConnection().thenAccept(conn -> {
                     try (Connection connection = conn;
-                         PreparedStatement statement = connection.prepareStatement(SQLInsert.INSERT_GROUP_IN_GROUPS)) {
+                         PreparedStatement statement = connection.prepareStatement(SQLInsertConstants.INSERT_GROUP_IN_GROUPS)) {
                         statement.setString(1, name);
                         completableFuture.complete(statement.executeUpdate() > 0);
                     } catch (SQLException e) {

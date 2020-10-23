@@ -3,7 +3,7 @@ package me.madfix.cloudnet.webinterface.api.user;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import me.madfix.cloudnet.webinterface.WebInterface;
 import me.madfix.cloudnet.webinterface.api.provider.Provider;
-import me.madfix.cloudnet.webinterface.api.sql.SQLInsert;
+import me.madfix.cloudnet.webinterface.api.sql.SQLInsertConstants;
 import me.madfix.cloudnet.webinterface.api.sql.SQLSelect;
 import me.madfix.cloudnet.webinterface.model.WebInterfaceUser;
 
@@ -92,7 +92,7 @@ public final class UserProvider extends Provider {
             if (!exists) {
                 createConnection().thenAccept(conn -> {
                     try (Connection connection = conn;
-                         PreparedStatement statement = connection.prepareStatement(SQLInsert.INSERT_USER_IN_USERS)) {
+                         PreparedStatement statement = connection.prepareStatement(SQLInsertConstants.INSERT_USER_IN_USERS)) {
                         statement.setString(1, username);
                         statement.setBytes(2, passwordHash);
 

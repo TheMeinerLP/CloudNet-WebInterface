@@ -1,6 +1,6 @@
 package me.madfix.cloudnet.webinterface.api.sql;
 
-public final class SQLInsert {
+public final class SQLInsertConstants {
 
     public static final String INSERT_UPDATE = "INSERT INTO `update` (versionname,apply) VALUE (?,?)";
     public static final String INSERT_GROUP_PERMISSION =

@@ -1,11 +1,10 @@
 package me.madfix.cloudnet.webinterface.api.sql;
 
-public final class SQLProcedure {
+public final class SQLProcedureConstants {
 
     public static String SQL_USER_TABLE_PROCEDURE =
-            "CREATE PROCEDURE IF NOT EXISTS `create_tables`()\n" + "LANGUAGE SQL\n" + "NOT DETERMINISTIC\n" +
-            "MODIFIES SQL DATA\n" + "SQL SECURITY DEFINER\n" + "COMMENT 'Create the table for all user logins'\n" +
-            "BEGIN\n" +
+            "CREATE PROCEDURE IF NOT EXISTS `create_tables`() LANGUAGE SQL NOT DETERMINISTIC\n" +
+            "MODIFIES SQL DATA SQL SECURITY DEFINER COMMENT 'Create the table for all user logins' BEGIN\n" +
             "CREATE TABLE IF NOT EXISTS `users` (id INT(32) PRIMARY KEY AUTO_INCREMENT, username VARCHAR(16) NOT NULL, passwordhash VARBINARY(60) NOT NULL);\n" +
             // Only 60 Bytes allowed for bcrypt bytes
             "CREATE TABLE IF NOT EXISTS `update` (versionname VARCHAR(16) PRIMARY KEY NOT NULL, apply BOOL);\n" +

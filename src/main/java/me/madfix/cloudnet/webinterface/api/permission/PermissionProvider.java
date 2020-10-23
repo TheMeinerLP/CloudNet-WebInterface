@@ -2,7 +2,7 @@ package me.madfix.cloudnet.webinterface.api.permission;
 
 import me.madfix.cloudnet.webinterface.WebInterface;
 import me.madfix.cloudnet.webinterface.api.provider.Provider;
-import me.madfix.cloudnet.webinterface.api.sql.SQLInsert;
+import me.madfix.cloudnet.webinterface.api.sql.SQLInsertConstants;
 import me.madfix.cloudnet.webinterface.api.sql.SQLSelect;
 import me.madfix.cloudnet.webinterface.model.PermissionUser;
 import me.madfix.cloudnet.webinterface.model.WebInterfaceUser;
@@ -133,7 +133,7 @@ public final class PermissionProvider extends Provider {
             if (!hasPermission) {
                 createConnection().thenAccept(conn -> {
                     try (Connection connection = conn;
-                         PreparedStatement statement = connection.prepareStatement(SQLInsert.INSERT_GROUP_PERMISSION)) {
+                         PreparedStatement statement = connection.prepareStatement(SQLInsertConstants.INSERT_GROUP_PERMISSION)) {
                         statement.setInt(1, groupId);
                         statement.setString(2, permission);
                         completableFuture.complete(statement.executeUpdate() > 0);
@@ -179,7 +179,7 @@ public final class PermissionProvider extends Provider {
             if (!hasPermission) {
                 createConnection().thenAccept(conn -> {
                     try (Connection connection = conn;
-                         PreparedStatement statement = connection.prepareStatement(SQLInsert.INSERT_USER_PERMISSION)) {
+                         PreparedStatement statement = connection.prepareStatement(SQLInsertConstants.INSERT_USER_PERMISSION)) {
                         statement.setInt(1, userId);
                         statement.setString(2, permission);
                         completableFuture.complete(statement.execute());

@@ -1,7 +1,7 @@
 package me.madfix.cloudnet.webinterface.api.update;
 
 import me.madfix.cloudnet.webinterface.WebInterface;
-import me.madfix.cloudnet.webinterface.api.sql.SQLInsert;
+import me.madfix.cloudnet.webinterface.api.sql.SQLInsertConstants;
 import me.madfix.cloudnet.webinterface.api.sql.SQLSelect;
 
 import java.sql.Connection;
@@ -87,7 +87,7 @@ public final class UpdateHandler {
         if (this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().isPresent()) {
             this.webInterface.getDatabaseService().getConnection().ifPresent(connection -> {
                 try (Connection c = connection;
-                     PreparedStatement statement = c.prepareStatement(SQLInsert.INSERT_UPDATE)) {
+                     PreparedStatement statement = c.prepareStatement(SQLInsertConstants.INSERT_UPDATE)) {
                     statement.setString(1, version);
                     statement.setBoolean(2, apply);
                     installed.complete(statement.executeUpdate() > 0);
