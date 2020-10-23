@@ -3,7 +3,7 @@ package me.madfix.cloudnet.webinterface.api.group;
 import me.madfix.cloudnet.webinterface.WebInterface;
 import me.madfix.cloudnet.webinterface.api.provider.Provider;
 import me.madfix.cloudnet.webinterface.api.sql.SQLInsertConstants;
-import me.madfix.cloudnet.webinterface.api.sql.SQLSelect;
+import me.madfix.cloudnet.webinterface.api.sql.SQLSelectConstants;
 import me.madfix.cloudnet.webinterface.model.WebInterfaceGroup;
 import me.madfix.cloudnet.webinterface.model.WebInterfaceUser;
 
@@ -27,7 +27,7 @@ public final class GroupProvider extends Provider {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         createConnection().thenAccept(conn -> {
             try (Connection connection = conn;
-                 PreparedStatement statement = connection.prepareStatement(SQLSelect.SELECT_GROUP_NAME_IN_GROUPS)) {
+                 PreparedStatement statement = connection.prepareStatement(SQLSelectConstants.SELECT_GROUP_NAME_IN_GROUPS)) {
                 statement.setString(1, name);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     completableFuture.complete(resultSet.next());
@@ -46,7 +46,7 @@ public final class GroupProvider extends Provider {
         CompletableFuture<List<WebInterfaceGroup>> completableFuture = new CompletableFuture<>();
         createConnection().thenAccept(conn -> {
             try (Connection connection = conn;
-                 PreparedStatement statement = connection.prepareStatement(SQLSelect.SELECT_GROUPS_IN_GROUPS)) {
+                 PreparedStatement statement = connection.prepareStatement(SQLSelectConstants.SELECT_GROUPS_IN_GROUPS)) {
                 try (ResultSet resultSet = statement.executeQuery()) {
                     List<WebInterfaceGroup> groups = new ArrayList<>();
                     while (resultSet.next()) {
@@ -70,7 +70,7 @@ public final class GroupProvider extends Provider {
             if (exists) {
                 createConnection().thenAccept(conn -> {
                     try (Connection connection = conn;
-                         PreparedStatement statement = connection.prepareStatement(SQLSelect.SELECT_GROUP_IN_GROUPS)) {
+                         PreparedStatement statement = connection.prepareStatement(SQLSelectConstants.SELECT_GROUP_IN_GROUPS)) {
                         statement.setString(1, name);
                         try (ResultSet resultSet = statement.executeQuery()) {
                             if (resultSet.next()) {

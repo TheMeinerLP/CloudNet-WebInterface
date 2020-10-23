@@ -10,6 +10,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Handle some operations between sign database from CloudNet 2 and the web interface
+ * @since 1.11.5
+ * @version 1.0.0
+ */
 public final class SignDatabase extends DatabaseUsable {
 
     private Document selectorSigns;

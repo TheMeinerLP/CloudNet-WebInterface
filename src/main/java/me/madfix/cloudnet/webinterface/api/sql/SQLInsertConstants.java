@@ -1,5 +1,10 @@
 package me.madfix.cloudnet.webinterface.api.sql;
 
+/**
+ * Hold some insert queries
+ * @version 1.0.0
+ * @since 1.11.15
+ */
 public final class SQLInsertConstants {
 
     public static final String INSERT_UPDATE = "INSERT INTO `update` (versionname,apply) VALUE (?,?)";

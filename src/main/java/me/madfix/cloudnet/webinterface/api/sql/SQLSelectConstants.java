@@ -1,6 +1,11 @@
 package me.madfix.cloudnet.webinterface.api.sql;
 
-public final class SQLSelect {
+/**
+ * Hold some constants for sql select queries
+ * @version 1.0.0
+ * @since 1.11.5
+ */
+public final class SQLSelectConstants {
 
     public static final String SELECT_UPDATE = "SELECT apply from `update` WHERE versionname = ?";
     public static final String SELECT_PERMISSION_FROM_GROUP = "SELECT permission from `group_permission` WHERE gId = ?";

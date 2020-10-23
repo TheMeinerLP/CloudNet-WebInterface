@@ -18,6 +18,11 @@ import me.madfix.cloudnet.webinterface.services.DatabaseService;
 import me.madfix.cloudnet.webinterface.updates.Update_1_9;
 
 
+/**
+ * Entry class for CloudNet v2 module system
+ * @version 1.0.0
+ * @since 1.11.5
+ */
 public final class WebInterface extends CoreModule {
 
     private ConfigurationService configurationService;

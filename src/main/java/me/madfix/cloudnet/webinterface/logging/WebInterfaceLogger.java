@@ -13,6 +13,11 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.XMLFormatter;
 
+/**
+ * A simple logger to handle all log events into a file
+ * @version 1.0.0
+ * @since 1.11.5
+ */
 public class WebInterfaceLogger extends Logger {
     public WebInterfaceLogger() {
         super("WebInterfaceLogger", null);

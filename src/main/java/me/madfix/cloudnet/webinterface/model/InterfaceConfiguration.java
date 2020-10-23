@@ -1,5 +1,10 @@
 package me.madfix.cloudnet.webinterface.model;
 
+/**
+ * Hold some information's about the interface configurations
+ * @version 1.0.0
+ * @since 1.11.5
+ */
 public final class InterfaceConfiguration {
 
     private final int restPort;

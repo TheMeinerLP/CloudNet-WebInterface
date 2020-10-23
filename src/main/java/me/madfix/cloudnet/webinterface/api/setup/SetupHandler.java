@@ -8,6 +8,11 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
+/**
+ * Hold some setup tasks/steps before the interface can be used
+ * @version 1.0.0
+ * @since 1.11.5
+ */
 public final class SetupHandler {
 
     private final WebInterface webInterface;
@@ -16,6 +21,9 @@ public final class SetupHandler {
         this.webInterface = webInterface;
     }
 
+    /**
+     * Setup the basic structure into database
+     */
     public void setupPreSql() {
         if (this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().isPresent()) {
             this.webInterface.getDatabaseService().getConnection().ifPresent(connection -> {
@@ -29,6 +37,9 @@ public final class SetupHandler {
         }
     }
 
+    /**
+     * Run procedure fro create basic tables
+     */
     public void setupPostSql() {
         if (this.webInterface.getConfigurationService().getOptionalInterfaceConfiguration().isPresent()) {
             this.webInterface.getDatabaseService().getConnection().ifPresent(connection -> {
@@ -41,6 +52,9 @@ public final class SetupHandler {
         }
     }
 
+    /**
+     * Crate a default admin user
+     */
     public void setupPreAdminUser() {
         this.webInterface.getUserProvider().isUserExists("admin").thenAccept(exists -> {
             if (!exists) {
@@ -89,6 +103,9 @@ public final class SetupHandler {
         });
     }
 
+    /**
+     * Create a default admin group
+     */
     public void setupPreAdminGroup() {
         this.webInterface.getGroupProvider().getGroups().thenAccept(interfaceGroups -> {
             if (interfaceGroups.size() <= 0) {

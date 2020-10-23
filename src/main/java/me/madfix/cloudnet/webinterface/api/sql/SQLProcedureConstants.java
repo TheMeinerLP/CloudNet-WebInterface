@@ -1,5 +1,10 @@
 package me.madfix.cloudnet.webinterface.api.sql;
 
+/**
+ * Hold some sql procedure queries
+ * @since 1.11.5
+ * @version 1.0.0
+ */
 public final class SQLProcedureConstants {
 
     public static String SQL_USER_TABLE_PROCEDURE =

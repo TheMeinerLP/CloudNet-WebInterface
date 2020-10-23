@@ -8,6 +8,11 @@ import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
+/**
+ * A update task class to migrate some data from version 1.8.X to 1.9.X
+ * @version 1.0.0
+ * @since 1.11.5
+ */
 public final class Update_1_9 extends UpdateTask {
 
     private static final String UPDATE_1_9_TABLE_PROCEDURE =
@@ -23,13 +28,27 @@ public final class Update_1_9 extends UpdateTask {
         super("1.9.0");
     }
 
-    @Override public CompletableFuture<Boolean> preUpdateStep(WebInterface webInterface) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CompletableFuture<Boolean> preUpdateStep(WebInterface webInterface) {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         webInterface.getDatabaseService().getConnection().ifPresent(connection -> {
+
             try (PreparedStatement statement = connection.prepareStatement(Update_1_9.UPDATE_1_9_TABLE_PROCEDURE)) {
+                connection.setAutoCommit(false);
                 statement.execute();
+                connection.commit();
                 completableFuture.complete(true);
             } catch (SQLException e) {
+                try {
+                    connection.rollback();
+                } catch (SQLException sqlException) {
+                    webInterface.getLogger().log(Level.SEVERE, "Update 1.9.0 table procedures could not be rollback",
+                                                 sqlException);
+                    completableFuture.cancel(true);
+                }
                 webInterface.getLogger().log(Level.SEVERE, "Update 1.9.0 table procedures could not be created", e);
                 completableFuture.cancel(true);
             }
@@ -38,13 +57,26 @@ public final class Update_1_9 extends UpdateTask {
         return completableFuture;
     }
 
-    @Override public CompletableFuture<Boolean> updateStep(WebInterface webInterface) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CompletableFuture<Boolean> updateStep(WebInterface webInterface) {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         webInterface.getDatabaseService().getConnection().ifPresent(connection -> {
             try (PreparedStatement statement = connection.prepareStatement(Update_1_9.CALL_UPDATE_1_9_PROCEDURE)) {
+                connection.setAutoCommit(false);
                 completableFuture.complete(true);
                 statement.execute();
+                connection.commit();
             } catch (SQLException e) {
+                try {
+                    connection.rollback();
+                } catch (SQLException sqlException) {
+                    webInterface.getLogger().log(Level.SEVERE, "Update 1.9.0 table procedures could not be rollback!",
+                                                 sqlException);
+                    completableFuture.cancel(true);
+                }
                 webInterface.getLogger().log(Level.SEVERE, "Update 1.9.0 table procedures could not be called!", e);
                 completableFuture.cancel(true);
             }

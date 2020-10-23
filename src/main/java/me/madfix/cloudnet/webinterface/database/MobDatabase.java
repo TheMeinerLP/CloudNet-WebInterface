@@ -11,6 +11,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Handle some interaction between mob system about Cloudnet 2 and the web interface
+ * @since 1.11.5
+ * @version 1.0.0
+ */
 public final class MobDatabase extends DatabaseUsable {
 
     private Document selectorMobs;

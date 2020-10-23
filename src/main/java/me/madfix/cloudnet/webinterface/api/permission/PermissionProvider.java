@@ -3,7 +3,7 @@ package me.madfix.cloudnet.webinterface.api.permission;
 import me.madfix.cloudnet.webinterface.WebInterface;
 import me.madfix.cloudnet.webinterface.api.provider.Provider;
 import me.madfix.cloudnet.webinterface.api.sql.SQLInsertConstants;
-import me.madfix.cloudnet.webinterface.api.sql.SQLSelect;
+import me.madfix.cloudnet.webinterface.api.sql.SQLSelectConstants;
 import me.madfix.cloudnet.webinterface.model.PermissionUser;
 import me.madfix.cloudnet.webinterface.model.WebInterfaceUser;
 
@@ -28,7 +28,7 @@ public final class PermissionProvider extends Provider {
         CompletableFuture<List<String>> completableFuture = new CompletableFuture<>();
         createConnection().thenAccept(conn -> {
             try (Connection connection = conn;
-                 PreparedStatement statement = connection.prepareStatement(SQLSelect.SELECT_PERMISSION_FROM_GROUP)) {
+                 PreparedStatement statement = connection.prepareStatement(SQLSelectConstants.SELECT_PERMISSION_FROM_GROUP)) {
                 statement.setInt(1, groupId);
                 List<String> permissions = new ArrayList<>();
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -52,7 +52,7 @@ public final class PermissionProvider extends Provider {
         CompletableFuture<PermissionUser> completableFuture = new CompletableFuture<>();
         createConnection().thenAccept(conn -> {
             try (Connection connection = conn;
-                 PreparedStatement statement = connection.prepareStatement(SQLSelect.SELECT_PERMISSION_FROM_USER)) {
+                 PreparedStatement statement = connection.prepareStatement(SQLSelectConstants.SELECT_PERMISSION_FROM_USER)) {
                 statement.setInt(1, webInterfaceUser.getId());
                 List<String> permissions = new ArrayList<>();
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -81,7 +81,7 @@ public final class PermissionProvider extends Provider {
         CompletableFuture<List<String>> completableFuture = new CompletableFuture<>();
         createConnection().thenAccept(conn -> {
             try (Connection connection = conn;
-                 PreparedStatement statement = connection.prepareStatement(SQLSelect.SELECT_PERMISSION_FROM_USER)) {
+                 PreparedStatement statement = connection.prepareStatement(SQLSelectConstants.SELECT_PERMISSION_FROM_USER)) {
                 statement.setInt(1, userId);
                 List<String> permissions = new ArrayList<>();
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -107,7 +107,7 @@ public final class PermissionProvider extends Provider {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         createConnection().thenAccept(conn -> {
             try (Connection connection = conn;
-                 PreparedStatement statement = connection.prepareStatement(SQLSelect.SELECT_PERMISSION_IN_GROUP)) {
+                 PreparedStatement statement = connection.prepareStatement(SQLSelectConstants.SELECT_PERMISSION_IN_GROUP)) {
                 statement.setString(1, permission);
                 statement.setInt(2, groupId);
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -153,7 +153,7 @@ public final class PermissionProvider extends Provider {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         createConnection().thenAccept(conn -> {
             try (Connection connection = conn;
-                 PreparedStatement statement = connection.prepareStatement(SQLSelect.SELECT_PERMISSION_IN_USER)) {
+                 PreparedStatement statement = connection.prepareStatement(SQLSelectConstants.SELECT_PERMISSION_IN_USER)) {
                 statement.setString(1, permission);
                 statement.setInt(2, userId);
                 try (ResultSet resultSet = statement.executeQuery()) {

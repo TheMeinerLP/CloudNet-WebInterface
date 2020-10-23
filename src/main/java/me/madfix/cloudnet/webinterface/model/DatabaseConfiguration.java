@@ -2,6 +2,11 @@ package me.madfix.cloudnet.webinterface.model;
 
 import java.util.Objects;
 
+/**
+ * Hold some information's about the database configuration
+ * @version 1.0.0
+ * @since 1.11.5
+ */
 public final class DatabaseConfiguration {
 
     private final String jdbcUrl;

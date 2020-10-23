@@ -4,9 +4,15 @@ import me.madfix.cloudnet.webinterface.api.permission.Permissible;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Hold and handle some permission information's about a web interface user
+ * @version 1.0.0
+ * @since 1.11.5
+ */
 public class PermissionUser extends WebInterfaceUser implements Permissible {
 
     private final Collection<String> permissions;
@@ -74,4 +80,22 @@ public class PermissionUser extends WebInterfaceUser implements Permissible {
         return Integer.parseInt(endPermission);
     }
 
+    @Override public String toString() {
+        return "PermissionUser{" + "permissions=" + permissions + '}';
+    }
+
+    @Override public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PermissionUser that = (PermissionUser) o;
+        return Objects.equals(permissions, that.permissions);
+    }
+
+    @Override public int hashCode() {
+        return Objects.hash(permissions);
+    }
 }
